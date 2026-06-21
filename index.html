@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>TP Java Quiz Trainer</title>
+<style>
+:root { --bg:#0f172a; --panel:#111827; --panel2:#1f2937; --text:#e5e7eb; --muted:#94a3b8; --accent:#38bdf8; --ok:#22c55e; --bad:#ef4444; --warn:#f59e0b; --border:#334155; }
+* { box-sizing:border-box; }
+body { margin:0; font-family:Arial, Helvetica, sans-serif; background:linear-gradient(135deg,#0f172a,#111827); color:var(--text); }
+header { position:sticky; top:0; z-index:5; background:rgba(15,23,42,.95); border-bottom:1px solid var(--border); padding:14px 20px; display:flex; gap:14px; align-items:center; justify-content:space-between; flex-wrap:wrap; }
+h1 { margin:0; font-size:20px; }
+nav { display:flex; gap:8px; flex-wrap:wrap; }
+button, .btn { border:1px solid var(--border); background:#0b1220; color:var(--text); padding:10px 14px; border-radius:12px; cursor:pointer; font-weight:700; }
+button:hover, .btn:hover { border-color:var(--accent); }
+button.primary { background:linear-gradient(135deg,#0284c7,#0ea5e9); border-color:#38bdf8; color:white; }
+button.success { background:#14532d; border-color:#22c55e; }
+button.danger { background:#7f1d1d; border-color:#ef4444; }
+button:disabled { opacity:.5; cursor:not-allowed; }
+main { max-width:1100px; margin:0 auto; padding:22px; }
+.card { background:rgba(17,24,39,.92); border:1px solid var(--border); border-radius:18px; padding:20px; margin:16px 0; box-shadow:0 10px 30px rgba(0,0,0,.25); }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; }
+.stat { background:#0b1220; border:1px solid var(--border); border-radius:16px; padding:16px; }
+.stat .big { font-size:28px; font-weight:800; color:var(--accent); }
+.muted { color:var(--muted); }
+.badge { display:inline-block; border:1px solid var(--border); border-radius:999px; padding:5px 10px; color:#cbd5e1; background:#0b1220; font-size:12px; margin:2px; }
+.timer { font-size:22px; font-weight:900; letter-spacing:1px; color:#f8fafc; }
+.timer.warn { color:var(--warn); }
+.timer.danger { color:var(--bad); }
+.progress-wrap { height:10px; background:#0b1220; border-radius:999px; overflow:hidden; border:1px solid var(--border); }
+.progress-bar { height:100%; background:linear-gradient(90deg,#22c55e,#38bdf8); width:0%; transition:.3s; }
+.question-title { white-space:pre-wrap; line-height:1.45; font-size:18px; }
+.options { display:grid; gap:10px; margin-top:18px; }
+.option { display:flex; gap:10px; align-items:flex-start; border:1px solid var(--border); background:#0b1220; padding:12px; border-radius:14px; cursor:pointer; line-height:1.35; }
+.option:hover { border-color:#64748b; }
+.option.correct { border-color:var(--ok); background:rgba(34,197,94,.12); }
+.option.wrong { border-color:var(--bad); background:rgba(239,68,68,.12); }
+.option input { margin-top:2px; }
+.feedback { border-radius:14px; padding:14px; margin-top:16px; display:none; }
+.feedback.ok { display:block; border:1px solid var(--ok); background:rgba(34,197,94,.12); }
+.feedback.bad { display:block; border:1px solid var(--bad); background:rgba(239,68,68,.12); }
+pre, textarea { width:100%; background:#020617; color:#d1fae5; border:1px solid var(--border); border-radius:12px; padding:12px; overflow:auto; }
+textarea { min-height:180px; }
+table { width:100%; border-collapse:collapse; font-size:14px; }
+th, td { border-bottom:1px solid var(--border); padding:10px; text-align:left; vertical-align:top; }
+th { color:#bae6fd; }
+.hidden { display:none !important; }
+.kbd { font-family:monospace; background:#020617; border:1px solid var(--border); border-radius:6px; padding:2px 6px; }
+.small { font-size:13px; }
+hr { border:0; border-top:1px solid var(--border); margin:18px 0; }
+.footer-actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; }
+@media (max-width:700px) { main { padding:12px; } .question-title { font-size:16px; } header { align-items:flex-start; } }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>TP Java Quiz Trainer</h1>
+    <div class="muted small">25 intrebari · 35 minute · 1 punct din oficiu · 0.36 puncte/intrebare</div>
+  </div>
+  <nav>
+    <button onclick="showPage('home')">Acasa</button>
+    <button onclick="showPage('quiz')">Quiz</button>
+    <button onclick="showPage('bank')">Banca intrebari</button>
+    <button onclick="showPage('history')">Istoric & analiza</button>
+  </nav>
+</header>
+<main>
+  <section id="page-home" class="page">
+    <div class="card">
+      <h2>Simulare examen TP Java</h2>
+      <p>Aplicatia alege aleator 25 de intrebari din banca de intrebari. Exista intrebari cu raspuns unic si intrebari cu raspuns multiplu. Dupa ce apesi <b>Trimite raspunsul</b>, vezi imediat raspunsul corect.</p>
+      <div class="grid">
+        <div class="stat"><div class="big" id="bankCount">0</div><div>intrebari in banca</div></div>
+        <div class="stat"><div class="big">35:00</div><div>timp limita</div></div>
+        <div class="stat"><div class="big">0.36</div><div>puncte/intrebare</div></div>
+        <div class="stat"><div class="big">+1</div><div>punct din oficiu</div></div>
+      </div>
+      <div class="footer-actions">
+        <button class="primary" onclick="startQuiz()">Incepe test nou</button>
+        <button onclick="showPage('history')">Vezi istoric</button>
+        <button onclick="showPage('bank')">Vezi toate intrebarile</button>
+      </div>
+      <p class="muted small">Datele se salveaza local in browser cu <span class="kbd">localStorage</span>. Nu ai server si nu se trimite nimic online.</p>
+    </div>
+  </section>
+
+  <section id="page-quiz" class="page hidden">
+    <div id="quizEmpty" class="card">
+      <h2>Nu ai un test pornit.</h2>
+      <button class="primary" onclick="startQuiz()">Incepe test nou</button>
+    </div>
+    <div id="quizBox" class="hidden">
+      <div class="card">
+        <div class="grid">
+          <div><span class="badge" id="qTypeBadge">Raspuns unic</span><span class="badge" id="topicBadge">topic</span><span class="badge" id="sourceBadge">sursa</span></div>
+          <div class="timer" id="timer">35:00</div>
+          <div><b id="progressText">Intrebarea 1/25</b><div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div></div>
+          <div><b>Nota estimata:</b> <span id="liveGrade">1.00</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="question-title" id="questionText"></div>
+        <div class="options" id="optionsBox"></div>
+        <div id="feedback" class="feedback"></div>
+        <div class="footer-actions">
+          <button id="submitBtn" class="primary" onclick="submitAnswer()">Trimite raspunsul</button>
+          <button id="nextBtn" onclick="nextQuestion()" disabled>Urmatoarea</button>
+          <button class="danger" onclick="finishQuiz(true)">Termina testul</button>
+        </div>
+      </div>
+    </div>
+    <div id="resultBox" class="card hidden"></div>
+  </section>
+
+  <section id="page-bank" class="page hidden">
+    <div class="card">
+      <h2>Banca de intrebari</h2>
+      <p class="muted">Aici sunt toate intrebarile incluse in fisier. Poti verifica si raspunsurile corecte.</p>
+      <div class="footer-actions">
+        <button onclick="renderBank(true)">Arata raspunsurile</button>
+        <button onclick="renderBank(false)">Ascunde raspunsurile</button>
+      </div>
+      <div id="bankList"></div>
+    </div>
+  </section>
+
+  <section id="page-history" class="page hidden">
+    <div class="card">
+      <h2>Istoric teste si analiza greseli</h2>
+      <p class="muted">Aici vezi toate testele salvate in acest browser. Butonul de export iti da exact text/JSON pe care il poti trimite in ChatGPT ca sa iti spun ce ai gresit cel mai mult.</p>
+      <div class="footer-actions">
+        <button onclick="copyAnalysis()">Copiaza analiza pentru ChatGPT</button>
+        <button onclick="downloadHistory()">Descarca JSON</button>
+        <button class="danger" onclick="clearHistory()">Sterge istoricul</button>
+      </div>
+      <div id="historyContent"></div>
+    </div>
+  </section>
+</main>
+<script>
+const QUESTIONS = [{"id": "2025-SLO", "type": "single", "text": "Afirmatia „o aplicatie isi propune ca 99,9% dintre cereri sa primeasca raspuns in maximum 200 ms” reprezinta:", "options": {"a": "Service Level Indicator (SLI)", "b": "Service Level Objective (SLO)", "c": "Service Level Agreement (SLA)", "d": "Service Level Constraint (SLC)"}, "answer": ["b"], "topic": "cerinte / SLO", "source": "Subiect 2025", "explanation": "Este un obiectiv masurabil de performanta, deci SLO."}, {"id": "2025-testing-not-correct", "type": "multiple", "text": "In contextul testarii unui sistem software, care dintre urmatoarele afirmatii NU sunt corecte?", "options": {"a": "Testarea de sistem verifica intregul sistem software, ca un tot.", "b": "Testarea de integrare valideaza componentele izolate, inainte de integrare.", "c": "Testarea de acceptanta este folosita pentru a verifica daca cerintele utilizatorului final sunt satisfacute de catre sistem.", "d": "Testarea unitara este folosita pentru a valida interactiunile dintre subsisteme."}, "answer": ["b", "d"], "topic": "testare", "source": "Subiect 2025", "explanation": "Integrarea verifica interactiuni intre componente; unit testing verifica unitati izolate."}, {"id": "2025-uml-banking", "type": "multiple", "text": "Intr-o aplicatie bancara: (i) clasa Client detine un atribut de tip List<Cont>; (ii) clasa Cont are un atribut de tip CardBancar; (iii) clasa Client apeleaza metoda trimiteSMS() din clasa NotificatorSMS, fara a avea atribut NotificatorSMS. Care relatii UML sunt potrivite?", "options": {"a": "Intre Client si Cont este o relatie de compozitie.", "b": "Intre Cont si CardBancar este o relatie de utilizare.", "c": "Intre Client si NotificatorSMS este o relatie de dependenta.", "d": "Relatia dintre Cont si CardBancar este de agregare slaba."}, "answer": ["a", "c", "d"], "topic": "UML", "source": "Subiect 2025", "explanation": "Atributul sugereaza relatie structurala, iar apelul fara atribut sugereaza dependenta. Aici am pus si agregarea slaba pentru CardBancar."}, {"id": "2025-usecase", "type": "single", "text": "Pentru o aplicatie de rezervari avem use-case-urile Rezerva bilet, Autentificare si Plateste cu cardul. Utilizatorul trebuie sa se autentifice de fiecare data cand face o rezervare, iar plata cu cardul este optionala. Care afirmatie descrie corect relatiile UML?", "options": {"a": "Rezerva bilet extinde atat Autentificare, cat si Plateste cu cardul.", "b": "Rezerva bilet include Autentificare, iar Plateste cu cardul extinde Rezerva bilet.", "c": "Rezerva bilet mosteneste Autentificare si include Plateste cu cardul.", "d": "Nu exista nicio relatie intre aceste use-case-uri; sunt complet independente."}, "answer": ["b"], "topic": "UML use-case", "source": "Subiect 2025", "explanation": "Autentificarea obligatorie = include. Plata optionala = extend."}, {"id": "2025-dynamic-binding", "type": "single", "text": "Care dintre urmatoarele afirmatii descrie corect legarea dinamica in Java?", "options": {"a": "Metodele statice sunt apelate in functie de tipul obiectului, la compilare.", "b": "Apelul metodei este rezolvat la runtime, in functie de tipul obiectului asupra caruia se apeleaza metoda.", "c": "Java foloseste doar legare statica; metodele sunt alese la compilare.", "d": "Legarea dinamica se aplica doar variabilelor, nu si metodelor."}, "answer": ["b"], "topic": "polimorfism", "source": "Subiect 2025", "explanation": "La metodele suprascrise se decide la runtime in functie de obiectul real."}, {"id": "2025-downcasting", "type": "multiple", "text": "Care dintre urmatoarele afirmatii despre downcasting in Java sunt adevarate?\n\nB obj1 = new B();\nA obj2 = obj1;\nB obj3 = (B) obj2;", "options": {"a": "Downcasting necesita un cast explicit si poate duce la exceptii in timpul executiei.", "b": "Daca programul compileaza fara erori, downcasting este intotdeauna sigur la runtime.", "c": "Codul de mai jos este valid doar daca B este un subtip al lui A.", "d": "ClassCastException poate fi prevenita folosind try-catch sau verificari instanceof."}, "answer": ["a", "c", "d"], "topic": "mostenire / casting", "source": "Subiect 2025", "explanation": "Downcast-ul poate arunca ClassCastException; instanceof il poate preveni."}, {"id": "2025-default-method-conflict", "type": "single", "text": "Ce se intampla daca o clasa implementeaza doua interfete care definesc cate o metoda default cu semnatura identica, dar implementari diferite?", "options": {"a": "Compilatorul semnaleaza eroare si cere ca ambiguitatea sa fie rezolvata explicit prin suprascriere.", "b": "Java aplica automat implementarea metodei default din prima interfata mentionata in implements.", "c": "Clasa nu poate implementa doua interfete care declara aceeasi metoda default.", "d": "Clasa poate apela direct implementarea dorita cu InterfaceName.super.method() fara sa o suprascrie."}, "answer": ["a"], "topic": "interfete", "source": "Subiect 2025", "explanation": "Clasa trebuie sa suprascrie metoda si poate alege apoi explicit implementarea dorita."}, {"id": "2025-annotation-info", "type": "multiple", "text": "Avand interfata de adnotare:\n\npublic @interface Info {\n    String author();\n    int version();\n}\n\nCare afirmatii sunt corecte?", "options": {"a": "Utilizarea @Info(author = \"Alex\", version = 1) la nivelul unui atribut este corecta.", "b": "Daca o clasa implementeaza interfata Info, aceasta trebuie sa implementeze metodele author() si version().", "c": "Utilizarea @Info(\"George\", 2) la nivelul unei metode este corecta.", "d": "Interfata Info nu poate contine metode cu implementare."}, "answer": ["a", "d"], "topic": "adnotari", "source": "Subiect 2025", "explanation": "Adnotarea are doua elemente numite, deci nu merge pozitional; metodele din annotation type nu au corp."}, {"id": "2025-wait", "type": "single", "text": "Care afirmatie despre metoda wait(), in contextul thread-urilor, este adevarata?", "options": {"a": "Suspenda executia thread-ului pentru un timp determinat.", "b": "Suspenda executia thread-ului si elibereaza lock-ul obiectului.", "c": "Poate fi apelata atat in context sincronizat cat si nesincronizat.", "d": "Suspenda thread-ul curent, dar nu permite altor thread-uri sa preia executia."}, "answer": ["b"], "topic": "thread-uri", "source": "Subiect 2025", "explanation": "wait() trebuie apelata din context sincronizat si elibereaza monitorul obiectului."}, {"id": "2025-volatile-atomic", "type": "single", "text": "Avand codul:\n\nvolatile int counter1 = 0;\nAtomicInteger counter2 = new AtomicInteger(0);\n\nCare afirmatie NU este adevarata?", "options": {"a": "counter1++ este thread-safe.", "b": "counter2.getAndIncrement() este thread-safe.", "c": "volatile asigura vizibilitate, dar nu atomicitate.", "d": "counter1 nu este copiat in memoria cache a unui thread."}, "answer": ["a"], "topic": "volatile / atomic", "source": "Subiect 2025", "explanation": "counter1++ are read-modify-write si nu este atomic."}, {"id": "2025-equals-hashcode", "type": "multiple", "text": "Care dintre urmatoarele afirmatii despre metodele equals si hashCode din Java sunt adevarate?", "options": {"a": "hashCode() este folosita in toate colectiile pentru a determina indexul unde va fi pozitionat obiectul in lista.", "b": "Coliziunea inseamna ca doua obiecte egale dupa equals au hashCode diferite.", "c": "Se recomanda utilizarea metodei equals pentru a verifica egalitatea obiectelor String.", "d": "Suprascrierea equals intr-o ierarhie de mostenire poate duce la incalcarea contractului acestei metode."}, "answer": ["c", "d"], "topic": "equals / hashCode", "source": "Subiect 2025", "explanation": "String se compara logic cu equals; contractul equals poate fi stricat prin mostenire."}, {"id": "2025-sealed-not-true", "type": "multiple", "text": "Care dintre urmatoarele afirmatii NU sunt adevarate despre clasele sealed in Java?", "options": {"a": "Clasele sealed sunt definite folosind keyword-ul record.", "b": "Clasele sealed sunt echivalente cu clasele final.", "c": "Subclasele unei clase sealed pot fi doar sealed.", "d": "O clasa sealed trebuie sa declare explicit toate clasele care o pot extinde."}, "answer": ["a", "b", "c"], "topic": "sealed classes", "source": "Subiect 2025", "explanation": "Subclasele pot fi final, sealed sau non-sealed; sealed nu este final si nu foloseste record."}, {"id": "2025-callback", "type": "single", "text": "__________ este o functie transmisa ca argument unei alte functii, fiind executata atunci cand se produce un anumit eveniment.", "options": {"a": "Functia callback", "b": "Functia pura", "c": "Functia abstracta", "d": "Functia recursiva"}, "answer": ["a"], "topic": "functional", "source": "Subiect 2025", "explanation": "Callback-ul este apelat mai tarziu, de obicei la un eveniment."}, {"id": "2025-reflection-car", "type": "single", "text": "Care afirmatie despre cod este adevarata?\n\nCar car = new Car(\"Toyota\");\nClass classObject = car.getClass();\nMethod method = classObject.getMethod(\"startEngine\");\nmethod.invoke(car);", "options": {"a": "classObject contine atributele obiectului Car, de exemplu anul masinii, modelul masinii etc.", "b": "Class classObject = car.forName(\"Car\"); este o modalitate corecta in acest context.", "c": "Exemplul invoca dinamic metoda startEngine definita in clasa Class.", "d": "method.invoke(car) executa metoda startEngine pe obiectul car fara a fi nevoie sa cunoastem metoda la compilare."}, "answer": ["d"], "topic": "reflection", "source": "Subiect 2025", "explanation": "Method.invoke executa metoda gasita prin reflection pe obiectul primit."}, {"id": "2025-immutable-list", "type": "multiple", "text": "Care afirmatii despre codul de mai jos sunt incorecte?\n\npublic final class A {\n    private final List<String> list;\n    public A(List<String> list) { this.list = list; }\n    public List<String> getList() { return this.list; }\n}", "options": {"a": "Clasa A este imutabila.", "b": "Eliminarea setterului si final pe list sunt suficiente pentru imutabilitate completa.", "c": "Clasa A nu poate fi extinsa.", "d": "Clasa A este thread-safe."}, "answer": ["a", "b", "d"], "topic": "imutabilitate", "source": "Subiect 2025", "explanation": "Lista poate fi modificata din exterior sau prin getter; final fixeaza referinta, nu continutul."}, {"id": "2025-design-violations", "type": "multiple", "text": "Care dintre urmatoarele afirmatii incalca principiile de proiectare a claselor si interfetelor?", "options": {"a": "Este recomandata o interfata generala in locul mai multor interfete specifice clientilor.", "b": "O clasa ar trebui sa depinda de clase concrete si nu de abstractii.", "c": "Clasele cu coeziune ridicata au prea multe functionalitati implementate in ele.", "d": "Claritatea reduce riscul erorilor, dar nu usureaza mentenanta codului."}, "answer": ["a", "b", "c", "d"], "topic": "design principles", "source": "Subiect 2025", "explanation": "Sunt inversari ale principiilor ISP, DIP, coeziune si claritate/mentenanta."}, {"id": "2025-delivery-design", "type": "multiple", "text": "Program cu livrare prin curier, locker si magazin; in clasa Comanda se foloseste if/switch pentru a instantia direct clasa de livrare. Care afirmatii NU sunt corecte?", "options": {"a": "Programul respecta principiul Open Closed.", "b": "Exista o cuplare stransa intre clasele programului.", "c": "Programul este proiectat conform principiului Liskov Substitution.", "d": "Programul respecta principiul Dependency Inversion."}, "answer": ["a", "c", "d"], "topic": "SOLID", "source": "Subiect 2025", "explanation": "if/switch pe clase concrete produce cuplare si incalca OCP/DIP."}, {"id": "2025-dependencies", "type": "multiple", "text": "Care afirmatii despre gestionarea dependentelor in cod sunt corecte?", "options": {"a": "Dependency Injection promoveaza inversarea controlului prin furnizarea explicita a dependentelor de o componenta externa.", "b": "Service Locator ascunde modul de obtinere a dependentelor.", "c": "Dependency Injection impune ca toate dependentele sa fie injectate prin constructor.", "d": "O clasa bine proiectata ar trebui sa isi creeze singura toate dependentele."}, "answer": ["a", "b"], "topic": "dependency management", "source": "Subiect 2025", "explanation": "DI poate fi prin constructor, setter sau metoda; clasa nu ar trebui sa controleze singura toate dependentele."}, {"id": "2025-generics-not-correct", "type": "multiple", "text": "Care afirmatii despre tipurile generice in Java NU sunt corecte?", "options": {"a": "Parametrii de tip pot fi inlocuiti fie cu tip referinta, fie cu tip primitiv.", "b": "Tipurile generice permit scrierea de cod polimorfic.", "c": "Pentru un parametru generic T, crearea unei instante cu new T() este permisa.", "d": "Tipurile generice sunt pastrate la rulare si pot fi inspectate prin reflection."}, "answer": ["a", "c", "d"], "topic": "generics", "source": "Subiect 2025", "explanation": "Generics folosesc tipuri referinta; type erasure elimina tipul generic la runtime."}, {"id": "2025-wildcards", "type": "single", "text": "Care afirmatie despre wildcard-uri in Java generics este adevarata?", "options": {"a": "Wildcard-ul ? poate reprezenta orice tip referinta sau primitiv necunoscut.", "b": "Intr-o lista List<?> se poate adauga orice obiect.", "c": "Intr-o lista List<? extends Number> se pot adauga obiecte ale oricarui subtip al lui Number.", "d": "Considerand o clasa generica A, tipul A<?> este un subtip al lui Object."}, "answer": ["d"], "topic": "generics", "source": "Subiect 2025", "explanation": "Orice obiect Java este subtip al lui Object; in liste cu wildcard nu poti adauga liber."}, {"id": "2025-predicate-method-ref", "type": "single", "text": "Considerati o variabila predicate de tip Predicate<Integer>. Care afirmatie este corecta?", "options": {"a": "I se poate atribui doar o expresie lambda explicita cu un parametru Integer.", "b": "Predicate poate contine orice numar de metode abstracte.", "c": "Predicate<Integer> predicate = Utils::isPositive nu compileaza fiindca parametrul nu a fost specificat.", "d": "Predicate<Integer> predicate = Utils::isPositive este valida daca isPositive(Integer) este metoda statica ce returneaza boolean."}, "answer": ["d"], "topic": "lambda / method reference", "source": "Subiect 2025", "explanation": "Referinta la metoda se potriveste cu metoda abstracta test(T) din Predicate."}, {"id": "2025-serializable-lambda", "type": "single", "text": "Considerand atribuirea:\n\nSerializable serializableVariable = (Serializable & Adder) (x, y) -> x + y;\n\nCare afirmatie este corecta?", "options": {"a": "Expresia lambda (x, y) -> x + y este o expresie polimorfica.", "b": "Adder este o clasa cu o singura metoda abstracta.", "c": "Serializable & Adder defineste un tip reuniune.", "d": "Lambda nu poate fi serializata deoarece doar obiectele pot fi serializate."}, "answer": ["a"], "topic": "lambda / intersection type", "source": "Subiect 2025", "explanation": "Lambda este expresie polimorfica, tipul ei depinde de target type."}, {"id": "2025-concurrent-streams", "type": "single", "text": "In contextul procesarii concurente a stream-urilor, este recomandat sa:", "options": {"a": "Modificam sursa de date a stream-urilor.", "b": "Folosim operatii pe stream-uri fara efecte secundare.", "c": "Folosim sorted() ca sa ne asiguram ca elementele sunt ordonate.", "d": "Efectuam operatii pe variabile globale."}, "answer": ["b"], "topic": "streams", "source": "Subiect 2025", "explanation": "Pentru stream-uri, mai ales paralele, operatiile fara side effects sunt recomandate."}, {"id": "2025-internal-iteration", "type": "single", "text": "Iterarea interna este specifica:", "options": {"a": "Iteratorilor", "b": "Instructiunilor for-each", "c": "Operatiilor pe stream-uri", "d": "Instructiunilor while"}, "answer": ["c"], "topic": "streams", "source": "Subiect 2025", "explanation": "Stream-ul controleaza iterarea intern."}, {"id": "2025-cloning", "type": "single", "text": "Care afirmatie despre clonarea obiectelor in Java este adevarata?", "options": {"a": "Clasa obiectelor care vor fi clonate trebuie sa implementeze interfata functionala Cloneable.", "b": "Object.clone() realizeaza implicit deep copy.", "c": "Daca o clasa nu suprascrie clone(), apelul clone() returneaza un obiect nou identic.", "d": "Copierea atribut cu atribut se numeste shallow copy."}, "answer": ["d"], "topic": "cloning", "source": "Subiect 2025", "explanation": "Object.clone face shallow copy; Cloneable nu este interfata functionala."}, {"id": "R-IoC", "type": "multiple", "text": "Care dintre urmatoarele afirmatii despre Inversion of Control sunt corecte?", "options": {"a": "IoC permite programatorului sa controleze fluxul aplicatiei.", "b": "Containerele IoC sunt folosite pentru a gestiona dependentele.", "c": "In dependency injection, o dependenta este injectata intr-o clasa A din exteriorul lui A folosind constructorul lui A sau o metoda get.", "d": "In tehnica callback, functiile callback sunt functii transmise ca argument unei alte functii."}, "answer": ["b", "d"], "topic": "IoC", "source": "Set random / chat", "explanation": "IoC inverseaza controlul; varianta c cu get nu este corecta pentru injectare."}, {"id": "R-paymentgateway", "type": "multiple", "text": "O aplicatie e-commerce are OrderProcessing care depinde direct de PaymentGateway. Daca schimbi furnizorul de plata, trebuie modificat OrderProcessing. Care afirmatii sunt corecte?", "options": {"a": "Aplicatia incalca principiul Open Closed.", "b": "Designul poate duce la flexibilitate redusa si cuplare crescuta.", "c": "Aplicatia incalca principiul Dependency Inversion.", "d": "Designul poate duce la dificultati in adaugarea sau schimbarea furnizorilor de plata."}, "answer": ["a", "b", "c", "d"], "topic": "SOLID", "source": "Set random / chat", "explanation": "Dependenta directa de o clasa concreta incalca OCP si DIP."}, {"id": "R-nonfunctional", "type": "multiple", "text": "O echipa proiecteaza o aplicatie de mobile banking. Care afirmatii reprezinta cerinte non-functionale?", "options": {"a": "Datele utilizatorilor ar trebui trimise criptat prin retea.", "b": "Utilizatorul ar trebui sa poata personaliza layout-ul dashboard-ului.", "c": "Aplicatia ar trebui sa incarce dashboard-ul in maximum 2 secunde.", "d": "Aplicatia ar trebui sa permita utilizatorilor sa vada soldurile conturilor."}, "answer": ["a", "c"], "topic": "cerinte", "source": "Set random / chat", "explanation": "Securitatea si performanta sunt non-functionale; functionalitatile sunt cerinte functionale."}, {"id": "R-best-practice-immutable", "type": "single", "text": "Care afirmatie defineste o buna practica in proiectarea aplicatiilor?", "options": {"a": "Minimizarea relatiilor dintre clase si mentinerea coeziunii scazute.", "b": "Definirea claselor cu responsabilitati multiple.", "c": "Definirea unei interfete generale in locul multor interfete specifice clientilor.", "d": "Folosirea obiectelor cu starea setata la initializare si care nu se schimba ulterior."}, "answer": ["d"], "topic": "design", "source": "Set random / chat", "explanation": "Obiectele imutabile sunt mai simple si mai sigure."}, {"id": "R-stream-code", "type": "single", "text": "Care afirmatie despre cod este corecta?\n\nList<Integer> numbers = Arrays.asList(1,2,3,4,5,6,7,8,9,10);\nList<Integer> evenNumbers = numbers.stream().filter(n -> n%2 == 0).collect(Collectors.toList());\nfor(Integer num : evenNumbers) { System.out.println(\"Even number: \" + num); }", "options": {"a": "Intregul cod foloseste doar programare declarativa.", "b": "Metoda filter() modifica lista numbers.", "c": "Codul combina iterarea interna si externa a colectiilor.", "d": "Operatia collect este lazy."}, "answer": ["c"], "topic": "streams", "source": "Set random / chat", "explanation": "stream/filter = iterare interna, for-each extern; collect este terminala/eager."}, {"id": "R-operation-lambda", "type": "multiple", "text": "Care afirmatii NU sunt corecte despre atribuirea Java?\n\nOperation operation = (int a, int b) -> Integer.sum(a,b);", "options": {"a": "Operation este o interfata functionala cu o metoda abstracta compatibila cu doi int si return int.", "b": "Cand executia ajunge la atribuire, metoda sum va fi apelata.", "c": "Atribuirea poate fi inlocuita cu Operation operation = Integer::sum(a,b);", "d": "Operation poate contine metode default si statice."}, "answer": ["b", "c"], "topic": "lambda", "source": "Set random / chat", "explanation": "Lambda nu se executa la atribuire; referinta corecta este Integer::sum, fara argumente."}, {"id": "R-reflection-not-correct", "type": "multiple", "text": "Care afirmatii despre Reflection NU sunt corecte?", "options": {"a": "Informatia despre tip este reprezentata la runtime ca un obiect de tip Object care contine informatii despre clasa.", "b": "Reflection poate accesa membri privati fara metode publice de acces.", "c": "Un obiect Class poate fi obtinut folosind metoda statica getClass() a clasei Object.", "d": "Reflection poate fi folosita doar cu clase incarcate la compile time."}, "answer": ["a", "c", "d"], "topic": "reflection", "source": "Set random / chat", "explanation": "getClass() nu este statica; tipul este reprezentat prin obiect Class, nu Object generic."}, {"id": "R-subtyping", "type": "multiple", "text": "Considerati 3 clase (C, C1, C2) si o interfata I. Care afirmatii sunt corecte?", "options": {"a": "Daca C2 extinde C1 si C1 extinde C, atunci C2 este subtip al lui C.", "b": "Daca C2 este subtip al lui C1, atunci List<C1> este subtip al lui List<C2>.", "c": "Daca C implementeaza I si C1 extinde C, atunci C1 este subtip al lui I.", "d": "Daca C2 extinde C1, atunci C2 c2 = new C1(); este corect."}, "answer": ["a", "c"], "topic": "generics / subtipuri", "source": "Set random / chat", "explanation": "Generics sunt invariant; superclasa nu poate fi atribuita la referinta de subclasa."}, {"id": "R-method-reference", "type": "single", "text": "Care afirmatie este corecta despre o referinta la metoda?", "options": {"a": "Este un tip nou in Java.", "b": "Este un pointer catre o functie.", "c": "Apeleaza metoda asociata atunci cand este declarata.", "d": "Poate fi folosita doar acolo unde poate fi folosita o expresie lambda."}, "answer": ["d"], "topic": "method reference", "source": "Set random / chat", "explanation": "Method reference are nevoie de o interfata functionala, ca o lambda."}, {"id": "R-map-immutable-key", "type": "single", "text": "De ce este recomandat ca obiectele-cheie folosite intr-un Java Map, cum ar fi HashMap, sa fie imutabile?", "options": {"a": "Cheile imutabile reduc mereu memoria folosita.", "b": "Daca o cheie mutabila este modificata dupa inserare, poate strica consistenta Map-ului si cautarea.", "c": "Java cere toate cheile imutabile pentru type safety.", "d": "Cheile imutabile sincronizeaza automat Map-ul."}, "answer": ["b"], "topic": "HashMap", "source": "Set random / chat", "explanation": "HashMap foloseste hashCode/equals; daca cheia se modifica, bucket-ul poate deveni gresit."}, {"id": "R-PECS", "type": "single", "text": "Care afirmatie in contextul principiului PECS NU este corecta?", "options": {"a": "PECS ajuta la deciderea folosirii wildcard-urilor marginite.", "b": "Foloseste ? extends T daca doar citesti obiecte de tip T din colectie.", "c": "Este permis: List<? super Integer> ints = new ArrayList<Number>(); Integer n = ints.get(0);", "d": "Nu este permis: List<? extends Number> numbers = Arrays.asList(1,2.5,3L); numbers.add(10);"}, "answer": ["c"], "topic": "generics / PECS", "source": "Set random / chat", "explanation": "Din ? super Integer poti citi sigur doar Object, nu Integer."}, {"id": "R-marker-interface", "type": "single", "text": "O interfata care nu contine nicio metoda se numeste:", "options": {"a": "Interfata abstracta", "b": "Interfata marker", "c": "Interfata inconsistenta", "d": "Interfata coeziva"}, "answer": ["b"], "topic": "interfete", "source": "Set random / chat", "explanation": "Marker interface marcheaza o proprietate, de exemplu Serializable."}, {"id": "2024-design", "type": "multiple", "text": "Care dintre urmatoarele afirmatii despre proiectarea unei aplicatii software sunt adevarate?", "options": {"a": "Ar trebui sa maximizati dependentele intre clase.", "b": "Ar trebui sa minimizati dependentele intre clase si sa maximizati coeziunea.", "c": "Clasele ar trebui sa fie slab cuplate si necoezive.", "d": "Clasele ar trebui sa fie deschise pentru extindere, dar inchise pentru modificare."}, "answer": ["b", "d"], "topic": "design principles", "source": "Examen 2024", "explanation": "Urmarim low coupling, high cohesion si Open/Closed Principle."}, {"id": "2024-polymorphism", "type": "single", "text": "Care afirmatie despre polimorfismul in Java este adevarata?", "options": {"a": "Polimorfismul permite unei metode sa efectueze actiuni diferite in functie de obiectul asupra caruia actioneaza.", "b": "Java suporta doar polimorfism static.", "c": "Este limitat la supraincarcarea metodelor.", "d": "In polimorfismul dinamic decizia se ia in timpul compilarii."}, "answer": ["a"], "topic": "polimorfism", "source": "Examen 2024", "explanation": "Polimorfismul dinamic alege implementarea in functie de obiectul real."}, {"id": "2024-inheritance", "type": "multiple", "text": "Care afirmatii despre mostenirea in Java sunt adevarate?", "options": {"a": "Mostenirea permite suprascrierea metodelor, unde subclasa furnizeaza o implementare specifica a unei metode deja definite in superclasa.", "b": "Mostenirea permite reutilizarea codului.", "c": "O clasa poate mosteni mai multe clase, dar o interfata poate mosteni o singura interfata.", "d": "O subclasa mosteneste toti membrii care nu sunt private ai superclasei."}, "answer": ["a", "b", "d"], "topic": "mostenire", "source": "Examen 2024", "explanation": "Clasele Java nu au mostenire multipla de clase; interfetele pot extinde mai multe interfete."}, {"id": "2024-abstract-class", "type": "single", "text": "O clasa abstracta este folosita pentru a descrie abilitatile suplimentare ale unei clase.", "options": {"a": "Adevarat", "b": "Fals"}, "answer": ["b"], "topic": "clase abstracte", "source": "Examen 2024", "explanation": "Abilitatile suplimentare sunt mai degraba prin interfete; clasa abstracta ofera baza comuna."}, {"id": "2024-serialization", "type": "multiple", "text": "Care afirmatii despre serializarea in Java sunt adevarate?", "options": {"a": "Serializarea obiectelor poate fi folosita pentru persistenta simpla.", "b": "Un obiect a carui clasa implementeaza Cloneable si Serializable poate fi serializat.", "c": "Atributele transient sunt serializate.", "d": "Programele din orice limbaj pot deserializa obiectele serializate in Java."}, "answer": ["a", "b"], "topic": "serializare", "source": "Examen 2024", "explanation": "transient exclude campul din serializare; formatul Java nu este automat universal."}, {"id": "2024-volatile", "type": "multiple", "text": "Care afirmatii sunt adevarate despre variabilele volatile in Java?", "options": {"a": "O variabila volatila este intotdeauna scrisa in memoria principala.", "b": "Daca doua fire citesc si scriu simultan o variabila volatila partajata nu mai este necesara sincronizare.", "c": "Daca doar un fir modifica variabila, iar celelalte o citesc, volatile poate fi thread-safe.", "d": "O variabila volatila este intotdeauna citita din memoria principala."}, "answer": ["a", "c", "d"], "topic": "volatile", "source": "Examen 2024", "explanation": "volatile nu face operatiile compuse atomice."}, {"id": "2024-lock", "type": "single", "text": "Care solutie este folosita pentru a obtine lacatul asociat cu obiectul in Java?", "options": {"a": "Object.wait()", "b": "Thread.sleep()", "c": "Object.notify()", "d": "Utilizarea cuvantului cheie synchronized in definitia unei metode."}, "answer": ["d"], "topic": "thread-uri", "source": "Examen 2024", "explanation": "synchronized intra pe monitorul obiectului/clasei."}, {"id": "2024-reflection-offers", "type": "multiple", "text": "Tehnica Reflection in Java ofera:", "options": {"a": "Crearea unei noi instante a unei clase in timpul executiei.", "b": "Invocarea dinamica a metodelor in timpul executiei.", "c": "Accesarea metadatelor clasei in timpul executiei.", "d": "Accesarea atributelor private ale unui obiect in timpul executiei."}, "answer": ["a", "b", "c", "d"], "topic": "reflection", "source": "Examen 2024", "explanation": "Reflection permite inspectare si operatii dinamice, inclusiv acces cu setAccessible unde e permis."}, {"id": "2024-demeter", "type": "multiple", "text": "In contextul Legii lui Demeter si al efectelor secundare ale metodelor, alegeti recomandarile corecte:", "options": {"a": "O metoda ar trebui sa utilizeze doar variabile instanta ale clasei sale, parametri, obiecte construite de metoda, metode ale clasei sale si atribute statice globale.", "b": "O metoda ar trebui sa efectueze operatii pe obiectele care sunt parte ale altor obiecte.", "c": "O metoda nu ar trebui sa efectueze operatii pe obiecte care sunt parte din alte obiecte.", "d": "Este recomandabil apelul unui getter pentru a modifica un atribut de tip referinta."}, "answer": ["a", "c"], "topic": "Law of Demeter", "source": "Examen 2024", "explanation": "LoD evita lanturile de obiecte si accesul la detalii interne ale altor obiecte."}, {"id": "2024-date-immutability", "type": "single", "text": "Cum poti asigura imutabilitatea intr-o clasa care are un atribut private si final de tip Date?", "options": {"a": "Nu este necesara modificare, Date este imutabil.", "b": "Se elimina atributele mutabile.", "c": "Metodele de get vor returna o clona a acestor atribute.", "d": "Metodele de get vor returna atributele sincronizate."}, "answer": ["c"], "topic": "imutabilitate", "source": "Examen 2024", "explanation": "Date este mutabil; getterul nu trebuie sa expuna referinta interna."}, {"id": "2024-lambda-param-types", "type": "single", "text": "Care afirmatie despre tipurile parametrilor expresiilor lambda implicite este adevarata?", "options": {"a": "Sunt determinate pe baza semnaturii metodei default din interfata functionala.", "b": "Nu sunt determinate pe baza niciunei metode din interfata functionala.", "c": "Sunt determinate pe baza semnaturii metodei abstracte din interfata functionala.", "d": "Sunt determinate pe baza semnaturii metodei statice din interfata functionala."}, "answer": ["c"], "topic": "lambda", "source": "Examen 2024", "explanation": "Tipurile sunt inferate din metoda abstracta unica a interfetei functionale."}, {"id": "2024-list-subtype", "type": "multiple", "text": "Care afirmatii sunt corecte?", "options": {"a": "List<Person> este un subtip al lui List<Object>.", "b": "List<Person> nu este un subtip al lui List<Object>.", "c": "List<Person> este un subtip al lui List<?>.", "d": "List<Person> nu este un subtip al lui List<?>."}, "answer": ["b", "c"], "topic": "generics", "source": "Examen 2024", "explanation": "Generics sunt invariant, dar List<?> accepta orice List<T>."}, {"id": "2023-moscow-should", "type": "single", "text": "„Should have” in schema MoSCoW se refera la cerinte:", "options": {"a": "Care ar trebui introduse in solutia finala daca este posibil.", "b": "Care ar trebui obligatoriu introduse in solutia finala.", "c": "Care nu ar trebui introduse in solutia finala.", "d": "Care ar fi de dorit, dar nu sunt neaparat obligatorii."}, "answer": ["a"], "topic": "cerinte / MoSCoW", "source": "Examen 2023", "explanation": "Should have = importante, dar nu absolut obligatorii ca Must."}, {"id": "2023-uml-association", "type": "multiple", "text": "Care afirmatii despre relatia de asociere in diagramele de clasa UML sunt adevarate?", "options": {"a": "Asocierea este o relatie binara intre doua clase.", "b": "Asocierea poate fi reprezentata prin intermediul unei clase de asociere.", "c": "Asocierea este o relatie in care un obiect dintr-o clasa interactioneaza cu un obiect dintr-o alta clasa.", "d": "Asocierea poate fi reflexiva."}, "answer": ["a", "b", "c", "d"], "topic": "UML", "source": "Examen 2023", "explanation": "Asocierea poate fi binara, reflexiva si poate avea association class."}, {"id": "2023-consumer", "type": "single", "text": "Interfata Consumer este o:", "options": {"a": "Interfata functionala", "b": "Interfata marker", "c": "Interfata nested", "d": "Interfata de tip adnotare"}, "answer": ["a"], "topic": "functional interfaces", "source": "Examen 2023", "explanation": "Consumer<T> are metoda functionala accept(T)."}, {"id": "2023-race-condition", "type": "multiple", "text": "In contextul firelor de executie, race condition apare atunci cand:", "options": {"a": "Mai multe fire acceseaza date partajate in acelasi timp, rezultand comportament neasteptat sau rezultate incorecte.", "b": "Un fir nu poate accesa memoria deoarece alte fire o ocupa continuu generand inconsistente.", "c": "Un fir nu poate accesa o resursa deoarece alte fire o ocupa continuu.", "d": "Exista o dependenta de ordine intre actiunile mai multor fire, iar ordinea nu este garantata."}, "answer": ["a", "d"], "topic": "thread-uri", "source": "Examen 2023", "explanation": "Race condition apare cand rezultatul depinde de interleaving/ordine negarantata."}, {"id": "2023-encapsulation", "type": "multiple", "text": "Incapsularea poate contribui la crearea de obiecte:", "options": {"a": "Thread-safe", "b": "Reutilizabile", "c": "Wrapper", "d": "Imutabile"}, "answer": ["a", "b", "d"], "topic": "incapsulare", "source": "Examen 2023", "explanation": "Incapsularea ascunde starea si permite controlul accesului; wrapper nu este efect principal aici."}, {"id": "2023-hashmap-key", "type": "single", "text": "Pentru a utiliza o clasa ca si cheie intr-un HashMap in Java, se recomanda ca:", "options": {"a": "Clasa sa fie serializabila.", "b": "Clasa sa suprascrie metodele hashCode si equals.", "c": "Clasa sa suprascrie doar hashCode.", "d": "Clasa sa suprascrie clone."}, "answer": ["b"], "topic": "HashMap", "source": "Examen 2023", "explanation": "HashMap se bazeaza pe hashCode si equals."}, {"id": "2023-sealed", "type": "single", "text": "Clasele sealed sunt:", "options": {"a": "Clase care restrictioneaza numarul de sub-clase permise.", "b": "Clase care nu pot fi extinse.", "c": "Clase imutabile.", "d": "Clase anonime."}, "answer": ["a"], "topic": "sealed classes", "source": "Examen 2023", "explanation": "sealed permite doar anumite subclase."}, {"id": "2023-SRP", "type": "single", "text": "In cazul principiului Single Responsibility este obligatoriu ca o clasa sa:", "options": {"a": "Implementeze o singura interfata.", "b": "Extinda o singura clasa.", "c": "Aiba o singura subclasa.", "d": "Aiba un singur motiv pentru a fi modificata."}, "answer": ["d"], "topic": "SOLID", "source": "Examen 2023", "explanation": "SRP = one reason to change."}, {"id": "2023-functional-advantages", "type": "multiple", "text": "Care afirmatii reprezinta avantaje ale programarii functionale?", "options": {"a": "Foloseste functii cu efecte secundare derivate.", "b": "Se bazeaza pe stilul de programare declarativ.", "c": "Se bazeaza pe stilul imperativ.", "d": "Promoveaza imutabilitatea datelor."}, "answer": ["b", "d"], "topic": "functional", "source": "Examen 2023", "explanation": "Programarea functionala prefera declarativ, functii pure si imutabilitate."}, {"id": "2023-wait-sleep", "type": "multiple", "text": "Care sunt diferentele dintre metodele wait si sleep in contextul firelor de executie?", "options": {"a": "Metoda wait este definita in clasa Object.", "b": "Metoda sleep este definita in clasa Object.", "c": "Metoda wait nu elibereaza lacatul in timpul sincronizarii.", "d": "Metoda sleep nu elibereaza lacatul in timpul sincronizarii."}, "answer": ["a", "d"], "topic": "thread-uri", "source": "Examen 2023", "explanation": "wait este in Object si elibereaza lock-ul; sleep este in Thread si nu elibereaza lock-ul."}, {"id": "EX-wrapper-boxing", "type": "single", "text": "Care afirmatie despre wrapper classes in Java este adevarata?", "options": {"a": "Wrapper classes transforma tipurile primitive in obiecte.", "b": "Wrapper classes sunt mereu mutabile.", "c": "int este wrapper pentru Integer.", "d": "Autoboxing inseamna conversie de la obiect wrapper la primitiv."}, "answer": ["a"], "topic": "wrappers", "source": "Plan invatare examen Java", "explanation": "Integer, Double etc. sunt obiecte care impacheteaza primitive."}, {"id": "EX-unboxing", "type": "single", "text": "Ce inseamna unboxing in Java?", "options": {"a": "Conversia automata de la primitiv la wrapper.", "b": "Conversia automata de la wrapper la primitiv.", "c": "Stergerea unui obiect din memorie.", "d": "Transformarea unui String in char[]."}, "answer": ["b"], "topic": "wrappers", "source": "Plan invatare examen Java", "explanation": "Integer -> int este unboxing; int -> Integer este boxing/autoboxing."}, {"id": "EX-string-immutable", "type": "single", "text": "Care afirmatie despre String in Java este corecta?", "options": {"a": "String este mutabil.", "b": "String este imutabil.", "c": "String nu poate fi comparat cu equals.", "d": "String este tip primitiv."}, "answer": ["b"], "topic": "String", "source": "Plan invatare examen Java", "explanation": "Operatiile pe String creeaza de obicei obiecte noi."}, {"id": "EX-static-context", "type": "single", "text": "Ce se intampla daca in metoda static main se acceseaza direct o variabila de instanta x, fara obiect?", "options": {"a": "Codul compileaza si afiseaza valoarea implicita.", "b": "Codul nu compileaza: non-static variable x cannot be referenced from a static context.", "c": "Se creeaza automat un obiect.", "d": "x devine automat static."}, "answer": ["b"], "topic": "static", "source": "Plan invatare examen Java", "explanation": "Contextul static nu are this/obiect curent."}, {"id": "EX-interface-field", "type": "single", "text": "Intr-o interfata Java, campurile declarate sunt implicit:", "options": {"a": "private static", "b": "public static final", "c": "protected final", "d": "public si mutabile"}, "answer": ["b"], "topic": "interfete", "source": "Plan invatare examen Java", "explanation": "Campurile din interfete sunt constante public static final."}, {"id": "EX-overload-override", "type": "single", "text": "Care este diferenta corecta dintre overloading si overriding?", "options": {"a": "Overloading = aceeasi semnatura in subclasa; overriding = metode cu parametri diferiti.", "b": "Overloading = acelasi nume, parametri diferiti; overriding = subclasa redefineste metoda mostenita cu semnatura compatibila.", "c": "Ambele se decid numai la runtime.", "d": "Overriding este posibil doar pentru metode static."}, "answer": ["b"], "topic": "POO", "source": "Plan invatare examen Java", "explanation": "Overloading se alege la compilare; overriding permite polimorfism dinamic."}, {"id": "EX-widening", "type": "multiple", "text": "Care conversii widening primitive sunt corecte in Java?", "options": {"a": "byte -> short -> int -> long -> float -> double", "b": "char -> int -> long -> float -> double", "c": "double -> float -> long -> int", "d": "int -> byte fara cast"}, "answer": ["a", "b"], "topic": "primitive / casting", "source": "Plan invatare examen Java", "explanation": "Conversiile de ingustare au nevoie de cast explicit."}, {"id": "EX-array-length", "type": "single", "text": "Pentru un array Java arr, cum afli lungimea lui?", "options": {"a": "arr.length", "b": "arr.length()", "c": "arr.size()", "d": "length(arr)"}, "answer": ["a"], "topic": "array", "source": "Plan invatare examen Java", "explanation": "Array-urile au camp length, nu metoda."}, {"id": "EX-constructor", "type": "single", "text": "Rolul principal al unui constructor in Java este:", "options": {"a": "Sa initializeze un obiect nou.", "b": "Sa distruga obiectul.", "c": "Sa fie apelat manual ca metoda normala oricand.", "d": "Sa returneze explicit un obiect prin return."}, "answer": ["a"], "topic": "constructori", "source": "Plan invatare examen Java", "explanation": "Constructorul se apeleaza la new si nu are tip de returnare."}, {"id": "EX-instanceof", "type": "single", "text": "La ce este folosit instanceof in Java?", "options": {"a": "Verifica daca o referinta este compatibila cu un tip.", "b": "Compara continutul a doua obiecte.", "c": "Creeaza o instanta noua.", "d": "Converteste automat String in int."}, "answer": ["a"], "topic": "casting", "source": "Plan invatare examen Java", "explanation": "instanceof este util inainte de downcasting."}, {"id": "EX-arraylist-linkedlist", "type": "single", "text": "Care afirmatie generala este corecta despre ArrayList si LinkedList?", "options": {"a": "ArrayList foloseste array intern, LinkedList foloseste noduri legate.", "b": "Ambele sunt tipuri primitive.", "c": "LinkedList nu poate contine obiecte.", "d": "ArrayList nu permite acces dupa index."}, "answer": ["a"], "topic": "colectii", "source": "Plan invatare examen Java", "explanation": "ArrayList ofera acces rapid dupa index; LinkedList foloseste legaturi intre noduri."}];
+const CONFIG = { count: 25, minutes: 35, pointPerQuestion: 0.36, officePoint: 1 };
+const LS_KEY = 'tpJavaQuizHistoryV1';
+let state = null;
+let timerHandle = null;
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function lettersText(arr) { return [...arr].sort().join(', '); }
+function sameSet(a,b) {
+  const A=[...a].sort().join('|'), B=[...b].sort().join('|');
+  return A===B;
+}
+function escapeHtml(s) { return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+  document.getElementById('page-' + name).classList.remove('hidden');
+  if (name === 'bank') renderBank(false);
+  if (name === 'history') renderHistory();
+}
+function history() {
+  try { return JSON.parse(localStorage.getItem(LS_KEY) || '[]'); } catch(e) { return []; }
+}
+function saveHistory(h) { localStorage.setItem(LS_KEY, JSON.stringify(h)); }
+function startQuiz() {
+  if (state && !state.finished && state.answers.length > 0) {
+    if (!confirm('Ai deja un test pornit. Il inlocuiesti cu unul nou?')) return;
+  }
+  const picked = shuffle(QUESTIONS).slice(0, CONFIG.count);
+  state = {
+    id: 'test-' + Date.now(),
+    startedAt: new Date().toISOString(),
+    questions: picked,
+    index: 0,
+    answers: [],
+    submittedCurrent: false,
+    finished: false,
+    endAt: Date.now() + CONFIG.minutes * 60 * 1000
+  };
+  document.getElementById('resultBox').classList.add('hidden');
+  document.getElementById('quizEmpty').classList.add('hidden');
+  document.getElementById('quizBox').classList.remove('hidden');
+  showPage('quiz');
+  renderQuestion();
+  startTimer();
+}
+function startTimer() {
+  if (timerHandle) clearInterval(timerHandle);
+  timerHandle = setInterval(() => {
+    if (!state || state.finished) return;
+    const remaining = Math.max(0, state.endAt - Date.now());
+    renderTimer(remaining);
+    if (remaining <= 0) finishQuiz(false);
+  }, 300);
+}
+function renderTimer(ms) {
+  const sec = Math.ceil(ms / 1000);
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  const el = document.getElementById('timer');
+  el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  el.classList.toggle('warn', sec <= 300 && sec > 60);
+  el.classList.toggle('danger', sec <= 60);
+}
+function currentQuestion() { return state.questions[state.index]; }
+function renderQuestion() {
+  if (!state) return;
+  const q = currentQuestion();
+  state.submittedCurrent = !!state.answers.find(a => a.questionId === q.id);
+  document.getElementById('qTypeBadge').textContent = q.type === 'multiple' ? 'Raspuns multiplu' : 'Raspuns unic';
+  document.getElementById('topicBadge').textContent = q.topic;
+  document.getElementById('sourceBadge').textContent = q.source;
+  document.getElementById('questionText').textContent = q.text;
+  document.getElementById('progressText').textContent = `Intrebarea ${state.index + 1}/${state.questions.length}`;
+  document.getElementById('progressBar').style.width = `${(state.index) / state.questions.length * 100}%`;
+  document.getElementById('liveGrade').textContent = computeGrade().toFixed(2);
+  const previous = state.answers.find(a => a.questionId === q.id);
+  const selected = previous ? previous.selected : [];
+  const inputType = q.type === 'multiple' ? 'checkbox' : 'radio';
+  const optionsBox = document.getElementById('optionsBox');
+  optionsBox.innerHTML = '';
+  for (const [letter, text] of Object.entries(q.options)) {
+    const label = document.createElement('label');
+    label.className = 'option';
+    if (previous) {
+      if (q.answer.includes(letter)) label.classList.add('correct');
+      if (selected.includes(letter) && !q.answer.includes(letter)) label.classList.add('wrong');
+    }
+    label.innerHTML = `<input type="${inputType}" name="answer" value="${letter}" ${selected.includes(letter)?'checked':''} ${previous?'disabled':''}> <div><b>${letter}.</b> ${escapeHtml(text)}</div>`;
+    optionsBox.appendChild(label);
+  }
+  const fb = document.getElementById('feedback');
+  if (previous) showFeedback(previous); else { fb.className='feedback'; fb.style.display='none'; fb.innerHTML=''; }
+  document.getElementById('submitBtn').disabled = !!previous;
+  document.getElementById('nextBtn').disabled = !previous;
+  document.getElementById('nextBtn').textContent = state.index === state.questions.length - 1 ? 'Vezi rezultatul' : 'Urmatoarea';
+}
+function getSelected() {
+  return [...document.querySelectorAll('input[name="answer"]:checked')].map(x => x.value).sort();
+}
+function submitAnswer() {
+  if (!state || state.finished) return;
+  const q = currentQuestion();
+  const selected = getSelected();
+  if (selected.length === 0) { alert('Alege cel putin un raspuns.'); return; }
+  const isCorrect = sameSet(selected, q.answer);
+  const record = { questionId:q.id, selected, correct:[...q.answer].sort(), isCorrect, topic:q.topic, source:q.source, text:q.text };
+  state.answers.push(record);
+  showFeedback(record);
+  renderQuestion();
+}
+function showFeedback(record) {
+  const q = QUESTIONS.find(x => x.id === record.questionId) || currentQuestion();
+  const fb = document.getElementById('feedback');
+  fb.style.display='block';
+  fb.className = 'feedback ' + (record.isCorrect ? 'ok' : 'bad');
+  fb.innerHTML = `<b>${record.isCorrect ? 'Corect!' : 'Gresit.'}</b><br>
+    Raspuns corect: <b>${lettersText(record.correct)}</b><br>
+    Raspunsul tau: <b>${record.selected.length ? lettersText(record.selected) : '-'}</b>
+    ${q.explanation ? '<hr><span class="small">' + escapeHtml(q.explanation) + '</span>' : ''}`;
+}
+function nextQuestion() {
+  if (!state) return;
+  if (state.index < state.questions.length - 1) {
+    state.index++;
+    renderQuestion();
+  } else { finishQuiz(true); }
+}
+function computeGrade() {
+  if (!state) return CONFIG.officePoint;
+  const correct = state.answers.filter(a => a.isCorrect).length;
+  return Math.min(10, CONFIG.officePoint + correct * CONFIG.pointPerQuestion);
+}
+function finishQuiz(manual) {
+  if (!state || state.finished) return;
+  state.finished = true;
+  if (timerHandle) clearInterval(timerHandle);
+  const correct = state.answers.filter(a => a.isCorrect).length;
+  const missing = state.questions.filter(q => !state.answers.some(a => a.questionId === q.id));
+  const grade = Math.min(10, CONFIG.officePoint + correct * CONFIG.pointPerQuestion);
+  const result = {
+    id: state.id,
+    date: new Date().toISOString(),
+    startedAt: state.startedAt,
+    manualFinish: manual,
+    totalQuestions: state.questions.length,
+    answered: state.answers.length,
+    correct,
+    wrong: state.answers.length - correct,
+    unanswered: missing.length,
+    pointsFromQuestions: +(correct * CONFIG.pointPerQuestion).toFixed(2),
+    officePoint: CONFIG.officePoint,
+    grade: +grade.toFixed(2),
+    answers: state.answers,
+    unansweredQuestions: missing.map(q => ({id:q.id, topic:q.topic, source:q.source, text:q.text, correct:q.answer}))
+  };
+  const h = history(); h.unshift(result); saveHistory(h.slice(0,100));
+  renderResult(result);
+  document.getElementById('quizBox').classList.add('hidden');
+  document.getElementById('resultBox').classList.remove('hidden');
+  renderHistory();
+}
+function renderResult(r) {
+  const incorrect = r.answers.filter(a => !a.isCorrect);
+  document.getElementById('resultBox').innerHTML = `
+    <h2>Rezultat final</h2>
+    <div class="grid">
+      <div class="stat"><div class="big">${r.grade.toFixed(2)}</div><div>nota finala</div></div>
+      <div class="stat"><div class="big">${r.correct}/${r.totalQuestions}</div><div>raspunsuri corecte</div></div>
+      <div class="stat"><div class="big">${r.pointsFromQuestions.toFixed(2)} + 1</div><div>puncte</div></div>
+      <div class="stat"><div class="big">${r.unanswered}</div><div>necompletate</div></div>
+    </div>
+    <h3>Greseli</h3>
+    ${incorrect.length ? incorrect.map(a => `<div class="card"><b>${escapeHtml(a.topic)} · ${escapeHtml(a.source)}</b><br>${escapeHtml(a.text)}<br><span class="muted">Tau: ${lettersText(a.selected)} | Corect: ${lettersText(a.correct)}</span></div>`).join('') : '<p>Nu ai gresit nicio intrebare raspunsa.</p>'}
+    <div class="footer-actions"><button class="primary" onclick="startQuiz()">Incepe alt test</button><button onclick="showPage('history')">Vezi analiza</button></div>
+  `;
+}
+function renderBank(showAnswers=false) {
+  const el = document.getElementById('bankList');
+  el.innerHTML = QUESTIONS.map((q,i) => `
+    <div class="card">
+      <div><span class="badge">#${i+1}</span><span class="badge">${q.type==='multiple'?'multiplu':'unic'}</span><span class="badge">${escapeHtml(q.topic)}</span><span class="badge">${escapeHtml(q.source)}</span></div>
+      <p class="question-title">${escapeHtml(q.text)}</p>
+      <ul>${Object.entries(q.options).map(([k,v]) => `<li><b>${k}.</b> ${escapeHtml(v)}</li>`).join('')}</ul>
+      ${showAnswers ? `<p><b>Raspuns corect:</b> ${lettersText(q.answer)}<br><span class="muted small">${escapeHtml(q.explanation||'')}</span></p>` : ''}
+    </div>`).join('');
+}
+function aggregateMistakes(h) {
+  const topics = {};
+  const ids = {};
+  for (const test of h) {
+    for (const a of test.answers || []) {
+      if (!a.isCorrect) {
+        topics[a.topic] = (topics[a.topic] || 0) + 1;
+        ids[a.questionId] = (ids[a.questionId] || 0) + 1;
+      }
+    }
+    for (const u of test.unansweredQuestions || []) {
+      topics[u.topic] = (topics[u.topic] || 0) + 1;
+      ids[u.id] = (ids[u.id] || 0) + 1;
+    }
+  }
+  return {topics, ids};
+}
+function renderHistory() {
+  const h = history();
+  const el = document.getElementById('historyContent');
+  if (!h.length) { el.innerHTML = '<p>Nu exista teste salvate inca.</p>'; return; }
+  const ag = aggregateMistakes(h);
+  const topicRows = Object.entries(ag.topics).sort((a,b)=>b[1]-a[1]).map(([t,n])=>`<tr><td>${escapeHtml(t)}</td><td>${n}</td></tr>`).join('');
+  const histRows = h.map(r => `<tr><td>${new Date(r.date).toLocaleString('ro-RO')}</td><td><b>${r.grade.toFixed(2)}</b></td><td>${r.correct}/${r.totalQuestions}</td><td>${r.wrong}</td><td>${r.unanswered}</td></tr>`).join('');
+  el.innerHTML = `<h3>Zone cu cele mai multe greseli</h3><table><thead><tr><th>Topic</th><th>Greseli + necompletate</th></tr></thead><tbody>${topicRows}</tbody></table>
+  <h3>Teste salvate</h3><table><thead><tr><th>Data</th><th>Nota</th><th>Corecte</th><th>Gresite</th><th>Necompletate</th></tr></thead><tbody>${histRows}</tbody></table>
+  <h3>Export pentru ChatGPT</h3><textarea readonly>${escapeHtml(makeAnalysisText())}</textarea>`;
+}
+function makeAnalysisText() {
+  const h = history();
+  const ag = aggregateMistakes(h);
+  return JSON.stringify({
+    mesaj: 'Analizeaza rezultatele mele la TP Java. Spune-mi topicurile unde gresesc cel mai mult si fa-mi un plan scurt de recapitulare.',
+    generatedAt: new Date().toISOString(),
+    totalTests: h.length,
+    mistakeTopics: Object.entries(ag.topics).sort((a,b)=>b[1]-a[1]),
+    tests: h
+  }, null, 2);
+}
+async function copyAnalysis() {
+  const text = makeAnalysisText();
+  try { await navigator.clipboard.writeText(text); alert('Analiza a fost copiata. O poti lipi in ChatGPT.'); }
+  catch(e) { prompt('Copiaza manual:', text); }
+}
+function downloadHistory() {
+  const blob = new Blob([makeAnalysisText()], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'tp-java-quiz-istoric.json'; a.click();
+  URL.revokeObjectURL(url);
+}
+function clearHistory() {
+  if (confirm('Stergi toate testele salvate?')) { localStorage.removeItem(LS_KEY); renderHistory(); }
+}
+
+document.getElementById('bankCount').textContent = QUESTIONS.length;
+renderBank(false);
+showPage('home');
+</script>
+</body>
+</html>
