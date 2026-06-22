@@ -231,11 +231,7 @@ const QUESTIONS = [
   {
     "id": "2025-downcasting",
     "type": "multiple",
-    "text": "Care dintre urmatoarele afirmatii despre downcasting in Java sunt adevarate?"
-
-B obj1 = new B();
-A obj2 = obj1;
-B obj3 = (B) obj2;",
+    "text": "Care dintre urmatoarele afirmatii despre downcasting in Java sunt adevarate?\n\nB obj1 = new B();\nA obj2 = obj1;\nB obj3 = (B) obj2;",
     "options": {
       "a": "Downcasting necesita un cast explicit si poate duce la exceptii in timpul executiei.",
       "b": "Daca programul compileaza fara erori, downcasting este intotdeauna sigur la runtime.",
@@ -271,14 +267,7 @@ B obj3 = (B) obj2;",
   {
     "id": "2025-annotation-info",
     "type": "multiple",
-    "text": "Avand interfata de adnotare:
-
-public @interface Info {
-    String author();
-    int version();
-}
-
-Care afirmatii sunt corecte?",
+    "text": "Avand interfata de adnotare:\n\npublic @interface Info {\n    String author();\n    int version();\n}\n\nCare afirmatii sunt corecte?",
     "options": {
       "a": "Utilizarea @Info(author = \"Alex\", version = 1) la nivelul unui atribut este corecta.",
       "b": "Daca o clasa implementeaza interfata Info, aceasta trebuie sa implementeze metodele author() si version().",
@@ -313,12 +302,7 @@ Care afirmatii sunt corecte?",
   {
     "id": "2025-volatile-atomic",
     "type": "single",
-    "text": "Avand codul:
-
-volatile int counter1 = 0;
-AtomicInteger counter2 = new AtomicInteger(0);
-
-Care afirmatie NU este adevarata?",
+    "text": "Avand codul:\n\nvolatile int counter1 = 0;\nAtomicInteger counter2 = new AtomicInteger(0);\n\nCare afirmatie NU este adevarata?",
     "options": {
       "a": "counter1++ este thread-safe.",
       "b": "counter2.getAndIncrement() este thread-safe.",
@@ -389,12 +373,7 @@ Care afirmatie NU este adevarata?",
   {
     "id": "2025-reflection-car",
     "type": "single",
-    "text": "Care afirmatie despre cod este adevarata?
-
-Car car = new Car(\"Toyota\");
-Class classObject = car.getClass();
-Method method = classObject.getMethod(\"startEngine\");
-method.invoke(car);",
+    "text": "Care afirmatie despre cod este adevarata?\n\nCar car = new Car(\"Toyota\");\nClass classObject = car.getClass();\nMethod method = classObject.getMethod(\"startEngine\");\nmethod.invoke(car);",
     "options": {
       "a": "classObject contine atributele obiectului Car, de exemplu anul masinii, modelul masinii etc.",
       "b": "Class classObject = car.forName(\"Car\"); este o modalitate corecta in acest context.",
@@ -411,13 +390,7 @@ method.invoke(car);",
   {
     "id": "2025-immutable-list",
     "type": "multiple",
-    "text": "Care afirmatii despre codul de mai jos sunt incorecte?
-
-public final class A {
-    private final List<String> list;
-    public A(List<String> list) { this.list = list; }
-    public List<String> getList() { return this.list; }
-}",
+    "text": "Care afirmatii despre codul de mai jos sunt incorecte?\n\npublic final class A {\n    private final List<String> list;\n    public A(List<String> list) { this.list = list; }\n    public List<String> getList() { return this.list; }\n}",
     "options": {
       "a": "Clasa A este imutabila.",
       "b": "Eliminarea setterului si final pe list sunt suficiente pentru imutabilitate completa.",
@@ -546,11 +519,7 @@ public final class A {
   {
     "id": "2025-serializable-lambda",
     "type": "single",
-    "text": "Considerand atribuirea:
-
-Serializable serializableVariable = (Serializable & Adder) (x, y) -> x + y;
-
-Care afirmatie este corecta?",
+    "text": "Considerand atribuirea:\n\nSerializable serializableVariable = (Serializable & Adder) (x, y) -> x + y;\n\nCare afirmatie este corecta?",
     "options": {
       "a": "Expresia lambda (x, y) -> x + y este o expresie polimorfica.",
       "b": "Adder este o clasa cu o singura metoda abstracta.",
@@ -691,11 +660,7 @@ Care afirmatie este corecta?",
   {
     "id": "R-stream-code",
     "type": "single",
-    "text": "Care afirmatie despre cod este corecta?
-
-List<Integer> numbers = Arrays.asList(1,2,3,4,5,6,7,8,9,10);
-List<Integer> evenNumbers = numbers.stream().filter(n -> n%2 == 0).collect(Collectors.toList());
-for(Integer num : evenNumbers) { System.out.println(\"Even number: \" + num); }",
+    "text": "Care afirmatie despre cod este corecta?\n\nList<Integer> numbers = Arrays.asList(1,2,3,4,5,6,7,8,9,10);\nList<Integer> evenNumbers = numbers.stream().filter(n -> n%2 == 0).collect(Collectors.toList());\nfor(Integer num : evenNumbers) { System.out.println(\"Even number: \" + num); }",
     "options": {
       "a": "Intregul cod foloseste doar programare declarativa.",
       "b": "Metoda filter() modifica lista numbers.",
@@ -712,9 +677,7 @@ for(Integer num : evenNumbers) { System.out.println(\"Even number: \" + num); }"
   {
     "id": "R-operation-lambda",
     "type": "multiple",
-    "text": "Care afirmatii NU sunt corecte despre atribuirea Java?
-
-Operation operation = (int a, int b) -> Integer.sum(a,b);",
+    "text": "Care afirmatii NU sunt corecte despre atribuirea Java?\n\nOperation operation = (int a, int b) -> Integer.sum(a,b);",
     "options": {
       "a": "Operation este o interfata functionala cu o metoda abstracta compatibila cu doi int si return int.",
       "b": "Cand executia ajunge la atribuire, metoda sum va fi apelata.",
@@ -1504,9 +1467,7 @@ Operation operation = (int a, int b) -> Integer.sum(a,b);",
   {
     "id": "FINAL-LAMBDA-3",
     "type": "single",
-    "text": "Care este varianta corecta de method reference pentru:
-
-(a, b) -> Integer.sum(a, b)",
+    "text": "Care este varianta corecta de method reference pentru:\n\n(a, b) -> Integer.sum(a, b)",
     "options": {
       "a": "Integer::sum(a,b)",
       "b": "Integer.sum::(a,b)",
@@ -1578,14 +1539,7 @@ Operation operation = (int a, int b) -> Integer.sum(a,b);",
   {
     "id": "FINAL-STREAMS-3",
     "type": "single",
-    "text": "Consideram:
-
-List<Integer> result = numbers.stream()
-    .filter(x -> x % 2 == 0)
-    .map(x -> x * x)
-    .toList();
-
-Ce contine result?",
+    "text": "Consideram:\n\nList<Integer> result = numbers.stream()\n    .filter(x -> x % 2 == 0)\n    .map(x -> x * x)\n    .toList();\n\nCe contine result?",
     "options": {
       "a": "toate numerele ridicate la patrat",
       "b": "patratele numerelor pare",
@@ -1742,17 +1696,7 @@ Ce contine result?",
   {
     "id": "FINAL-SOLID-2",
     "type": "single",
-    "text": "Care principiu SOLID este incalcat aici?
-
-class Bird {
-    void fly() { }
-}
-
-class Penguin extends Bird {
-    void fly() {
-        throw new UnsupportedOperationException();
-    }
-}",
+    "text": "Care principiu SOLID este incalcat aici?\n\nclass Bird {\n    void fly() { }\n}\n\nclass Penguin extends Bird {\n    void fly() {\n        throw new UnsupportedOperationException();\n    }\n}",
     "options": {
       "a": "SRP",
       "b": "OCP",
@@ -2026,11 +1970,7 @@ class Penguin extends Bird {
   {
     "id": "FINAL-DEMETER-1",
     "type": "single",
-    "text": "Law of Demeter recomanda sa evitam cod de forma:
-
-a.getB().getC().getD().doSomething();
-
-Pentru ca:",
+    "text": "Law of Demeter recomanda sa evitam cod de forma:\n\na.getB().getC().getD().doSomething();\n\nPentru ca:",
     "options": {
       "a": "obiectul ajunge sa stie prea multe despre structura interna a altor obiecte.",
       "b": "Java nu permite apeluri in lant.",
