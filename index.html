@@ -72,6 +72,7 @@ hr { border:0; border-top:1px solid var(--border); margin:18px 0; }
       <p>Aplicatia alege aleator 25 de intrebari din banca de intrebari. Exista intrebari cu raspuns unic si intrebari cu raspuns multiplu. Dupa ce apesi <b>Trimite raspunsul</b>, vezi imediat raspunsul corect.</p>
       <div class="grid">
         <div class="stat"><div class="big" id="bankCount">0</div><div>intrebari in banca</div></div>
+        <div class="stat"><div class="big" id="unseenCount">0</div><div>intrebari nepuse inca</div></div>
         <div class="stat"><div class="big">35:00</div><div>timp limita</div></div>
         <div class="stat"><div class="big">0.36</div><div>puncte/intrebare</div></div>
         <div class="stat"><div class="big">+1</div><div>punct din oficiu</div></div>
@@ -80,6 +81,7 @@ hr { border:0; border-top:1px solid var(--border); margin:18px 0; }
         <button class="primary" onclick="startQuiz()">Incepe test nou</button>
         <button onclick="showPage('history')">Vezi istoric</button>
         <button onclick="showPage('bank')">Vezi toate intrebarile</button>
+        <button onclick="resetSeenQuestions()">Reseteaza intrebarile puse</button>
       </div>
       <p class="muted small">Datele se salveaza local in browser cu <span class="kbd">localStorage</span>. Nu ai server si nu se trimite nimic online.</p>
     </div>
@@ -3657,6 +3659,7 @@ const QUESTIONS = [
 ];
 const CONFIG = { count: 25, minutes: 35, pointPerQuestion: 0.36, officePoint: 1 };
 const LS_KEY = 'tpJavaQuizHistoryV1';
+const SEEN_KEY = 'tpJavaQuizSeenQuestionIdsV1';
 let state = null;
 let timerHandle = null;
 
@@ -3684,11 +3687,70 @@ function history() {
   try { return JSON.parse(localStorage.getItem(LS_KEY) || '[]'); } catch(e) { return []; }
 }
 function saveHistory(h) { localStorage.setItem(LS_KEY, JSON.stringify(h)); }
+function getStoredSeenQuestionIds() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(SEEN_KEY) || '[]');
+    return Array.isArray(raw) ? raw : [];
+  } catch(e) {
+    return [];
+  }
+}
+function getSeenQuestionIds() {
+  const seen = new Set(getStoredSeenQuestionIds());
+  for (const test of history()) {
+    for (const a of test.answers || []) {
+      if (a.questionId) seen.add(a.questionId);
+    }
+    for (const q of test.unansweredQuestions || []) {
+      if (q.id) seen.add(q.id);
+    }
+  }
+  return seen;
+}
+function saveSeenQuestionIds(seen) {
+  localStorage.setItem(SEEN_KEY, JSON.stringify([...seen]));
+  updateSeenStats();
+}
+function pickQuestionsWithoutRepeats() {
+  let seen = getSeenQuestionIds();
+  let available = QUESTIONS.filter(q => !seen.has(q.id));
+
+  if (available.length < CONFIG.count) {
+    const message = available.length === 0
+      ? 'Ai parcurs toate intrebarile din banca. Resetez lista de intrebari puse ca sa poti incepe un test nou complet.'
+      : `Mai sunt doar ${available.length} intrebari noi, dar testul are ${CONFIG.count}. Resetez lista de intrebari puse ca sa primesti un test complet.`;
+    alert(message);
+    seen = new Set();
+    localStorage.removeItem(SEEN_KEY);
+    available = QUESTIONS.slice();
+  }
+
+  const picked = shuffle(available).slice(0, CONFIG.count);
+  for (const q of picked) seen.add(q.id);
+  saveSeenQuestionIds(seen);
+  return picked;
+}
+function updateSeenStats() {
+  const bankEl = document.getElementById('bankCount');
+  const unseenEl = document.getElementById('unseenCount');
+  if (bankEl) bankEl.textContent = QUESTIONS.length;
+  if (unseenEl) {
+    const seen = getSeenQuestionIds();
+    const unseen = QUESTIONS.filter(q => !seen.has(q.id)).length;
+    unseenEl.textContent = unseen;
+  }
+}
+function resetSeenQuestions() {
+  if (!confirm('Resetezi lista de intrebari deja puse? Istoricul notelor ramane salvat, dar intrebarile pot aparea din nou.')) return;
+  localStorage.removeItem(SEEN_KEY);
+  updateSeenStats();
+  alert('Lista de intrebari puse a fost resetata.');
+}
 function startQuiz() {
   if (state && !state.finished && state.answers.length > 0) {
     if (!confirm('Ai deja un test pornit. Il inlocuiesti cu unul nou?')) return;
   }
-  const picked = shuffle(QUESTIONS).slice(0, CONFIG.count);
+  const picked = pickQuestionsWithoutRepeats();
   state = {
     id: 'test-' + Date.now(),
     startedAt: new Date().toISOString(),
@@ -3899,10 +3961,15 @@ function downloadHistory() {
   URL.revokeObjectURL(url);
 }
 function clearHistory() {
-  if (confirm('Stergi toate testele salvate?')) { localStorage.removeItem(LS_KEY); renderHistory(); }
+  if (confirm('Stergi toate testele salvate?')) {
+    localStorage.removeItem(LS_KEY);
+    localStorage.removeItem(SEEN_KEY);
+    updateSeenStats();
+    renderHistory();
+  }
 }
 
-document.getElementById('bankCount').textContent = QUESTIONS.length;
+updateSeenStats();
 renderBank(false);
 showPage('home');
 </script>
