@@ -40,6 +40,16 @@ main { max-width:1100px; margin:0 auto; padding:22px; }
 .feedback.ok { display:block; border:1px solid var(--ok); background:rgba(34,197,94,.12); }
 .feedback.bad { display:block; border:1px solid var(--bad); background:rgba(239,68,68,.12); }
 pre, textarea { width:100%; background:#020617; color:#d1fae5; border:1px solid var(--border); border-radius:12px; padding:12px; overflow:auto; }
+.rendered-text { white-space: normal; }
+.rendered-text p { margin: 0 0 10px; }
+.rendered-text p:last-child { margin-bottom: 0; }
+.code-block { white-space: pre-wrap; font-family: Consolas, 'Courier New', monospace; background:#020617; color:#d1fae5; border:1px solid var(--border); border-radius:12px; padding:12px; margin:10px 0; overflow:auto; line-height:1.45; }
+.inline-code { font-family: Consolas, 'Courier New', monospace; background:#020617; color:#d1fae5; border:1px solid var(--border); border-radius:6px; padding:1px 5px; }
+.option-body { width:100%; }
+.option-body .code-block { margin:8px 0 0; font-size:13px; }
+.bank-options { margin-top:10px; padding-left:22px; }
+.bank-options li { margin:7px 0; }
+
 textarea { min-height:180px; }
 table { width:100%; border-collapse:collapse; font-size:14px; }
 th, td { border-bottom:1px solid var(--border); padding:10px; text-align:left; vertical-align:top; }
@@ -1890,7 +1900,7 @@ const QUESTIONS = [
     "text": "Care regula este corecta pentru equals() si hashCode()?",
     "options": {
       "a": "Daca equals() este adevarat, hashCode trebuie sa fie egal.",
-      "b": "Daca hashCode este egal, equals() este obligatoriu adevarat.",
+      "b": "Daca hashCode este egal, equals() este obligatoriu true.",
       "c": "HashMap nu foloseste hashCode.",
       "d": "equals() returneaza int."
     },
@@ -3875,7 +3885,7 @@ const QUESTIONS = [
     "options": {
       "a": "classObject contine atributele obiectului de tip Car (de exemplu anul fabricatiei, modelul masinii etc.)",
       "b": "Class classObject = Class.forName(\"Car\"); reprezinta o modalitate prin care se poate obtine o referinta de tip Class in contextul dat",
-      "c": "Exemplul foloseste tehnica reflection pentru a invoca dinamic metoda startEngine definita in Class",
+      "c": "The example uses the reflection technique to dynamically invoke the metoda startEngine defined in Class",
       "d": "metoda.invoke(car) executes the startEngine metoda on the obiect car without having to know the metoda at compilare"
     },
     "answer": [
@@ -3932,7 +3942,7 @@ const QUESTIONS = [
       "a": "Programul respecta principiul Open/Closed",
       "b": "There is tight coupling between the clase in the program",
       "c": "Programul este proiectat conform principiului Liskov Substitution",
-      "d": "Programul respecta principiul Dependency Inversion"
+      "d": "The program respects the Dependency Inversion Principle"
     },
     "answer": [
       "a",
@@ -4631,7 +4641,7 @@ const QUESTIONS = [
     "options": {
       "a": "classObject contine atributele obiectului de tip Car (de exemplu anul fabricatiei, modelul masinii etc.)",
       "b": "Class classObject = Class.forName(\"Car\"); reprezinta o alta modalitate prin care se poate obtine o referinta de tip Class in contextul exemplului dat.",
-      "c": "Exemplul foloseste tehnica reflection pentru a invoca dinamic metoda startEngine definita in clasa Class",
+      "c": "The example uses the reflection technique to dynamically invoke the startEngine metoda defined in the Class clasa",
       "d": "metoda.invoke(car) executes the startEngine metoda on the car obiect without needing to know the metoda at compilare."
     },
     "answer": [
@@ -4685,7 +4695,7 @@ const QUESTIONS = [
       "a": "Programul respecta principiul Open/Closed",
       "b": "There is a tight coupling between the program's clase",
       "c": "Programul este proiectat conform principiului Liskov Substitution",
-      "d": "Programul respecta principiul Dependency Inversion"
+      "d": "The program respects the Dependency Inversion principle"
     },
     "answer": [
       "a",
@@ -4757,7 +4767,7 @@ const QUESTIONS = [
       "a": "Variabilei predicate i se poate atribui doar o expresie lambda explicita cu un singur parametru Integer care testeaza o conditie asupra parametrului.",
       "b": "Predicate este o interfata care poate contine orice numar de metode abstracte, default si static.",
       "c": "Atribuirea de mai jos nu va compila deoarece parametrul metodei isPositive nu a fost mentionat:",
-      "d": "Atribuirea Predicate predicat = Utils::isPositive este valida daca isPositive(Integer) este o metoda statica ce returneaza boolean."
+      "d": "The assignment Predicate predicat = Utils::isPositive is valid if isPositive(Integer) is a static metoda that returneaza un boolean."
     },
     "answer": [
       "d"
@@ -4931,7 +4941,7 @@ const QUESTIONS = [
       "a": "Inversion of Control permite programatorului sa controleze fluxul aplicatiei.",
       "b": "Containerele IoC sunt folosite pentru a gestiona automat dependentele.",
       "c": "In Dependency Injection, a dependenta is injected into a clasa A from the outside of A using the constructor of A or a \"get\" metoda.",
-      "d": "In tehnica de callback, functiile callback sunt functii transmise ca argument unei alte functii."
+      "d": "In the callback technique, callback functions are used that represent functions passed as argument to another function."
     },
     "answer": [
       "b",
@@ -4950,7 +4960,7 @@ const QUESTIONS = [
       "a": "Aplicatia incalca principiul Open/Closed.",
       "b": "Designul aplicatiei poate duce la flexibilitate redusa si cuplare crescuta in sistem.",
       "c": "Aplicatia incalca the Dependency Inversion principle.",
-      "d": "Designul aplicatiei poate duce la dificultati in adaugarea sau schimbarea furnizorilor de plata."
+      "d": "The aplicatie design could lead to difficulty in adding or switching payment providers."
     },
     "answer": [
       "a",
@@ -4969,8 +4979,8 @@ const QUESTIONS = [
     "options": {
       "a": "Datele utilizatorilor ar trebui trimise criptat prin retea.",
       "b": "Utilizatorii ar trebui sa poata personaliza layout-ul dashboard-ului.",
-      "c": "Aplicatia ar trebui sa incarce dashboard-ul in maximum 2 secunde.",
-      "d": "Aplicatia ar trebui sa permita utilizatorilor sa vada soldurile conturilor."
+      "c": "The app should load a dashboard within 2 seconds.",
+      "d": "The app should allow users to view account balances."
     },
     "answer": [
       "a",
@@ -5004,8 +5014,8 @@ const QUESTIONS = [
     "options": {
       "a": "Intregul cod foloseste doar programare declarativa.",
       "b": "Metoda filter() modifica lista numbers.",
-      "c": "Codul combina iterarea interna si iterarea externa a colectiilor.",
-      "d": "Operatia collect este lazy."
+      "c": "The code combines internal and external iteration of collections.",
+      "d": "The collect operation is lazy."
     },
     "answer": [
       "a"
@@ -5125,7 +5135,7 @@ const QUESTIONS = [
       "a": "Inversion of Control permite programatorului sa controleze fluxul aplicatiei.",
       "b": "Containerele IoC sunt folosite pentru a gestiona automat dependentele.",
       "c": "In Dependency Injection, a dependenta is injected into a clasa A from the outside of A using the constructor of A or a 'get' metoda.",
-      "d": "In tehnica de callback, functiile callback sunt functii transmise ca argument unei alte functii."
+      "d": "In the callback technique, callback functions are used that represent functions passed as argument to another function."
     },
     "answer": [
       "b",
@@ -5143,7 +5153,7 @@ const QUESTIONS = [
       "a": "Aplicatia incalca principiul Open/Closed.",
       "b": "Designul aplicatiei poate duce la flexibilitate redusa si cuplare crescuta in sistem.",
       "c": "Aplicatia incalca the Dependency Inversion principle.",
-      "d": "Designul aplicatiei poate duce la dificultati in adaugarea sau schimbarea furnizorilor de plata."
+      "d": "The aplicatie design could lead to difficulty in adding or switching payment providers."
     },
     "answer": [
       "a",
@@ -5162,8 +5172,8 @@ const QUESTIONS = [
     "options": {
       "a": "Datele utilizatorilor ar trebui trimise criptat prin retea.",
       "b": "Utilizatorii ar trebui sa poata personaliza layout-ul dashboard-ului.",
-      "c": "Aplicatia ar trebui sa incarce dashboard-ul in maximum 2 secunde.",
-      "d": "Aplicatia ar trebui sa permita utilizatorilor sa vada soldurile conturilor."
+      "c": "The app should load a dashboard within 2 seconds.",
+      "d": "The app should allow users to view account balances."
     },
     "answer": [
       "a",
@@ -5197,8 +5207,8 @@ const QUESTIONS = [
     "options": {
       "a": "Intregul cod foloseste doar programare declarativa.",
       "b": "Metoda filter() modifica lista numbers.",
-      "c": "Codul combina iterarea interna si iterarea externa a colectiilor.",
-      "d": "Operatia collect este lazy."
+      "c": "The code combines internal and external iteration of collections.",
+      "d": "The collect operation is lazy."
     },
     "answer": [
       "c"
@@ -7459,6 +7469,8 @@ const QUESTIONS = [
 const CONFIG = { count: 25, minutes: 35, pointPerQuestion: 0.36, officePoint: 1 };
 const LS_KEY = 'tpJavaQuizHistoryV1';
 const SEEN_KEY = 'tpJavaQuizSeenQuestionIdsV1';
+const SEEN_SIG_KEY = 'tpJavaQuizSeenQuestionSignaturesV2';
+const SEEN_TEXT_KEY = 'tpJavaQuizSeenQuestionTextSignaturesV2';
 let state = null;
 let timerHandle = null;
 
@@ -7476,6 +7488,88 @@ function sameSet(a,b) {
   return A===B;
 }
 function escapeHtml(s) { return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
+function decodeHtmlEntities(s) {
+  const textarea = document.createElement('textarea');
+  textarea.innerHTML = String(s || '');
+  return textarea.value;
+}
+function normalizeRichSource(s) {
+  return decodeHtmlEntities(s)
+    .replace(/<br\s*\/?\s*>/gi, '\n')
+    .replace(/<\/code>/gi, '```')
+    .replace(/<code>/gi, '```')
+    .replace(/<\/?(strong|em|b|i)>/gi, '')
+    .replace(/\r\n/g, '\n')
+    .replace(/\r/g, '\n');
+}
+function formatInlineText(raw) {
+  const parts = String(raw || '').split(/(`[^`]*`)/g);
+  return parts.map(part => {
+    if (part.length >= 2 && part.startsWith('`') && part.endsWith('`')) {
+      return `<code class="inline-code">${escapeHtml(part.slice(1, -1))}</code>`;
+    }
+    return escapeHtml(part);
+  }).join('');
+}
+function isLikelyCodeLine(line) {
+  const t = String(line || '').trim();
+  if (!t) return false;
+  if (/^(public|private|protected|class|interface|enum|static|final|volatile|transient|synchronized|return|throw|new|if|for|while|switch|try|catch)\b/.test(t)) return true;
+  if (/^(B|A|Car|Class|Method|Predicate|Serializable|Operation|Thread|AtomicInteger)\b/.test(t)) return true;
+  if (/^List<[^>]+>\s+\w+\s*=/.test(t)) return true;
+  if (/\w+\s*=\s*new\s+\w+/.test(t)) return true;
+  if (/[{};]/.test(t)) return true;
+  if (/->|::|\+\+|--/.test(t)) return true;
+  if (/\.\w+\([^)]*\)/.test(t) && !/^Care\b|^Ce\b|^De ce\b|^In\b|^În\b|^Metoda\b|^Funcția\b|^Afirmația\b/.test(t)) return true;
+  return false;
+}
+function flushParagraph(lines) {
+  const text = lines.join('\n').trim();
+  if (!text) return '';
+  return `<p>${formatInlineText(text).replace(/\n/g, '<br>')}</p>`;
+}
+function flushCode(lines) {
+  const text = lines.join('\n').replace(/^\n+|\n+$/g, '');
+  if (!text) return '';
+  return `<pre class="code-block"><code>${escapeHtml(text)}</code></pre>`;
+}
+function formatRichText(text, autoCodeBlocks = true) {
+  const normalized = normalizeRichSource(text);
+  const fenced = normalized.split('```');
+  let html = '';
+  for (let partIndex = 0; partIndex < fenced.length; partIndex++) {
+    const segment = fenced[partIndex];
+    if (partIndex % 2 === 1) {
+      html += flushCode(segment.split('\n'));
+      continue;
+    }
+    if (!autoCodeBlocks) {
+      html += formatInlineText(segment).replace(/\n/g, '<br>');
+      continue;
+    }
+    const lines = segment.split('\n');
+    let paragraph = [];
+    let code = [];
+    const flushParaNow = () => { html += flushParagraph(paragraph); paragraph = []; };
+    const flushCodeNow = () => { html += flushCode(code); code = []; };
+    for (const line of lines) {
+      if (isLikelyCodeLine(line)) {
+        flushParaNow();
+        code.push(line);
+      } else {
+        flushCodeNow();
+        if (line.trim() === '') {
+          flushParaNow();
+        } else {
+          paragraph.push(line);
+        }
+      }
+    }
+    flushCodeNow();
+    flushParaNow();
+  }
+  return html || '';
+}
 function showPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
   document.getElementById('page-' + name).classList.remove('hidden');
@@ -7486,13 +7580,59 @@ function history() {
   try { return JSON.parse(localStorage.getItem(LS_KEY) || '[]'); } catch(e) { return []; }
 }
 function saveHistory(h) { localStorage.setItem(LS_KEY, JSON.stringify(h)); }
-function getStoredSeenQuestionIds() {
+function getStoredArray(key) {
   try {
-    const raw = JSON.parse(localStorage.getItem(SEEN_KEY) || '[]');
+    const raw = JSON.parse(localStorage.getItem(key) || '[]');
     return Array.isArray(raw) ? raw : [];
   } catch(e) {
     return [];
   }
+}
+function getStoredSeenQuestionIds() {
+  return getStoredArray(SEEN_KEY);
+}
+function normalizeForRepeat(value) {
+  return decodeHtmlEntities(String(value || ''))
+    .replace(/<br\s*\/?\s*>/gi, ' ')
+    .replace(/<\/code>/gi, ' ')
+    .replace(/<code>/gi, ' ')
+    .replace(/<\/?.*?>/g, ' ')
+    .replace(/```/g, ' ')
+    .replace(/`/g, ' ')
+    .replace(/[“”„]/g, '"')
+    .replace(/[’']/g, "'")
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/\(\s*variatie\s*\)/g, ' ')
+    .replace(/^\s*\(\s*(raspuns unic|raspunsuri multiple|raspuns multiplu|single answer|multiple answers|truefalse)\s*\)\s*/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+function questionTextSignature(q) {
+  return normalizeForRepeat(q && q.text ? q.text : '');
+}
+function canUseTextSignature(sig) {
+  return String(sig || '').length >= 60;
+}
+function questionFullSignature(q) {
+  if (!q) return '';
+  const opts = Object.entries(q.options || {})
+    .sort((a,b) => a[0].localeCompare(b[0]))
+    .map(([letter, text]) => `${letter}:${normalizeForRepeat(text)}`)
+    .join('|');
+  return `${questionTextSignature(q)}||${opts}`;
+}
+function findQuestionById(id) {
+  return QUESTIONS.find(q => q.id === id) || null;
+}
+function addQuestionToSeenMemory(q, ids, signatures) {
+  if (!q) return;
+  ids.add(q.id);
+  const full = questionFullSignature(q);
+  const text = questionTextSignature(q);
+  if (full) signatures.full.add(full);
+  if (canUseTextSignature(text)) signatures.text.add(text);
 }
 function getSeenQuestionIds() {
   const seen = new Set(getStoredSeenQuestionIds());
@@ -7506,27 +7646,86 @@ function getSeenQuestionIds() {
   }
   return seen;
 }
-function saveSeenQuestionIds(seen) {
-  localStorage.setItem(SEEN_KEY, JSON.stringify([...seen]));
+function getSeenQuestionSignatures() {
+  const signatures = {
+    full: new Set(getStoredArray(SEEN_SIG_KEY)),
+    text: new Set(getStoredArray(SEEN_TEXT_KEY))
+  };
+
+  // Migrare automata din istoricul vechi: daca ai raspuns deja la o intrebare,
+  // o recunoastem si dupa text/optiuni, nu doar dupa id.
+  for (const test of history()) {
+    for (const a of test.answers || []) {
+      const q = findQuestionById(a.questionId);
+      if (q) {
+        addQuestionToSeenMemory(q, new Set(), signatures);
+      } else if (a.text) {
+        const sig = normalizeForRepeat(a.text);
+        if (canUseTextSignature(sig)) signatures.text.add(sig);
+      }
+    }
+    for (const u of test.unansweredQuestions || []) {
+      const q = findQuestionById(u.id);
+      if (q) {
+        addQuestionToSeenMemory(q, new Set(), signatures);
+      } else if (u.text) {
+        const sig = normalizeForRepeat(u.text);
+        if (canUseTextSignature(sig)) signatures.text.add(sig);
+      }
+    }
+  }
+  return signatures;
+}
+function saveSeenQuestionMemory(ids, signatures) {
+  localStorage.setItem(SEEN_KEY, JSON.stringify([...ids]));
+  localStorage.setItem(SEEN_SIG_KEY, JSON.stringify([...signatures.full]));
+  localStorage.setItem(SEEN_TEXT_KEY, JSON.stringify([...signatures.text]));
   updateSeenStats();
 }
+function isQuestionSeenOrDuplicate(q, ids, signatures, batchFull, batchText) {
+  const full = questionFullSignature(q);
+  const text = questionTextSignature(q);
+  if (ids.has(q.id)) return true;
+  if (full && (signatures.full.has(full) || batchFull.has(full))) return true;
+  if (canUseTextSignature(text) && (signatures.text.has(text) || batchText.has(text))) return true;
+  return false;
+}
+function buildAvailableQuestions(ids, signatures) {
+  const available = [];
+  const batchFull = new Set();
+  const batchText = new Set();
+
+  for (const q of shuffle(QUESTIONS)) {
+    if (isQuestionSeenOrDuplicate(q, ids, signatures, batchFull, batchText)) continue;
+    available.push(q);
+    const full = questionFullSignature(q);
+    const text = questionTextSignature(q);
+    if (full) batchFull.add(full);
+    if (canUseTextSignature(text)) batchText.add(text);
+  }
+  return available;
+}
 function pickQuestionsWithoutRepeats() {
-  let seen = getSeenQuestionIds();
-  let available = QUESTIONS.filter(q => !seen.has(q.id));
+  let seenIds = getSeenQuestionIds();
+  let seenSignatures = getSeenQuestionSignatures();
+  let available = buildAvailableQuestions(seenIds, seenSignatures);
 
   if (available.length < CONFIG.count) {
     const message = available.length === 0
-      ? 'Ai parcurs toate intrebarile din banca. Resetez lista de intrebari puse ca sa poti incepe un test nou complet.'
-      : `Mai sunt doar ${available.length} intrebari noi, dar testul are ${CONFIG.count}. Resetez lista de intrebari puse ca sa primesti un test complet.`;
+      ? 'Ai parcurs toate intrebarile unice din banca. Resetez lista de intrebari puse ca sa poti incepe un test nou complet.'
+      : `Mai sunt doar ${available.length} intrebari unice nepuse, dar testul are ${CONFIG.count}. Resetez lista de intrebari puse ca sa primesti un test complet.`;
     alert(message);
-    seen = new Set();
+    seenIds = new Set();
+    seenSignatures = { full: new Set(), text: new Set() };
     localStorage.removeItem(SEEN_KEY);
-    available = QUESTIONS.slice();
+    localStorage.removeItem(SEEN_SIG_KEY);
+    localStorage.removeItem(SEEN_TEXT_KEY);
+    available = buildAvailableQuestions(seenIds, seenSignatures);
   }
 
-  const picked = shuffle(available).slice(0, CONFIG.count);
-  for (const q of picked) seen.add(q.id);
-  saveSeenQuestionIds(seen);
+  const picked = available.slice(0, CONFIG.count);
+  for (const q of picked) addQuestionToSeenMemory(q, seenIds, seenSignatures);
+  saveSeenQuestionMemory(seenIds, seenSignatures);
   return picked;
 }
 function updateSeenStats() {
@@ -7534,14 +7733,17 @@ function updateSeenStats() {
   const unseenEl = document.getElementById('unseenCount');
   if (bankEl) bankEl.textContent = QUESTIONS.length;
   if (unseenEl) {
-    const seen = getSeenQuestionIds();
-    const unseen = QUESTIONS.filter(q => !seen.has(q.id)).length;
+    const seenIds = getSeenQuestionIds();
+    const seenSignatures = getSeenQuestionSignatures();
+    const unseen = buildAvailableQuestions(seenIds, seenSignatures).length;
     unseenEl.textContent = unseen;
   }
 }
 function resetSeenQuestions() {
   if (!confirm('Resetezi lista de intrebari deja puse? Istoricul notelor ramane salvat, dar intrebarile pot aparea din nou.')) return;
   localStorage.removeItem(SEEN_KEY);
+  localStorage.removeItem(SEEN_SIG_KEY);
+  localStorage.removeItem(SEEN_TEXT_KEY);
   updateSeenStats();
   alert('Lista de intrebari puse a fost resetata.');
 }
@@ -7593,7 +7795,7 @@ function renderQuestion() {
   document.getElementById('qTypeBadge').textContent = q.type === 'multiple' ? 'Raspuns multiplu' : 'Raspuns unic';
   document.getElementById('topicBadge').textContent = q.topic;
   document.getElementById('sourceBadge').textContent = q.source;
-  document.getElementById('questionText').textContent = q.text;
+  document.getElementById('questionText').innerHTML = formatRichText(q.text, true);
   document.getElementById('progressText').textContent = `Intrebarea ${state.index + 1}/${state.questions.length}`;
   document.getElementById('progressBar').style.width = `${(state.index) / state.questions.length * 100}%`;
   document.getElementById('liveGrade').textContent = computeGrade().toFixed(2);
@@ -7609,7 +7811,7 @@ function renderQuestion() {
       if (q.answer.includes(letter)) label.classList.add('correct');
       if (selected.includes(letter) && !q.answer.includes(letter)) label.classList.add('wrong');
     }
-    label.innerHTML = `<input type="${inputType}" name="answer" value="${letter}" ${selected.includes(letter)?'checked':''} ${previous?'disabled':''}> <div><b>${letter}.</b> ${escapeHtml(text)}</div>`;
+    label.innerHTML = `<input type="${inputType}" name="answer" value="${letter}" ${selected.includes(letter)?'checked':''} ${previous?'disabled':''}> <div class="option-body"><b>${letter}.</b> ${formatRichText(text, false)}</div>`;
     optionsBox.appendChild(label);
   }
   const fb = document.getElementById('feedback');
@@ -7640,7 +7842,7 @@ function showFeedback(record) {
   fb.innerHTML = `<b>${record.isCorrect ? 'Corect!' : 'Gresit.'}</b><br>
     Raspuns corect: <b>${lettersText(record.correct)}</b><br>
     Raspunsul tau: <b>${record.selected.length ? lettersText(record.selected) : '-'}</b>
-    ${q.explanation ? '<hr><span class="small">' + escapeHtml(q.explanation) + '</span>' : ''}`;
+    ${q.explanation ? '<hr><div class="small rendered-text">' + formatRichText(q.explanation, false) + '</div>' : ''}`;
 }
 function nextQuestion() {
   if (!state) return;
@@ -7694,7 +7896,7 @@ function renderResult(r) {
       <div class="stat"><div class="big">${r.unanswered}</div><div>necompletate</div></div>
     </div>
     <h3>Greseli</h3>
-    ${incorrect.length ? incorrect.map(a => `<div class="card"><b>${escapeHtml(a.topic)} · ${escapeHtml(a.source)}</b><br>${escapeHtml(a.text)}<br><span class="muted">Tau: ${lettersText(a.selected)} | Corect: ${lettersText(a.correct)}</span></div>`).join('') : '<p>Nu ai gresit nicio intrebare raspunsa.</p>'}
+    ${incorrect.length ? incorrect.map(a => `<div class="card"><b>${escapeHtml(a.topic)} · ${escapeHtml(a.source)}</b><br><div class="rendered-text">${formatRichText(a.text, true)}</div><span class="muted">Tau: ${lettersText(a.selected)} | Corect: ${lettersText(a.correct)}</span></div>`).join('') : '<p>Nu ai gresit nicio intrebare raspunsa.</p>'}
     <div class="footer-actions"><button class="primary" onclick="startQuiz()">Incepe alt test</button><button onclick="showPage('history')">Vezi analiza</button></div>
   `;
 }
@@ -7703,9 +7905,9 @@ function renderBank(showAnswers=false) {
   el.innerHTML = QUESTIONS.map((q,i) => `
     <div class="card">
       <div><span class="badge">#${i+1}</span><span class="badge">${q.type==='multiple'?'multiplu':'unic'}</span><span class="badge">${escapeHtml(q.topic)}</span><span class="badge">${escapeHtml(q.source)}</span></div>
-      <p class="question-title">${escapeHtml(q.text)}</p>
-      <ul>${Object.entries(q.options).map(([k,v]) => `<li><b>${k}.</b> ${escapeHtml(v)}</li>`).join('')}</ul>
-      ${showAnswers ? `<p><b>Raspuns corect:</b> ${lettersText(q.answer)}<br><span class="muted small">${escapeHtml(q.explanation||'')}</span></p>` : ''}
+      <div class="question-title rendered-text">${formatRichText(q.text, true)}</div>
+      <ul class="bank-options">${Object.entries(q.options).map(([k,v]) => `<li><b>${k}.</b> ${formatRichText(v, false)}</li>`).join('')}</ul>
+      ${showAnswers ? `<p><b>Raspuns corect:</b> ${lettersText(q.answer)}</p><div class="muted small rendered-text">${formatRichText(q.explanation||'', false)}</div>` : ''}
     </div>`).join('');
 }
 function aggregateMistakes(h) {
@@ -7763,6 +7965,8 @@ function clearHistory() {
   if (confirm('Stergi toate testele salvate?')) {
     localStorage.removeItem(LS_KEY);
     localStorage.removeItem(SEEN_KEY);
+    localStorage.removeItem(SEEN_SIG_KEY);
+    localStorage.removeItem(SEEN_TEXT_KEY);
     updateSeenStats();
     renderHistory();
   }
