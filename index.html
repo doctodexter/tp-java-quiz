@@ -40,16 +40,6 @@ main { max-width:1100px; margin:0 auto; padding:22px; }
 .feedback.ok { display:block; border:1px solid var(--ok); background:rgba(34,197,94,.12); }
 .feedback.bad { display:block; border:1px solid var(--bad); background:rgba(239,68,68,.12); }
 pre, textarea { width:100%; background:#020617; color:#d1fae5; border:1px solid var(--border); border-radius:12px; padding:12px; overflow:auto; }
-.rendered-text { white-space: normal; }
-.rendered-text p { margin: 0 0 10px; }
-.rendered-text p:last-child { margin-bottom: 0; }
-.code-block { white-space: pre-wrap; font-family: Consolas, 'Courier New', monospace; background:#020617; color:#d1fae5; border:1px solid var(--border); border-radius:12px; padding:12px; margin:10px 0; overflow:auto; line-height:1.45; }
-.inline-code { font-family: Consolas, 'Courier New', monospace; background:#020617; color:#d1fae5; border:1px solid var(--border); border-radius:6px; padding:1px 5px; }
-.option-body { width:100%; }
-.option-body .code-block { margin:8px 0 0; font-size:13px; }
-.bank-options { margin-top:10px; padding-left:22px; }
-.bank-options li { margin:7px 0; }
-
 textarea { min-height:180px; }
 table { width:100%; border-collapse:collapse; font-size:14px; }
 th, td { border-bottom:1px solid var(--border); padding:10px; text-align:left; vertical-align:top; }
@@ -59,7 +49,27 @@ th { color:#bae6fd; }
 .small { font-size:13px; }
 hr { border:0; border-top:1px solid var(--border); margin:18px 0; }
 .footer-actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; }
+
+.chapter-card { display:flex; flex-direction:column; gap:10px; }
+.chapter-head { display:flex; justify-content:space-between; gap:12px; align-items:flex-start; }
+.chapter-title { font-weight:800; color:#e0f2fe; }
+.chapter-level { font-size:12px; font-weight:800; border:1px solid var(--border); border-radius:999px; padding:4px 9px; background:#0b1220; white-space:nowrap; }
+.chapter-level.good { color:var(--ok); border-color:var(--ok); }
+.chapter-level.mid { color:var(--warn); border-color:var(--warn); }
+.chapter-level.bad { color:var(--bad); border-color:var(--bad); }
+.chapter-meter { height:12px; background:#020617; border:1px solid var(--border); border-radius:999px; overflow:hidden; }
+.chapter-meter-fill { height:100%; background:linear-gradient(90deg,#ef4444,#f59e0b,#22c55e); width:0%; transition:.3s; }
+.chapter-summary { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:10px; }
+.chapter-summary .mini { background:#0b1220; border:1px solid var(--border); border-radius:12px; padding:10px; }
+.chapter-summary .mini b { color:var(--accent); font-size:20px; display:block; }
+.chapter-filter { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+select { background:#0b1220; color:var(--text); border:1px solid var(--border); border-radius:10px; padding:10px; font-weight:700; }
+
 @media (max-width:700px) { main { padding:12px; } .question-title { font-size:16px; } header { align-items:flex-start; } }
+
+.question-title code, .option code, .feedback code { font-family: Consolas, monospace; background:#020617; border:1px solid var(--border); color:#d1fae5; border-radius:6px; padding:1px 5px; }
+.question-title pre, .option pre, .feedback pre { margin:8px 0; white-space:pre; font-size:14px; }
+.option pre { max-width:100%; }
 </style>
 </head>
 <body>
@@ -72,6 +82,7 @@ hr { border:0; border-top:1px solid var(--border); margin:18px 0; }
     <button onclick="showPage('home')">Acasa</button>
     <button onclick="showPage('quiz')">Quiz</button>
     <button onclick="showPage('bank')">Banca intrebari</button>
+    <button onclick="showPage('chapters')">Capitole</button>
     <button onclick="showPage('history')">Istoric & analiza</button>
   </nav>
 </header>
@@ -83,6 +94,7 @@ hr { border:0; border-top:1px solid var(--border); margin:18px 0; }
       <div class="grid">
         <div class="stat"><div class="big" id="bankCount">0</div><div>intrebari in banca</div></div>
         <div class="stat"><div class="big" id="unseenCount">0</div><div>intrebari nepuse inca</div></div>
+        <div class="stat"><div class="big" id="chapterCount">0</div><div>capitole analizate</div></div>
         <div class="stat"><div class="big">35:00</div><div>timp limita</div></div>
         <div class="stat"><div class="big">0.36</div><div>puncte/intrebare</div></div>
         <div class="stat"><div class="big">+1</div><div>punct din oficiu</div></div>
@@ -90,6 +102,7 @@ hr { border:0; border-top:1px solid var(--border); margin:18px 0; }
       <div class="footer-actions">
         <button class="primary" onclick="startQuiz()">Incepe test nou</button>
         <button onclick="showPage('history')">Vezi istoric</button>
+        <button onclick="showPage('chapters')">Vezi progres pe capitole</button>
         <button onclick="showPage('bank')">Vezi toate intrebarile</button>
         <button onclick="resetSeenQuestions()">Reseteaza intrebarile puse</button>
       </div>
@@ -134,6 +147,34 @@ hr { border:0; border-top:1px solid var(--border); margin:18px 0; }
         <button onclick="renderBank(false)">Ascunde raspunsurile</button>
       </div>
       <div id="bankList"></div>
+    </div>
+  </section>
+
+
+  <section id="page-chapters" class="page hidden">
+    <div class="card">
+      <h2>Progres pe capitole</h2>
+      <p class="muted">Aici vezi cat de bine stii fiecare capitol/topic, calculat din testele salvate in browser. Procentul inseamna: raspunsuri corecte / intrebari primite din acel capitol.</p>
+      <div class="footer-actions">
+        <button onclick="renderChapters()">Actualizeaza analiza</button>
+        <button onclick="copyChapterAnalysis()">Copiaza analiza pe capitole</button>
+        <button onclick="startQuiz()" class="primary">Incepe test nou</button>
+      </div>
+      <div id="chapterOverview" class="grid"></div>
+    </div>
+    <div class="card">
+      <div class="chapter-filter">
+        <h3 style="margin:0;">Tabel capitole</h3>
+        <label class="muted small">Ordonare:
+          <select id="chapterSort" onchange="renderChapters()">
+            <option value="weak">Cele mai slabe primele</option>
+            <option value="asked">Cele mai exersate primele</option>
+            <option value="bank">Cele mai multe intrebari in banca</option>
+            <option value="name">Alfabetic</option>
+          </select>
+        </label>
+      </div>
+      <div id="chapterContent"></div>
     </div>
   </section>
 
@@ -190,7 +231,7 @@ const QUESTIONS = [
   {
     "id": "2025-uml-banking",
     "type": "multiple",
-    "text": "Intr-o aplicatie bancara: (i) clasa Client detine un atribut de tip List; (ii) clasa Cont are un atribut de tip CardBancar; (iii) clasa Client apeleaza metoda trimiteSMS() din clasa NotificatorSMS, fara a avea atribut NotificatorSMS. Care relatii UML sunt potrivite?",
+    "text": "Într-o aplicație bancară: (i) clasa `Client` deține un atribut de tip `List<Cont>`; (ii) clasa `Cont` are un atribut de tip `CardBancar`; (iii) clasa `Client` apelează metoda `trimiteSMS()` din clasa `NotificatorSMS`, fără a avea un atribut de tip `NotificatorSMS`. Care relații UML sunt potrivite?",
     "options": {
       "a": "Intre Client si Cont este o relatie de compozitie.",
       "b": "Intre Cont si CardBancar este o relatie de utilizare.",
@@ -402,21 +443,21 @@ const QUESTIONS = [
   {
     "id": "2025-immutable-list",
     "type": "multiple",
-    "text": "Care afirmatii despre codul de mai jos sunt incorecte?\npublic final class A {\nprivate final List list;\npublic A(List list) { this.list = list; }\npublic List getList() { return this.list; }\n}",
+    "text": "(Răspunsuri multiple) Care afirmații despre codul de mai jos NU sunt adevărate?\n\n`public final class A {`\n`    private final List<String> list;`\n`    public A(List<String> list) { this.list = list; }`\n`    public List<String> getList() { return this.list; }`\n`}`",
     "options": {
-      "a": "Clasa A este imutabila.",
-      "b": "Eliminarea setterului si final pe list sunt suficiente pentru imutabilitate completa.",
-      "c": "Clasa A nu poate fi extinsa.",
-      "d": "Clasa A este thread-safe."
+      "a": "Clasa `A` este imutabilă.",
+      "b": "Eliminarea setterului și declararea atributului `list` ca `final` sunt suficiente pentru a garanta imutabilitatea completă.",
+      "c": "Clasa `A` nu poate fi extinsă.",
+      "d": "Clasa `A` este thread-safe."
     },
     "answer": [
       "a",
       "b",
       "d"
     ],
-    "topic": "imutabilitate",
+    "topic": "immutability",
     "source": "Subiect 2025",
-    "explanation": "Lista poate fi modificata din exterior sau prin getter; final fixeaza referinta, nu continutul."
+    "explanation": "Răspuns corect: a, b, d. Clasa nu este imutabilă, deoarece lista internă poate fi modificată din exterior prin referința primită în constructor sau prin `getList()`. `final` fixează referința, nu conținutul listei. Varianta c este adevărată, deoarece clasa este `final`."
   },
   {
     "id": "2025-design-violations",
@@ -499,27 +540,27 @@ const QUESTIONS = [
     "type": "single",
     "text": "Care afirmatie despre wildcard-uri in Java generics este adevarata?",
     "options": {
-      "a": "Wildcard-ul ? poate reprezenta orice tip referinta sau primitiv necunoscut.",
-      "b": "Intr-o lista List se poate adauga orice obiect.",
-      "c": "Intr-o lista List se pot adauga obiecte ale oricarui subtip al lui Number.",
-      "d": "Considerand o clasa generica A, tipul A este un subtip al lui Object."
+      "a": "Wildcard-ul `?` poate fi folosit pentru a reprezenta un tip referință necunoscut, nu un tip primitiv.",
+      "b": "Într-o listă de tip `List<?>` se poate adăuga orice obiect.",
+      "c": "Într-o listă de tip `List<? extends Number>` se pot adăuga obiecte de orice tip care este subtip al lui `Number`.",
+      "d": "Considerând o clasă generică `A`, tipul `A<?>` este un subtip al lui `Object`."
     },
     "answer": [
       "d"
     ],
-    "topic": "generics",
+    "topic": "generics / PECS",
     "source": "Subiect 2025",
-    "explanation": "Orice obiect Java este subtip al lui Object; in liste cu wildcard nu poti adauga liber."
+    "explanation": "Răspuns corect: d. Generics funcționează doar cu tipuri referință, iar `List<?>` și `List<? extends Number>` nu permit adăugarea liberă de obiecte. `A<?>` este tot un obiect Java, deci este subtip al lui `Object`."
   },
   {
     "id": "2025-predicate-method-ref",
     "type": "single",
-    "text": "Considerati o variabila predicate de tip Predicate. Care afirmatie este corecta?",
+    "text": "Considerati o variabila predicate de tip Predicate<Integer>. Care afirmatie este corecta?",
     "options": {
       "a": "I se poate atribui doar o expresie lambda explicita cu un parametru Integer.",
       "b": "Predicate poate contine orice numar de metode abstracte.",
-      "c": "Predicate predicate = Utils::isPositive nu compileaza fiindca parametrul nu a fost specificat.",
-      "d": "Predicate predicate = Utils::isPositive este valida daca isPositive(Integer) este metoda statica ce returneaza boolean."
+      "c": "Predicate<Integer> predicate = Utils::isPositive nu compileaza fiindca parametrul nu a fost specificat.",
+      "d": "Predicate<Integer> predicate = Utils::isPositive este valida daca isPositive(Integer) este metoda statica ce returneaza boolean."
     },
     "answer": [
       "d"
@@ -672,19 +713,19 @@ const QUESTIONS = [
   {
     "id": "R-stream-code",
     "type": "single",
-    "text": "Care afirmatie despre cod este corecta?\nList numbers = Arrays.asList(1,2,3,4,5,6,7,8,9,10);\nList evenNumbers = numbers.stream().filter(n -> n%2 == 0).collect(Collectors.toList());\nfor(Integer num : evenNumbers) { System.out.println(\"Even number: \" + num); }",
+    "text": "(Răspuns unic) Care dintre următoarele afirmații despre codul de mai jos este corectă?\n\n`List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);`\n`List<Integer> evenNumbers = numbers.stream().filter(n -> n % 2 == 0).collect(Collectors.toList());`\n`for (Integer num : evenNumbers) { System.out.println(\"Even number: \" + num); }`",
     "options": {
-      "a": "Intregul cod foloseste doar programare declarativa.",
-      "b": "Metoda filter() modifica lista numbers.",
-      "c": "Codul combina iterarea interna si externa a colectiilor.",
-      "d": "Operatia collect este lazy."
+      "a": "Întregul cod folosește doar programare declarativă.",
+      "b": "Metoda `filter()` modifică lista `numbers`.",
+      "c": "Codul combină iterarea internă și iterarea externă a colecțiilor.",
+      "d": "Operația `collect` este lazy."
     },
     "answer": [
       "c"
     ],
     "topic": "streams",
     "source": "Set random / chat",
-    "explanation": "stream/filter = iterare interna, for-each extern; collect este terminala/eager."
+    "explanation": "Răspuns corect: c. Partea cu `stream().filter().collect()` folosește iterare internă, iar bucla `for` folosește iterare externă. `filter()` nu modifică lista originală, iar `collect()` este operație terminală."
   },
   {
     "id": "R-operation-lambda",
@@ -726,12 +767,12 @@ const QUESTIONS = [
   {
     "id": "R-subtyping",
     "type": "multiple",
-    "text": "Considerati 3 clase (C, C1, C2) si o interfata I. Care afirmatii sunt corecte?",
+    "text": "(Răspunsuri multiple) Considerați clasele `C`, `C1`, `C2` și interfața `I`. Care afirmații sunt corecte?",
     "options": {
-      "a": "Daca C2 extinde C1 si C1 extinde C, atunci C2 este subtip al lui C.",
-      "b": "Daca C2 este subtip al lui C1, atunci List este subtip al lui List.",
-      "c": "Daca C implementeaza I si C1 extinde C, atunci C1 este subtip al lui I.",
-      "d": "Daca C2 extinde C1, atunci C2 c2 = new C1(); este corect."
+      "a": "Dacă `C2` extinde `C1` și `C1` extinde `C`, atunci `C2` este subtip al lui `C`.",
+      "b": "Dacă `C2` este subtip al lui `C1`, atunci `List<C1>` este subtip al lui `List<C2>`.",
+      "c": "Dacă `C` implementează `I` și `C1` extinde `C`, atunci `C1` este subtip al lui `I`.",
+      "d": "Dacă `C2` extinde `C1`, atunci atribuirea `C2 c2 = new C1();` este corectă."
     },
     "answer": [
       "a",
@@ -739,7 +780,7 @@ const QUESTIONS = [
     ],
     "topic": "generics / subtipuri",
     "source": "Set random / chat",
-    "explanation": "Generics sunt invariant; superclasa nu poate fi atribuita la referinta de subclasa."
+    "explanation": "Răspuns corect: a, c. Moștenirea este tranzitivă, iar o subclasă moștenește și relația de implementare a interfeței. Generics sunt invariant, deci `List<C1>` nu devine automat subtip de `List<C2>`."
   },
   {
     "id": "R-method-reference",
@@ -778,19 +819,19 @@ const QUESTIONS = [
   {
     "id": "R-PECS",
     "type": "single",
-    "text": "Care afirmatie in contextul principiului PECS NU este corecta?",
+    "text": "(Răspuns unic) Care dintre următoarele afirmații în contextul principiului PECS NU este corectă?",
     "options": {
-      "a": "PECS ajuta la deciderea folosirii wildcard-urilor marginite.",
-      "b": "Foloseste ? extends T daca doar citesti obiecte de tip T din colectie.",
-      "c": "Este permis: List ints = new ArrayList(); Integer n = ints.get(0);",
-      "d": "Nu este permis: List numbers = Arrays.asList(1,2.5,3L); numbers.add(10);"
+      "a": "PECS ajută la deciderea momentului în care trebuie folosite wildcard-uri mărginite în generics.",
+      "b": "Folosește `? extends T` dacă ai nevoie doar să citești obiecte de tip `T` dintr-o colecție generică.",
+      "c": "Următorul fragment de cod este permis:\n`List<? super Integer> ints = new ArrayList<Number>();`\n`Integer n = ints.get(0);`",
+      "d": "Următorul fragment de cod nu este permis:\n`List<? extends Number> numbers = Arrays.asList(1, 2.5, 3L);`\n`numbers.add(10);`"
     },
     "answer": [
       "c"
     ],
     "topic": "generics / PECS",
     "source": "Set random / chat",
-    "explanation": "Din ? super Integer poti citi sigur doar Object, nu Integer."
+    "explanation": "Răspuns corect: c este afirmația falsă. Din `List<? super Integer>` poți adăuga `Integer`, dar la citire primești sigur doar `Object`, nu `Integer`. `? extends Number` este pentru citire, deci nu poți face `add(10)`."
   },
   {
     "id": "R-marker-interface",
@@ -1007,20 +1048,20 @@ const QUESTIONS = [
   {
     "id": "2024-list-subtype",
     "type": "multiple",
-    "text": "Care afirmatii sunt corecte?",
+    "text": "(Răspunsuri multiple) Care dintre afirmațiile de mai jos sunt corecte?",
     "options": {
-      "a": "List este un subtip al lui List.",
-      "b": "List nu este un subtip al lui List.",
-      "c": "List este un subtip al lui List.",
-      "d": "List nu este un subtip al lui List."
+      "a": "`List<Person>` este un subtip al lui `List<Object>`.",
+      "b": "`List<Person>` nu este un subtip al lui `List<Object>`.",
+      "c": "`List<Person>` este un subtip al lui `List<?>`.",
+      "d": "`List<Person>` nu este un subtip al lui `List<?>`."
     },
     "answer": [
       "b",
       "c"
     ],
-    "topic": "generics",
+    "topic": "generics / subtipuri",
     "source": "Examen 2024",
-    "explanation": "Generics sunt invariant, dar List accepta orice List."
+    "explanation": "Răspuns corect: b, c. În Java, generics sunt invariant: chiar dacă `Person` este subtip al lui `Object`, `List<Person>` NU este subtip al lui `List<Object>`. În schimb, `List<?>` poate referi o listă cu orice tip generic."
   },
   {
     "id": "2023-moscow-should",
@@ -1393,10 +1434,10 @@ const QUESTIONS = [
     "type": "multiple",
     "text": "Care afirmatii despre generics sunt corecte?",
     "options": {
-      "a": "Generics ofera type safety la compile-time.",
-      "b": "List este subtip de List.",
-      "c": "List poate referi liste cu tip necunoscut.",
-      "d": "Tipurile generice sunt complet pastrate la runtime."
+      "a": "Generics oferă type safety la compile-time.",
+      "b": "`List<Integer>` este subtip de `List<Number>`.",
+      "c": "`List<?>` poate referi liste cu tip necunoscut.",
+      "d": "Tipurile generice sunt complet păstrate la runtime."
     },
     "answer": [
       "a",
@@ -1404,24 +1445,24 @@ const QUESTIONS = [
     ],
     "topic": "generics",
     "source": "Test final mixt chat",
-    "explanation": "Generics ajuta la type safety la compile-time. List nu este subtip de List, iar generics sunt sterse la runtime prin type erasure."
+    "explanation": "Răspuns corect: a, c. `List<Integer>` nu este subtip de `List<Number>`, iar generics sunt șterse la runtime prin type erasure."
   },
   {
     "id": "FINAL-GENERICS-2",
     "type": "single",
-    "text": "Care afirmatie despre List este corecta?",
+    "text": "Care afirmație despre `List<? extends Number>` este corectă?",
     "options": {
-      "a": "Putem adauga orice Number in lista.",
-      "b": "Putem citi elemente ca Number.",
-      "c": "Este identic cu List.",
-      "d": "Este folosit doar pentru primitiv."
+      "a": "Putem adăuga orice `Number` în listă.",
+      "b": "Putem citi elemente ca `Number`.",
+      "c": "Este identic cu `List<Object>`.",
+      "d": "Este folosit doar pentru primitive."
     },
     "answer": [
       "b"
     ],
-    "topic": "generics",
+    "topic": "generics / PECS",
     "source": "Test final mixt chat",
-    "explanation": "? extends Number este bun pentru citire ca Number, dar nu pentru adaugare de valori concrete."
+    "explanation": "Răspuns corect: b. `? extends Number` este bun pentru citire ca `Number`, dar nu pentru adăugare de valori concrete."
   },
   {
     "id": "FINAL-GENERICS-3",
@@ -1462,7 +1503,7 @@ const QUESTIONS = [
   {
     "id": "FINAL-LAMBDA-2",
     "type": "single",
-    "text": "Ce metoda are Predicate?",
+    "text": "Ce metoda are Predicate<T>?",
     "options": {
       "a": "R apply(T t)",
       "b": "void accept(T t)",
@@ -1551,7 +1592,7 @@ const QUESTIONS = [
   {
     "id": "FINAL-STREAMS-3",
     "type": "single",
-    "text": "Consideram:\nList result = numbers.stream()\n.filter(x -> x % 2 == 0)\n.map(x -> x * x)\n.toList();\nCe contine result?",
+    "text": "Considerăm codul:\n\n`List<Integer> result = numbers.stream()`\n`    .filter(x -> x % 2 == 0)`\n`    .map(x -> x * x)`\n`    .toList();`\n\nCe conține `result`?",
     "options": {
       "a": "toate numerele ridicate la patrat",
       "b": "patratele numerelor pare",
@@ -2034,25 +2075,6 @@ const QUESTIONS = [
     "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
   },
   {
-    "id": "RAW-RO2025-03",
-    "type": "multiple",
-    "text": "Intr-o aplicatie bancara:\n(i) Clasa Client detine un atribut de tipul List;\n(ii) Clasa Cont are un atribut de tipul CardBancar;\n(iii) clasa Client apeleaza metoda trimiteSMS() din clasa NotificatorSMS, fara a avea un atribut de tipul NotificatorSMS.\nCare dintre urmatoarele relatii UML sunt potrivite pentru a modela aceste relatii dintre clase?",
-    "options": {
-      "a": "Intre Client si Cont este o relatie de compozitie.",
-      "b": "Intre Cont si CardBancar este o relatie de utilizare.",
-      "c": "Intre Client si NotificatorSMS este o relatie de dependenta.",
-      "d": "Relatia dintre Cont si CardBancar este de agregare slaba."
-    },
-    "answer": [
-      "a",
-      "c",
-      "d"
-    ],
-    "topic": "UML",
-    "source": "Subiect Romana 2025 - text complet",
-    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
-  },
-  {
     "id": "RAW-RO2025-04",
     "type": "single",
     "text": "Pentru o aplicatie de rezervari, avem definite urmatoarele use-case-uri: Rezerva bilet, Autentificare si Plateste cu\ncardul. Utilizatorul trebuie sa se autentifice de fiecare data cand face o rezervare, iar plata cu cardul este optionala. Care dintre\nurmatoarele afirmatii descrie corect relatiile UML dintre aceste use-case-uri?",
@@ -2246,25 +2268,6 @@ const QUESTIONS = [
     "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
   },
   {
-    "id": "RAW-RO2025-15",
-    "type": "multiple",
-    "text": "Care dintre urmatoarele afirmatii despre codul de mai jos NU sunt adevarate?\npublic final class A {\nprivate final List list;\npublic A(List list) {\nthis.list = list;\n}\npublic List getList() {\nreturn this.list;\n}\n}",
-    "options": {
-      "a": "Clasa A este este imutabila.",
-      "b": "Eliminarea metodei set si declararea atributului list ca final sunt suficiente pentru a garanta ca instantele clasei A sunt complet\nimutabile.",
-      "c": "Clasa A nu poate fi extinsa.",
-      "d": "Clasa A este thread-safe."
-    },
-    "answer": [
-      "a",
-      "b",
-      "d"
-    ],
-    "topic": "imutabilitate",
-    "source": "Subiect Romana 2025 - text complet",
-    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
-  },
-  {
     "id": "RAW-RO2025-16",
     "type": "multiple",
     "text": "Care dintre urmatoarele afirmatii incalca principiile de proiectare a claselor si interfetelor?",
@@ -2345,27 +2348,27 @@ const QUESTIONS = [
     "type": "single",
     "text": "Care dintre urmatoarele afirmatii despre wildcard-uri in Java generics este adevarata?",
     "options": {
-      "a": "Wildcard-ul ? poate fi folosit pentru a reprezenta orice tip referinta sau primitiv necunoscut.",
-      "b": "Intr-o lista de tipul List se poate adauga orice obiect.",
-      "c": "Intr-o lista de tipul List se pot adauga obiecte de orice tip care este un subtip al lui Number.",
-      "d": "Considerand o clasa A, tipul A este un subtip al lui Object."
+      "a": "Wildcard-ul `?` poate fi folosit pentru a reprezenta un tip referință necunoscut, nu un tip primitiv.",
+      "b": "Într-o listă de tip `List<?>` se poate adăuga orice obiect.",
+      "c": "Într-o listă de tip `List<? extends Number>` se pot adăuga obiecte de orice tip care este subtip al lui `Number`.",
+      "d": "Considerând o clasă generică `A`, tipul `A<?>` este un subtip al lui `Object`."
     },
     "answer": [
       "d"
     ],
-    "topic": "generics",
+    "topic": "generics / PECS",
     "source": "Subiect Romana 2025 - text complet",
-    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+    "explanation": "Răspuns corect: d. Generics funcționează doar cu tipuri referință, iar `List<?>` și `List<? extends Number>` nu permit adăugarea liberă de obiecte. `A<?>` este tot un obiect Java, deci este subtip al lui `Object`."
   },
   {
     "id": "RAW-RO2025-21",
     "type": "single",
-    "text": "Considerati o variabila predicat de tipul Predicate. Care dintre urmatoarele afirmatii este corecta?",
+    "text": "Considerati o variabila predicat de tipul Predicate<Integer>. Care dintre urmatoarele afirmatii este corecta?",
     "options": {
       "a": "Variabilei predicat i se poate atribui doar o expresie lambda explicita cu un singur parametru de tipul Integer, care testeaza o\nconditie asupra parametrului dat.",
       "b": "Predicate este o interfata care poate contine oricate metode abstracte, default si statice.",
-      "c": "Atribuirea de mai jos nu se va compila deoarece nu s-a mentionat parametrul metodei isPositive.\nPredicate predicat = Utils::isPositive;",
-      "d": "Atribuirea Predicate predicat = Utils::isPositive este valida daca isPositive(Integer) este o metoda statica ce returneaza\nun boolean."
+      "c": "Atribuirea de mai jos nu se va compila deoarece nu s-a mentionat parametrul metodei isPositive.\nPredicate<Integer> predicat = Utils::isPositive;",
+      "d": "Atribuirea Predicate<Integer> predicat = Utils::isPositive este valida daca isPositive(Integer) este o metoda statica ce returneaza\nun boolean."
     },
     "answer": [
       "d"
@@ -2517,23 +2520,6 @@ const QUESTIONS = [
     "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
   },
   {
-    "id": "RAW-EN2025_1-05",
-    "type": "single",
-    "text": "Care dintre urmatoarele afirmatii despre codul de mai jos sunt corecte?\nList numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);\nList evenNumbers = numbers.stream().filter(n -> n % 2 == 0).collect(Collectors.toList());\nfor (Integer num : evenNumbers) { System.out.println(\"Even number: \" + num); }",
-    "options": {
-      "a": "Intregul cod foloseste doar programare declarativa.",
-      "b": "Metoda filter() modifica lista numbers.",
-      "c": "Codul combina iterarea interna si externa a colectiilor.",
-      "d": "Operatia collect este lazy."
-    },
-    "answer": [
-      "c"
-    ],
-    "topic": "streams",
-    "source": "Subiect Engleza 2025 (1) - text complet",
-    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
-  },
-  {
     "id": "RAW-EN2025_1-06",
     "type": "multiple",
     "text": "Care afirmatie nu este corecta despre urmatoarea atribuire Java?\nOperation operation = (int a, int b)->Integer.sum(a,b);",
@@ -2586,24 +2572,6 @@ const QUESTIONS = [
     "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
   },
   {
-    "id": "RAW-EN2025_1-09",
-    "type": "multiple",
-    "text": "Considerati 3 clase (C, C1 si C2) si o interfata I. Care dintre urmatoarele afirmatii sunt corecte?",
-    "options": {
-      "a": "Daca C2 extinde C1 si C1 extinde C, atunci C2 este un subtip al lui C.",
-      "b": "Daca C2 este un subtip al lui C1, atunci List este un subtip al lui List.",
-      "c": "Daca C implementeaza I si C1 extinde C, atunci C1 este un subtip al lui I.",
-      "d": "Daca C2 extinde C1, atunci urmatoarea atribuire este corecta:\nC2 c2 = new C1();"
-    },
-    "answer": [
-      "a",
-      "c"
-    ],
-    "topic": "generics / subtipuri",
-    "source": "Subiect Engleza 2025 (1) - text complet",
-    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
-  },
-  {
     "id": "RAW-EN2025_1-10",
     "type": "single",
     "text": "Care dintre urmatoarele afirmatii este corecta despre o referinta la metoda?",
@@ -2638,23 +2606,6 @@ const QUESTIONS = [
     "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
   },
   {
-    "id": "RAW-EN2025_1-12",
-    "type": "single",
-    "text": "Care dintre urmatoarele afirmatii in contextul principiului PECS nu este corecta?",
-    "options": {
-      "a": "Principiul PECS ajuta la deciderea momentului in care trebuie folosite wildcard-uri marginite in generics.",
-      "b": "Foloseste ? extends T daca ai nevoie doar sa citesti obiecte de tip T dintr-o colectie generica.",
-      "c": "Urmatorul fragment de cod este permis:\nList ints = new ArrayList();\nInteger n = ints.get(0);",
-      "d": "Urmatorul fragment de cod nu este permis:\nList numbers = Arrays.asList(1, 2.5, 3L);\nnumbers.add(10);"
-    },
-    "answer": [
-      "c"
-    ],
-    "topic": "generics",
-    "source": "Subiect Engleza 2025 (1) - text complet",
-    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
-  },
-  {
     "id": "RAW-EN2025_1-13",
     "type": "single",
     "text": "O interfata care nu contine nicio metoda se numeste:",
@@ -2674,7 +2625,7 @@ const QUESTIONS = [
   {
     "id": "RAW-EN2025_2-03",
     "type": "multiple",
-    "text": "Intr-o aplicatie bancara:\n(i) Clasa Client are un atribut de tip List;\n(ii) Clasa Account are un atribut de tip BankCard;\n(iii) Clasa Client apeleaza metoda sendSMS() din clasa SMSNotifier, fara sa aiba un atribut de tip SMSNotifier.\nCare dintre urmatoarele relatii UML sunt potrivite pentru a modela aceste relatii dintre clase?",
+    "text": "Într-o aplicație bancară: (i) clasa `Client` are un atribut de tip `List<Account>`; (ii) clasa `Account` are un atribut de tip `BankCard`; (iii) clasa `Client` apelează metoda `sendSMS()` din clasa `SMSNotifier`, fără să aibă un atribut de tip `SMSNotifier`. Care relații UML sunt potrivite?",
     "options": {
       "a": "Intre Client si Account exista o relatie de compozitie.",
       "b": "Intre Account si BankCard exista o relatie de utilizare.",
@@ -2867,25 +2818,6 @@ const QUESTIONS = [
     "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
   },
   {
-    "id": "RAW-EN2025_2-15",
-    "type": "multiple",
-    "text": "Care dintre urmatoarele afirmatii despre codul de mai jos sunt incorecte?\npublic final class A {\nprivate final List list;\npublic A(List list) {\nthis.list = list;\n}\npublic List getList() {\nreturn this.list;\n}\n}",
-    "options": {
-      "a": "Clasa A este imutabila.",
-      "b": "Eliminarea metodei setter si declararea atributului list ca final sunt suficiente pentru a garanta ca instantele clasei A sunt\ncomplet imutabile.",
-      "c": "Clasa A nu poate fi extinsa.",
-      "d": "Clasa A este thread-safe."
-    },
-    "answer": [
-      "a",
-      "b",
-      "d"
-    ],
-    "topic": "imutabilitate",
-    "source": "Subiect Engleza 2025 (2) - text complet",
-    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
-  },
-  {
     "id": "RAW-EN2025_2-16",
     "type": "multiple",
     "text": "Care dintre urmatoarele afirmatii incalca principiile de proiectare a claselor si interfetelor?",
@@ -2962,31 +2894,14 @@ const QUESTIONS = [
     "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
   },
   {
-    "id": "RAW-EN2025_2-20",
-    "type": "single",
-    "text": "Care dintre urmatoarele afirmatii despre wildcard-uri in Java generics este adevarata?",
-    "options": {
-      "a": "Wildcard-ul ? poate fi folosit pentru a reprezenta orice tip necunoscut, referinta sau primitiv.",
-      "b": "Intr-o lista de tip List, orice obiect poate fi adaugat.",
-      "c": "Intr-o lista de tip List, pot fi adaugate obiecte ale oricarui subtip al lui Number.",
-      "d": "Considerand o clasa A, tipul A este un subtip al lui Object."
-    },
-    "answer": [
-      "d"
-    ],
-    "topic": "generics",
-    "source": "Subiect Engleza 2025 (2) - text complet",
-    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
-  },
-  {
     "id": "RAW-EN2025_2-21",
     "type": "single",
-    "text": "Considerati o variabila predicate de tip Predicate. Care dintre urmatoarele afirmatii este corecta?",
+    "text": "Considerati o variabila predicate de tip Predicate<Integer>. Care dintre urmatoarele afirmatii este corecta?",
     "options": {
       "a": "Variabilei predicate i se poate atribui doar o expresie lambda explicita cu un singur parametru de tip Integer, care testeaza o\nconditie asupra parametrului dat.",
       "b": "Predicate este o interfata care poate contine orice numar de metode abstracte, default si statice.",
-      "c": "Atribuirea de mai jos nu se va compila deoarece parametrul metodei isPositive nu a fost specificat:\nPredicate predicate = Utils::isPositive;",
-      "d": "Atribuirea Predicate predicate = Utils::isPositive este valida daca isPositive(Integer) este o metoda statica ce returneaza\nun boolean."
+      "c": "Atribuirea de mai jos nu se va compila deoarece parametrul metodei isPositive nu a fost specificat:\nPredicate<Integer> predicate = Utils::isPositive;",
+      "d": "Atribuirea Predicate<Integer> predicate = Utils::isPositive este valida daca isPositive(Integer) este o metoda statica ce returneaza\nun boolean."
     },
     "answer": [
       "d"
@@ -3209,24 +3124,6 @@ const QUESTIONS = [
     "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
   },
   {
-    "id": "RAW-EX2024-12",
-    "type": "multiple",
-    "text": "Care dintre afirmatiile de mai jos sunt corecte?",
-    "options": {
-      "a": "List este un subtip al lui List.",
-      "b": "List nu este un subtip al lui List.",
-      "c": "List este un subtip al lui List.",
-      "d": "List nu este un subtip al lui List."
-    },
-    "answer": [
-      "b",
-      "c"
-    ],
-    "topic": "generics / subtipuri",
-    "source": "Examen 2024 - text complet",
-    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
-  },
-  {
     "id": "RAW-RAND1-01",
     "type": "multiple",
     "text": "Care dintre urmatoarele afirmatii despre Inversion of Control sunt corecte?",
@@ -3300,23 +3197,6 @@ const QUESTIONS = [
     "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
   },
   {
-    "id": "RAW-RAND1-05",
-    "type": "single",
-    "text": "Care dintre urmatoarele afirmatii despre codul de mai jos este corecta?\nList numbers = Arrays.asList(1,2,3,4,5,6,7,8,9,10);\nList evenNumbers = numbers.stream().filter(n -> n%2 ==0).collect(Collectors.toList());\nfor(Integer num : evenNumbers) {System.out.println(\"Even number: \"+ num);}",
-    "options": {
-      "a": "Intregul cod foloseste doar programare declarativa.",
-      "b": "Metoda filter() modifica lista numbers.",
-      "c": "Codul combina iterarea interna si iterarea externa a colectiilor.",
-      "d": "Operatia collect este lazy."
-    },
-    "answer": [
-      "c"
-    ],
-    "topic": "streams",
-    "source": "Examen Random (1) - text complet",
-    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
-  },
-  {
     "id": "RAW-RAND1-06",
     "type": "multiple",
     "text": "Care afirmatie nu este corecta despre urmatoarea atribuire Java?\nOperation operation = (int a, int b) -> Integer.sum(a,b);",
@@ -3350,24 +3230,6 @@ const QUESTIONS = [
     "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
   },
   {
-    "id": "RAW-RAND1-09",
-    "type": "multiple",
-    "text": "Considerati 3 clase (C, C1, C2) si o interfata I. Care afirmatie este corecta?",
-    "options": {
-      "a": "Daca C2 extinde C1 si C1 extinde C, atunci C2 este un subtip al lui C.",
-      "b": "Daca C2 este un subtip al lui C1, atunci List este un subtip al lui List.",
-      "c": "Daca C implementeaza I si C1 extinde C, atunci C1 este un subtip al lui I.",
-      "d": "Daca C2 extinde C1, atunci urmatoarea atribuire este corecta: C2 c2 = new C1();"
-    },
-    "answer": [
-      "a",
-      "c"
-    ],
-    "topic": "generics / subtipuri",
-    "source": "Examen Random (1) - text complet",
-    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
-  },
-  {
     "id": "RAW-RAND1-11",
     "type": "single",
     "text": "De ce este recomandat ca obiectele-cheie folosite intr-un Java Map, cum ar fi HashMap, sa fie imutabile?",
@@ -3381,23 +3243,6 @@ const QUESTIONS = [
       "b"
     ],
     "topic": "imutabilitate",
-    "source": "Examen Random (1) - text complet",
-    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
-  },
-  {
-    "id": "RAW-RAND1-12",
-    "type": "single",
-    "text": "Care dintre urmatoarele afirmatii in contextul principiului PECS nu este corecta?",
-    "options": {
-      "a": "PECS ajuta la deciderea momentului in care trebuie folosite wildcard-uri marginite in generics.",
-      "b": "Foloseste ? extends T daca ai nevoie doar sa citesti obiecte de tip T dintr-o colectie generica.",
-      "c": "Urmatorul fragment de cod este permis:\nList ints = new ArrayList();\nInteger n = ints.get(0);",
-      "d": "Urmatorul fragment de cod nu este permis:\nList numbers = Arrays.asList(1,2.5,3);\nnumbers.add(10);"
-    },
-    "answer": [
-      "c"
-    ],
-    "topic": "generics",
     "source": "Examen Random (1) - text complet",
     "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
   },
@@ -3720,21 +3565,6 @@ const QUESTIONS = [
     "explanation": "Raspuns corect: b, d. Verifica definitia din curs pentru topicul: OOP. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
   },
   {
-    "id": "PAG1-004",
-    "type": "single",
-    "text": "O clasa abstracta este folosita pentru a descrie abilitatile suplimentare ale unei clase.",
-    "options": {
-      "a": "Adevarat",
-      "b": "Fals"
-    },
-    "answer": [
-      "b"
-    ],
-    "topic": "OOP",
-    "source": "tehnici-fundamentale-quiz.html",
-    "explanation": "Raspuns corect: b. Verifica definitia din curs pentru topicul: OOP. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
     "id": "PAG1-005",
     "type": "multiple",
     "text": "Care dintre urmatoarele afirmatii despre serializarea in Java sunt adevarate?",
@@ -3861,24 +3691,6 @@ const QUESTIONS = [
     "explanation": "Raspuns corect: c. Verifica definitia din curs pentru topicul: importat din pagini. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
   },
   {
-    "id": "PAG1-012",
-    "type": "multiple",
-    "text": "Care dintre urmatoarele afirmatii sunt corecte?",
-    "options": {
-      "a": "List is a subtip of List",
-      "b": "List is not a subtip of List",
-      "c": "List is a subtip of List",
-      "d": "List is not a subtip of List"
-    },
-    "answer": [
-      "b",
-      "c"
-    ],
-    "topic": "importat din pagini",
-    "source": "tehnici-fundamentale-quiz.html",
-    "explanation": "Raspuns corect: b, c. Verifica definitia din curs pentru topicul: importat din pagini. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
     "id": "PAG1-013",
     "type": "single",
     "text": "Care dintre urmatoarele afirmatii despre fragmentul de cod de mai jos este corecta?\nCar car = new Car(\"Toyota\");\nClass classObject = car.getClass();\nMethod method = classObject.getMethod(\"startEngine\");\nmethod.invoke(car);",
@@ -3894,25 +3706,6 @@ const QUESTIONS = [
     "topic": "reflection",
     "source": "tehnici-fundamentale-quiz.html",
     "explanation": "Raspuns corect: d. Verifica definitia din curs pentru topicul: reflection. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
-    "id": "PAG1-014",
-    "type": "multiple",
-    "text": "Care dintre urmatoarele afirmatii despre codul de mai jos sunt incorecte?\npublic final class A {\n  private final List<String> list;\n  public A(List<String> list) { this.list = list; }\n  public List<String> getList(){ return this.list; }\n}",
-    "options": {
-      "a": "Clasa A este imutabila",
-      "b": "Eliminarea setterului si declararea atributului list ca final sunt suficiente pentru a garanta ca instantele clasei A sunt complet imutabile",
-      "c": "Clasa A nu poate fi extinsa",
-      "d": "Clasa A este thread-safe"
-    },
-    "answer": [
-      "a",
-      "b",
-      "d"
-    ],
-    "topic": "immutability",
-    "source": "tehnici-fundamentale-quiz.html",
-    "explanation": "Raspuns corect: a, b, d. Verifica definitia din curs pentru topicul: immutability. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
   },
   {
     "id": "PAG1-015",
@@ -3996,9 +3789,9 @@ const QUESTIONS = [
     "text": "Care dintre urmatoarele afirmatii despre wildcard-uri in Java generics este adevarata?",
     "options": {
       "a": "Wildcard-ul ? poate reprezenta orice tip referinta sau primitiv necunoscut",
-      "b": "In a list de tip List, any obiect poate fi added",
-      "c": "In a list de tip List, obiecte of any subtip of Number poate fi added",
-      "d": "Considering a clasa A, tipul A is a subtip of Object"
+      "b": "Într-o listă de tip List<?>, se poate adăuga orice obiect",
+      "c": "Într-o listă de tip List<? extends Number>, se pot adăuga obiecte ale oricărui subtip al lui Number",
+      "d": "Considering a class A, the type A<?> este un subtip al lui Object"
     },
     "answer": [
       "d"
@@ -4010,12 +3803,12 @@ const QUESTIONS = [
   {
     "id": "PAG1-020",
     "type": "single",
-    "text": "Considerati o variabila predicate de tip Predicate. Care dintre urmatoarele afirmatii este corecta?",
+    "text": "Consider a predicate variable of type Predicate<Integer>. Which of the following statements is correct?",
     "options": {
       "a": "Variabilei predicate i se poate atribui doar o expresie lambda explicita cu un singur parametru de tip Integer care testeaza o conditie asupra parametrului",
       "b": "Predicate este o interfata care poate contine orice numar de metode abstracte, default si static",
-      "c": "Atribuirea de mai jos nu va compila deoarece parametrul metodei isPositive nu a fost specificat:\nPredicate predicate = Utils::isPositive;",
-      "d": "Atribuirea Predicate predicate = Utils::isPositive este valida daca isPositive(Integer) este o metoda static ce returneaza boolean"
+      "c": "The assignment below will not compile because the parameter of the method isPositive was not specified:\nPredicate<Integer> predicate = Utils::isPositive;",
+      "d": "The assignment Predicate<Integer> predicate = Utils::isPositive is valid if isPositive(Integer) is a static method that returns a boolean"
     },
     "answer": [
       "d"
@@ -4145,24 +3938,6 @@ const QUESTIONS = [
     "explanation": "Raspuns corect: a, c, d. Verifica definitia din curs pentru topicul: reflection. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
   },
   {
-    "id": "PAG1-028",
-    "type": "multiple",
-    "text": "Considerati 3 clase (C, C1 si C2) si o interfata I. Care dintre urmatoarele afirmatii sunt corecte?",
-    "options": {
-      "a": "Daca C2 extinde C1 si C1 extinde C, atunci C2 este subtip al lui C",
-      "b": "If C2 is a sub-type of C1 then List is a sub-type of List",
-      "c": "Daca C implementeaza I si C1 extinde C, atunci C1 este subtip al lui I",
-      "d": "Daca C2 extinde C1, atunci urmatoarea atribuire este corecta: C2 c2 = new C1();"
-    },
-    "answer": [
-      "a",
-      "c"
-    ],
-    "topic": "importat din pagini",
-    "source": "tehnici-fundamentale-quiz.html",
-    "explanation": "Raspuns corect: a, c. Verifica definitia din curs pentru topicul: importat din pagini. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
     "id": "PAG1-029",
     "type": "single",
     "text": "Care dintre urmatoarele afirmatii despre o referinta la metoda este corecta?",
@@ -4197,43 +3972,9 @@ const QUESTIONS = [
     "explanation": "Raspuns corect: b. Verifica definitia din curs pentru topicul: streams. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
   },
   {
-    "id": "PAG1-031",
-    "type": "single",
-    "text": "Care dintre urmatoarele afirmatii in contextul principiului PECS NU este corecta?",
-    "options": {
-      "a": "Principiul PECS ajuta la deciderea momentului in care se folosesc wildcard-uri marginite in generics",
-      "b": "Foloseste ? extends T daca ai nevoie doar sa citesti obiecte de tip T dintr-o colectie generica",
-      "c": "Urmatorul fragment de cod este permis:\nList ints = new ArrayList();\nInteger n = ints.get(0);",
-      "d": "Urmatorul fragment de cod nu este permis:\nList numbers = Arrays.asList(1, 2.5, 3L);\nnumbers.add(10);"
-    },
-    "answer": [
-      "c"
-    ],
-    "topic": "generics / PECS",
-    "source": "tehnici-fundamentale-quiz.html",
-    "explanation": "Raspuns corect: c. Verifica definitia din curs pentru topicul: generics / PECS. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
-    "id": "PAG1-032",
-    "type": "single",
-    "text": "O interfata care nu contine nicio metoda se numeste:",
-    "options": {
-      "a": "Interfata abstracta",
-      "b": "Interfata marker",
-      "c": "Interfata inconsistenta",
-      "d": "Interfata coeziva"
-    },
-    "answer": [
-      "b"
-    ],
-    "topic": "importat din pagini",
-    "source": "tehnici-fundamentale-quiz.html",
-    "explanation": "Raspuns corect: b. Verifica definitia din curs pentru topicul: importat din pagini. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
     "id": "PAG1-033",
     "type": "single",
-    "text": "Afirmatia \"o aplicatie isi propune ca 99,9% dintre cereri sa primeasca raspuns in maximum 200 ms\" reprezinta:",
+    "text": "Într-o aplicație bancară: (i) clasa `Client` are un atribut de tip `List<Account>`; (ii) clasa `Account` are un atribut de tip `BankCard`; (iii) clasa `Client` apelează metoda `sendSMS()` din clasa `SMSNotifier`, fără să aibă un atribut de tip `SMSNotifier`. Care relații UML sunt potrivite?",
     "options": {
       "a": "Service Level Indicator (SLI)",
       "b": "Service Level Objective (SLO)",
@@ -4248,27 +3989,9 @@ const QUESTIONS = [
     "explanation": "Raspuns corect: b. Verifica definitia din curs pentru topicul: importat din pagini. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
   },
   {
-    "id": "PAG1-034",
-    "type": "multiple",
-    "text": "In contextul unui sistem software, care dintre urmatoarele afirmatii NU sunt corecte?",
-    "options": {
-      "a": "Testarea de sistem verifica intregul sistem software, complet integrat",
-      "b": "Testarea de integrare valideaza componentele izolat, inainte de integrare",
-      "c": "Testarea de acceptanta este folosita pentru a verifica daca cerintele utilizatorului final sunt satisfacute de sistem",
-      "d": "Testarea unitara este folosita pentru a valida interactiunile dintre subsisteme"
-    },
-    "answer": [
-      "b",
-      "d"
-    ],
-    "topic": "importat din pagini",
-    "source": "tehnici-fundamentale-quiz.html",
-    "explanation": "Raspuns corect: b, d. Verifica definitia din curs pentru topicul: importat din pagini. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
     "id": "PAG1-035",
     "type": "multiple",
-    "text": "In a banking aplicatie: (i) clasa Client are un atribut de tip List; (ii) clasa Account are un atribut de tip BankCard; (iii) clasa Client apeleaza sendSMS() metoda from the SMSNotifier clasa, fara sa aiba un atribut de tip SMSNotifier. Care dintre urmatoarele relatii UML sunt potrivite pentru modelarea acestor relatii dintre clase?",
+    "text": "In a banking application: (i) The Client class has an attribute of type List<Account>; (ii) The Account class has an attribute of type BankCard; (iii) The Client class calls the sendSMS() method from the SMSNotifier class, without having an attribute of type SMSNotifier. Which of the following UML relationships are appropriate to model these relationships between classes?",
     "options": {
       "a": "Intre Client si Account exista o relatie de compozitie",
       "b": "Intre Account si BankCard exista o relatie de utilizare",
@@ -4443,24 +4166,6 @@ const QUESTIONS = [
     "explanation": "Raspuns corect: a, b, c. Verifica definitia din curs pentru topicul: OOP. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
   },
   {
-    "id": "PAG2-001",
-    "type": "multiple",
-    "text": "Care dintre urmatoarele afirmatii despre proiectarea unei aplicatii software sunt adevarate?",
-    "options": {
-      "a": "Ar trebui sa maximizeze dependentele intre clase",
-      "b": "Ar trebui sa minimizeze dependentele intre clase si sa maximizeze coeziunea",
-      "c": "Clasele ar trebui sa fie slab cuplate si necoezive",
-      "d": "Clasele ar trebui sa fie deschise pentru extindere, dar inchise pentru modificare"
-    },
-    "answer": [
-      "b",
-      "d"
-    ],
-    "topic": "importat din pagini",
-    "source": "interactive_quiz.html",
-    "explanation": "Raspuns corect: b, d. Verifica definitia din curs pentru topicul: importat din pagini. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
     "id": "PAG2-002",
     "type": "single",
     "text": "Care dintre urmatoarele afirmatii despre polimorfismul in Java este adevarata?",
@@ -4494,21 +4199,6 @@ const QUESTIONS = [
     "topic": "OOP",
     "source": "interactive_quiz.html",
     "explanation": "Raspuns corect: b, d. Verifica definitia din curs pentru topicul: OOP. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
-    "id": "PAG2-004",
-    "type": "single",
-    "text": "O clasa abstracta este folosita pentru a descrie abilitatile suplimentare ale unei clase.",
-    "options": {
-      "a": "Adevarat",
-      "b": "Fals"
-    },
-    "answer": [
-      "b"
-    ],
-    "topic": "OOP",
-    "source": "interactive_quiz.html",
-    "explanation": "Raspuns corect: b. Verifica definitia din curs pentru topicul: OOP. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
   },
   {
     "id": "PAG2-006",
@@ -4566,24 +4256,6 @@ const QUESTIONS = [
     "explanation": "Raspuns corect: a, b, c, d. Verifica definitia din curs pentru topicul: reflection. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
   },
   {
-    "id": "PAG2-009",
-    "type": "multiple",
-    "text": "In contextul Legii lui Demeter si al efectelor secundare ale metodelor, alegeti recomandarile corecte:",
-    "options": {
-      "a": "O metoda ar trebui sa foloseasca doar variabilele de instanta ale clasei sale, parametrii primiti, obiectele create de metoda, metodele propriei clase si atributele statice globale",
-      "b": "O metoda ar trebui sa efectueze operatii pe obiecte care sunt parte din alte obiecte",
-      "c": "O metoda nu ar trebui sa efectueze operatii pe obiecte care sunt parte din alte obiecte",
-      "d": "Este recomandat sa apelezi o metoda get a unui obiect pentru a accesa si modifica un atribut de tip referinta"
-    },
-    "answer": [
-      "a",
-      "c"
-    ],
-    "topic": "importat din pagini",
-    "source": "interactive_quiz.html",
-    "explanation": "Raspuns corect: a, c. Verifica definitia din curs pentru topicul: importat din pagini. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
     "id": "PAG2-010",
     "type": "single",
     "text": "Cum poti asigura imutabilitatea intr-o clasa care are un atribut private si final de tip Date?",
@@ -4599,40 +4271,6 @@ const QUESTIONS = [
     "topic": "immutability",
     "source": "interactive_quiz.html",
     "explanation": "Raspuns corect: c. Verifica definitia din curs pentru topicul: immutability. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
-    "id": "PAG2-011",
-    "type": "single",
-    "text": "Care dintre urmatoarele afirmatii despre tipurile parametrilor impliciti ai expresiilor lambda este adevarata?",
-    "options": {
-      "a": "Sunt determinate pe baza semnaturii metodei default din interfata functionala asociata",
-      "b": "Nu sunt determinate pe baza niciunei metode din interfata functionala asociata",
-      "c": "Sunt determinate pe baza semnaturii metodei abstracte din interfata functionala asociata",
-      "d": "Sunt determinate pe baza semnaturii metodei statice din interfata functionala asociata"
-    },
-    "answer": [
-      "c"
-    ],
-    "topic": "importat din pagini",
-    "source": "interactive_quiz.html",
-    "explanation": "Raspuns corect: c. Verifica definitia din curs pentru topicul: importat din pagini. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
-    "id": "PAG2-012",
-    "type": "multiple",
-    "text": "Care dintre afirmatiile de mai jos sunt corecte?",
-    "options": {
-      "a": "List is a subtip of List",
-      "b": "List is not a subtip of List",
-      "c": "List is a subtip of List",
-      "d": "List is not a subtip of List"
-    },
-    "answer": [
-      "a"
-    ],
-    "topic": "importat din pagini",
-    "source": "interactive_quiz.html",
-    "explanation": "Raspuns corect: a. Verifica definitia din curs pentru topicul: importat din pagini. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
   },
   {
     "id": "PAG2-013",
@@ -4811,23 +4449,6 @@ const QUESTIONS = [
     "explanation": "Raspuns corect: b. Verifica definitia din curs pentru topicul: streams. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
   },
   {
-    "id": "PAG2-023",
-    "type": "single",
-    "text": "Iterarea interna este specifica:",
-    "options": {
-      "a": "Iteratorilor",
-      "b": "Instructiunilor for-each",
-      "c": "Operatiilor pe stream-uri",
-      "d": "Instructiunilor while"
-    },
-    "answer": [
-      "c"
-    ],
-    "topic": "streams",
-    "source": "interactive_quiz.html",
-    "explanation": "Raspuns corect: c. Verifica definitia din curs pentru topicul: streams. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
     "id": "PAG2-024",
     "type": "single",
     "text": "Care dintre urmatoarele afirmatii despre clonarea obiectelor in Java este adevarata?",
@@ -4843,23 +4464,6 @@ const QUESTIONS = [
     "topic": "importat din pagini",
     "source": "interactive_quiz.html",
     "explanation": "Raspuns corect: a. Verifica definitia din curs pentru topicul: importat din pagini. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
-    "id": "PAG2-025",
-    "type": "single",
-    "text": "Afirmatia \"o aplicatie isi propune ca 99,9% dintre cereri sa primeasca raspuns in maximum 200 ms\" reprezinta:",
-    "options": {
-      "a": "Service Level Indicator (SLI)",
-      "b": "Service Level Objective (SLO)",
-      "c": "Service Level Agreement (SLA)",
-      "d": "Service Level Constraint (SLC)"
-    },
-    "answer": [
-      "b"
-    ],
-    "topic": "importat din pagini",
-    "source": "interactive_quiz.html",
-    "explanation": "Raspuns corect: b. Verifica definitia din curs pentru topicul: importat din pagini. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
   },
   {
     "id": "PAG2-030",
@@ -5059,24 +4663,6 @@ const QUESTIONS = [
     "explanation": "Raspuns corect: d. Verifica definitia din curs pentru topicul: reflection. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
   },
   {
-    "id": "PAG2-045",
-    "type": "multiple",
-    "text": "Considerati 3 clase (C, C1 si C2) si o interfata I. Care dintre urmatoarele afirmatii sunt corecte?",
-    "options": {
-      "a": "Daca C2 extinde C1 si C1 extinde C, atunci C2 este subtip al lui C.",
-      "b": "If C2 is a sub-type of C1 then List is a sub-type of List",
-      "c": "Daca C implementeaza I si C1 extinde C, atunci C1 este subtip al lui I.",
-      "d": "Daca C2 extinde C1, atunci urmatoarea atribuire este corecta: C2 c2 = new C1();"
-    },
-    "answer": [
-      "a",
-      "c"
-    ],
-    "topic": "importat din pagini",
-    "source": "interactive_quiz.html",
-    "explanation": "Raspuns corect: a, c. Verifica definitia din curs pentru topicul: importat din pagini. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
     "id": "PAG2-046",
     "type": "single",
     "text": "Care dintre urmatoarele afirmatii despre o referinta la metoda este corecta?",
@@ -5146,44 +4732,6 @@ const QUESTIONS = [
     "explanation": "Raspuns corect: b, d. Verifica definitia din curs pentru topicul: importat din pagini. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
   },
   {
-    "id": "PAG3-002",
-    "type": "multiple",
-    "text": "Imaginati-va o aplicatie e-commerce in care modulul OrderProcessing depinde direct de o clasa concreta PaymentGateway. Daca trebuie sa schimbi furnizorul de plata sau sa adaugi suport pentru mai multi furnizori, trebuie modificat codul OrderProcessing. Care afirmatii sunt corecte?",
-    "options": {
-      "a": "Aplicatia incalca principiul Open/Closed.",
-      "b": "Designul aplicatiei poate duce la flexibilitate redusa si cuplare crescuta in sistem.",
-      "c": "Aplicatia incalca the Dependency Inversion principle.",
-      "d": "The aplicatie design could lead to difficulty in adding or switching payment providers."
-    },
-    "answer": [
-      "a",
-      "b",
-      "c",
-      "d"
-    ],
-    "topic": "importat din pagini",
-    "source": "pt_exam_simulator.html",
-    "explanation": "Raspuns corect: a, b, c, d. Verifica definitia din curs pentru topicul: importat din pagini. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
-    "id": "PAG3-003",
-    "type": "multiple",
-    "text": "O echipa de dezvoltare software trebuie sa proiecteze o aplicatie de mobile banking pornind de la un set de cerinte. Care dintre urmatoarele afirmatii reprezinta cerinte non-functionale?",
-    "options": {
-      "a": "Datele utilizatorilor ar trebui trimise criptat prin retea.",
-      "b": "Utilizatorii ar trebui sa poata personaliza layout-ul dashboard-ului.",
-      "c": "The app should load a dashboard within 2 seconds.",
-      "d": "The app should allow users to view account balances."
-    },
-    "answer": [
-      "a",
-      "c"
-    ],
-    "topic": "requirements",
-    "source": "pt_exam_simulator.html",
-    "explanation": "Raspuns corect: a, c. Verifica definitia din curs pentru topicul: requirements. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
     "id": "PAG3-004",
     "type": "single",
     "text": "Care dintre urmatoarele afirmatii defineste o buna practica in proiectarea aplicatiilor?",
@@ -5199,41 +4747,6 @@ const QUESTIONS = [
     "topic": "importat din pagini",
     "source": "pt_exam_simulator.html",
     "explanation": "Raspuns corect: d. Verifica definitia din curs pentru topicul: importat din pagini. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
-    "id": "PAG3-005",
-    "type": "single",
-    "text": "(Raspuns unic) Care dintre urmatoarele afirmatii despre codul de mai jos sunt corecte?\nList numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);\nList evenNumbers = numbers.stream().filter(n -> n % 2 == 0).collect(Collectors.toList());\nfor (Integer num : evenNumbers) { System.out.println(\"Even number: \" + num); }",
-    "options": {
-      "a": "Intregul cod foloseste doar programare declarativa.",
-      "b": "Metoda filter() modifica lista numbers.",
-      "c": "The code combines internal and external iteration of collections.",
-      "d": "The collect operation is lazy."
-    },
-    "answer": [
-      "c"
-    ],
-    "topic": "streams",
-    "source": "pt_exam_simulator.html",
-    "explanation": "Raspuns corect: c. Verifica definitia din curs pentru topicul: streams. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
-    "id": "PAG3-006",
-    "type": "multiple",
-    "text": "Care afirmatii NU sunt corecte despre urmatoarea atribuire Java:\nOperation operation = (int a, int b) -> Integer.sum(a,b);",
-    "options": {
-      "a": "Operation is an interfata containing exactly one abstract metoda cu doi parametri int si tip de returnare int.",
-      "b": "Cand executia programului ajunge la atribuire, metoda sum va fi apelata.",
-      "c": "Atribuirea poate fi inlocuita cu Operation operation = Integer::sum(a,b);",
-      "d": "Operation este o interfata care poate contine metode default si static."
-    },
-    "answer": [
-      "b",
-      "c"
-    ],
-    "topic": "importat din pagini",
-    "source": "pt_exam_simulator.html",
-    "explanation": "Raspuns corect: b, c. Verifica definitia din curs pentru topicul: importat din pagini. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
   },
   {
     "id": "PAG3-007",
@@ -5303,40 +4816,6 @@ const QUESTIONS = [
     "topic": "importat din pagini",
     "source": "pt_exam_simulator.html",
     "explanation": "Raspuns corect: d. Verifica definitia din curs pentru topicul: importat din pagini. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
-    "id": "PAG3-011",
-    "type": "single",
-    "text": "De ce este recomandat ca obiectele-cheie folosite intr-un Java Map, cum ar fi HashMap, sa fie imutabile?",
-    "options": {
-      "a": "Deoarece cheile imutabile imbunatatesc performanta operatiilor Map prin reducerea memoriei folosite.",
-      "b": "Deoarece daca o cheie este mutabila si este modificata dupa inserare, poate incalca consistenta Map-ului si poate cauza esecuri la cautare.",
-      "c": "Deoarece Java cere ca toate cheile sa fie imutabile pentru siguranta tipurilor.",
-      "d": "Deoarece cheile imutabile sincronizeaza automat accesul la Map."
-    },
-    "answer": [
-      "b"
-    ],
-    "topic": "streams",
-    "source": "pt_exam_simulator.html",
-    "explanation": "Raspuns corect: b. Verifica definitia din curs pentru topicul: streams. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
-    "id": "PAG3-012",
-    "type": "single",
-    "text": "Care dintre urmatoarele afirmatii in contextul principiului PECS NU este corecta?",
-    "options": {
-      "a": "Principiul PECS ajuta la deciderea momentului in care se folosesc wildcard-uri marginite in generics.",
-      "b": "Use ? extends T if you doar need to citire obiecte de tip T from a colectie generica.",
-      "c": "Urmatorul fragment de cod este permis:\nList ints = new ArrayList();\nInteger n = ints.get(0);",
-      "d": "Urmatorul fragment de cod nu este permis:\nList numbers = Arrays.asList(1, 2.5, 3L);\nnumbers.add(10);"
-    },
-    "answer": [
-      "c"
-    ],
-    "topic": "generics / PECS",
-    "source": "pt_exam_simulator.html",
-    "explanation": "Raspuns corect: c. Verifica definitia din curs pentru topicul: generics / PECS. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
   },
   {
     "id": "PAG3-013",
@@ -5585,23 +5064,6 @@ const QUESTIONS = [
     "explanation": "Raspuns corect: a. Verifica definitia din curs pentru topicul: importat din pagini. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
   },
   {
-    "id": "PAG3-027",
-    "type": "single",
-    "text": "(Răspuns unic) Care afirmație despre fragmentul de cod este adevărată?\nCar car = new Car(\"Toyota\");\nClass classObject = car.getClass();\nMethod metoda = classObject.getMethod(\"startEngine\");\nmetoda.invoke(car);",
-    "options": {
-      "a": "classObject contine atributele obiectului de tip Car (ex. anul fabricatiei, modelul masinii, etc.)",
-      "b": "Class classObject = car.forName(\"Car\"); reprezinta o alta modalitate prin care se poate obtine o referinta de tipul Class.",
-      "c": "Exemplul foloseste tehnica de reflection pentru a invoca dinamic metoda startEngine definita in clasa Class",
-      "d": "metoda.invoke(car) execută metoda startEngine pe obiectul car fără a fi nevoie să cunoaștem metoda la compilare."
-    },
-    "answer": [
-      "d"
-    ],
-    "topic": "reflection",
-    "source": "pt_exam_simulator.html",
-    "explanation": "Raspuns corect: d. Verifica definitia din curs pentru topicul: reflection. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
     "id": "PAG3-028",
     "type": "multiple",
     "text": "(Răspunsuri multiple - gaseste afirmatiile FALSE) Care afirmații despre codul de mai jos NU sunt adevărate?\npublic final class A {\nprivate final List list;\npublic A(List list) { this.list = list; }\npublic List getList() { return this.list; }\n}",
@@ -5699,17 +5161,17 @@ const QUESTIONS = [
     "type": "single",
     "text": "(Răspuns unic) Care afirmație despre wildcard-uri în Java generics este adevărată?",
     "options": {
-      "a": "Wildcard-ul ? poate fi folosit pentru a reprezenta orice tip referinta sau primitiv necunoscut.",
-      "b": "Într-o lista de tipul List se poate adauga orice obiect.",
-      "c": "Într-o lista de tipul List se pot adauga obiecte de orice tip care este un subtip al lui Number.",
-      "d": "Considerand o clasa A, tipul A este un subtip al lui Object."
+      "a": "Wildcard-ul `?` poate fi folosit pentru a reprezenta un tip referință necunoscut, nu un tip primitiv.",
+      "b": "Într-o listă de tip `List<?>` se poate adăuga orice obiect.",
+      "c": "Într-o listă de tip `List<? extends Number>` se pot adăuga obiecte de orice tip care este subtip al lui `Number`.",
+      "d": "Considerând o clasă generică `A`, tipul `A<?>` este un subtip al lui `Object`."
     },
     "answer": [
       "d"
     ],
     "topic": "generics / PECS",
     "source": "pt_exam_simulator.html",
-    "explanation": "Raspuns corect: d. Verifica definitia din curs pentru topicul: generics / PECS. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
+    "explanation": "Răspuns corect: d. Generics funcționează doar cu tipuri referință, iar `List<?>` și `List<? extends Number>` nu permit adăugarea liberă de obiecte. `A<?>` este tot un obiect Java, deci este subtip al lui `Object`."
   },
   {
     "id": "PAG3-034",
@@ -5902,23 +5364,6 @@ const QUESTIONS = [
     "explanation": "Raspuns corect: a, c, d. Verifica definitia din curs pentru topicul: thread-uri. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
   },
   {
-    "id": "PAG3-045",
-    "type": "single",
-    "text": "(Răspuns unic) Care dintre următoarele soluții este folosită pentru a obține lacătul asociat cu obiectul în Java?",
-    "options": {
-      "a": "Object.wait()",
-      "b": "Thread.sleep()",
-      "c": "Object.notify()",
-      "d": "Utilizarea cuvântului cheie synchronized in definiția unei metode"
-    },
-    "answer": [
-      "d"
-    ],
-    "topic": "importat din pagini",
-    "source": "pt_exam_simulator.html",
-    "explanation": "Raspuns corect: d. Verifica definitia din curs pentru topicul: importat din pagini. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
     "id": "PAG3-046",
     "type": "multiple",
     "text": "(Răspuns multiplu) Tehnica de Reflection in Java oferă:",
@@ -5991,24 +5436,6 @@ const QUESTIONS = [
     "explanation": "Raspuns corect: c. Verifica definitia din curs pentru topicul: importat din pagini. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
   },
   {
-    "id": "PAG3-050",
-    "type": "multiple",
-    "text": "(Răspuns multiplu) Care dintre afirmatiile de mai jos sunt corecte?",
-    "options": {
-      "a": "List este un subtip al lui List",
-      "b": "List nu este un subtip al lui List",
-      "c": "List este un subtip al lui List",
-      "d": "List nu este un subtip al lui List"
-    },
-    "answer": [
-      "b",
-      "c"
-    ],
-    "topic": "importat din pagini",
-    "source": "pt_exam_simulator.html",
-    "explanation": "Raspuns corect: b, c. Verifica definitia din curs pentru topicul: importat din pagini. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
     "id": "PAG3-051",
     "type": "single",
     "text": "(Răspuns simplu) \"Should have\" in schema MoSCoW se refera la cerințe:",
@@ -6024,26 +5451,6 @@ const QUESTIONS = [
     "topic": "requirements",
     "source": "pt_exam_simulator.html",
     "explanation": "Raspuns corect: a. Verifica definitia din curs pentru topicul: requirements. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
-    "id": "PAG3-052",
-    "type": "multiple",
-    "text": "(Răspuns multiplu) Care din următoarele afirmații despre relația de asociere in diagramele de clasa UML sunt adevărate?",
-    "options": {
-      "a": "Asocierea este o relație binara intre doua clase",
-      "b": "Asocierea poate fi reprezentata prin intermediul unei clase de asociere",
-      "c": "Asocierea este o relație in care un obiect dintr-o clasa interacționează cu un obiect dintr-o alta clasa",
-      "d": "Asocierea poate fi reflexiva"
-    },
-    "answer": [
-      "a",
-      "b",
-      "c",
-      "d"
-    ],
-    "topic": "UML",
-    "source": "pt_exam_simulator.html",
-    "explanation": "Raspuns corect: a, b, c, d. Verifica definitia din curs pentru topicul: UML. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
   },
   {
     "id": "PAG3-053",
@@ -6134,23 +5541,6 @@ const QUESTIONS = [
     "explanation": "Raspuns corect: a. Verifica definitia din curs pentru topicul: OOP. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
   },
   {
-    "id": "PAG3-058",
-    "type": "single",
-    "text": "(Răspuns simplu) In cazul principiului Single Responsibility este obligatoriu ca o clasa să:",
-    "options": {
-      "a": "Implementeze o singura interfață",
-      "b": "Extindă o singura clasa",
-      "c": "Aibă o singura sub clasa",
-      "d": "Aibă un singur motiv pentru a fi modificata"
-    },
-    "answer": [
-      "d"
-    ],
-    "topic": "SOLID",
-    "source": "pt_exam_simulator.html",
-    "explanation": "Raspuns corect: d. Verifica definitia din curs pentru topicul: SOLID. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
     "id": "PAG3-059",
     "type": "multiple",
     "text": "(Răspuns multiplu) Care dintre următoarele afirmații reprezintă avantaje ale programării funcționale?",
@@ -6189,19 +5579,19 @@ const QUESTIONS = [
   {
     "id": "PAG3-061",
     "type": "single",
-    "text": "(Raspuns unic) Care dintre urmatoarele fragmente de cod este valid in the context of generics?",
+    "text": "(Răspuns unic) Care dintre următoarele fragmente de cod este valid în contextul generics?",
     "options": {
-      "a": "List list = new ArrayList();",
-      "b": "List list = new ArrayList();",
-      "c": "T[] array = new T[20];",
-      "d": "List list = new ArrayList<>();"
+      "a": "`List<int> list = new ArrayList<>();`",
+      "b": "`List<String> list = new ArrayList<Integer>();`",
+      "c": "`T[] array = new T[20];`",
+      "d": "`List<String> list = new ArrayList<>();`"
     },
     "answer": [
       "d"
     ],
     "topic": "generics / PECS",
     "source": "pt_exam_simulator.html",
-    "explanation": "Raspuns corect: d. Verifica definitia din curs pentru topicul: generics / PECS. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
+    "explanation": "Răspuns corect: d. Generics nu acceptă tipuri primitive (`int`), tipul din stânga trebuie să fie compatibil cu cel din dreapta, iar `new T[20]` nu este permis din cauza type erasure."
   },
   {
     "id": "PAG3-062",
@@ -6633,12 +6023,12 @@ const QUESTIONS = [
   {
     "id": "PAG3-087",
     "type": "multiple",
-    "text": "(Răspunsuri multiple) Care dintre următoarele fragmente de cod sunt valide in context Generics?",
+    "text": "(Răspunsuri multiple) Care dintre următoarele fragmente de cod sunt valide în contextul generics?",
     "options": {
-      "a": "E obiect = new E(); // E este un parametru de tip",
-      "b": "ArrayList arrayList = new ArrayList();",
-      "c": "List list = new ArrayList();",
-      "d": "List list = new ArrayList<>();"
+      "a": "`E object = new E(); // E este un parametru de tip`",
+      "b": "`ArrayList<int> arrayList = new ArrayList<>();`",
+      "c": "`List<?> list = new ArrayList<String>();`",
+      "d": "`List<String> list = new ArrayList<>();`"
     },
     "answer": [
       "c",
@@ -6646,24 +6036,7 @@ const QUESTIONS = [
     ],
     "topic": "generics / PECS",
     "source": "pt_exam_simulator.html",
-    "explanation": "Raspuns corect: c, d. Verifica definitia din curs pentru topicul: generics / PECS. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
-    "id": "PAG3-088",
-    "type": "single",
-    "text": "(Răspuns unic) Care dintre următoarele afirmații despre tipurile parametrilor expresiilor lambda implicite este adevărată?",
-    "options": {
-      "a": "Sunt determinate pe baza semnaturii metodei default din interfata functionala asociata",
-      "b": "Nu sunt determinate pe baza niciunei metode din interfata functionala asociata",
-      "c": "Sunt determinate pe baza semnaturii metodei abstracte din interfata functionala asociata",
-      "d": "Sunt determinate pe baza semnaturii metodei statice din interfata functionala asociata"
-    },
-    "answer": [
-      "c"
-    ],
-    "topic": "importat din pagini",
-    "source": "pt_exam_simulator.html",
-    "explanation": "Raspuns corect: c. Verifica definitia din curs pentru topicul: importat din pagini. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
+    "explanation": "Răspuns corect: c, d. `new E()` nu este permis pentru un parametru generic, iar generics nu acceptă tipuri primitive ca `int`."
   },
   {
     "id": "PAG3-089",
@@ -6905,10 +6278,10 @@ const QUESTIONS = [
     "type": "multiple",
     "text": "(gaseste afirmatiile FALSE) În contextul tipurilor Bounds și Wildcards (PECS), care cod este INCORECT?",
     "options": {
-      "a": "List list = new ArrayList(); list.add(10);",
-      "b": "List list = new ArrayList(); list.add(10);",
-      "c": "List list = new ArrayList(); list.add(\"test\");",
-      "d": "public void copy(List src, List dest)"
+      "a": "`List<? extends Number> list = new ArrayList<Integer>(); list.add(10);`",
+      "b": "`List<? super Integer> list = new ArrayList<Number>(); list.add(10);`",
+      "c": "`List<?> list = new ArrayList<String>(); list.add(\"test\");`",
+      "d": "`public void copy(List<? extends T> src, List<? super T> dest)`"
     },
     "answer": [
       "a",
@@ -6916,7 +6289,7 @@ const QUESTIONS = [
     ],
     "topic": "generics / PECS",
     "source": "simulator_tfp_hard_pro_v4.html",
-    "explanation": "Raspuns corect: a, c. Verifica definitia din curs pentru topicul: generics / PECS. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
+    "explanation": "Răspuns corect: a, c. La `? extends Number` lista este producer: poți citi, dar nu poți adăuga valori concrete. La `List<?>` tipul este necunoscut, deci nu poți adăuga `\"test\"`; poți adăuga practic doar `null`."
   },
   {
     "id": "PAG4-013",
@@ -7153,324 +6526,12 @@ const QUESTIONS = [
     "topic": "SOLID",
     "source": "simulator_tfp_hard_pro_v4.html",
     "explanation": "Raspuns corect: a, c. Verifica definitia din curs pentru topicul: SOLID. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
-    "id": "PAG4-026",
-    "type": "single",
-    "text": "Care este diferența fundamentală între metodele wait() și sleep() în contextul sincronizării firelor de execuție? (Variație)",
-    "options": {
-      "a": "wait() eliberează monitorul (lock-ul) obiectului, în timp ce sleep() blochează execuția fără a ceda monitorul.",
-      "b": "sleep() poate fi invocat doar din interiorul unui bloc synchronized.",
-      "c": "Ambele metode pot fi utilizate pentru comunicarea între thread-uri (inter-thread communication) în mod echivalent.",
-      "d": "Niciuna dintre metode nu eliberează lock-ul, ambele adormind thread-ul pentru o perioadă fixă."
-    },
-    "answer": [
-      "a"
-    ],
-    "topic": "thread-uri",
-    "source": "simulator_tfp_hard_pro_v4.html",
-    "explanation": "Raspuns corect: a. Verifica definitia din curs pentru topicul: thread-uri. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
-    "id": "PAG4-027",
-    "type": "multiple",
-    "text": "(Raspunsuri multiple) Având un fragment de cod care folosește Stream-uri: `List list = stream.filter(x -> x > 10).map(x -> x * 2).collect(Collectors.toList());`. Ce putem afirma corect? (Variație)",
-    "options": {
-      "a": "Metodele `filter` și `map` sunt operații intermediare și au evaluare leneșă (lazy evaluation).",
-      "b": "Operația `collect` este o operație terminală care declanșează fluxul de procesare.",
-      "c": "List-a originală din care s-a creat stream-ul va fi modificată și va conține valorile multiplicate.",
-      "d": "Se parcurg automat elementele în paralel, fără intervenția programatorului."
-    },
-    "answer": [
-      "a",
-      "b"
-    ],
-    "topic": "streams",
-    "source": "simulator_tfp_hard_pro_v4.html",
-    "explanation": "Raspuns corect: a, b. Verifica definitia din curs pentru topicul: streams. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
-    "id": "PAG4-029",
-    "type": "single",
-    "text": "(Raspuns unic) Care este diferența conceptuală dintre asocierile de tip Aggregation (Agregare) și Composition (Compoziție) în UML? (Variație)",
-    "options": {
-      "a": "Agregarea implică un ownership mai slab; componenta poate exista independent de întreg, pe când în Compoziție componenta este distrusă odată cu întregul.",
-      "b": "Compoziția modelează relația 'is-a', pe când agregarea modelează relația 'uses-a'.",
-      "c": "În Java, agregarea se implementează prin moștenire, iar compoziția prin interfețe.",
-      "d": "Nu există nicio diferență la nivel de design, ele folosesc aceleași săgeți în UML."
-    },
-    "answer": [
-      "a"
-    ],
-    "topic": "UML",
-    "source": "simulator_tfp_hard_pro_v4.html",
-    "explanation": "Raspuns corect: a. Verifica definitia din curs pentru topicul: UML. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
-    "id": "PAG4-030",
-    "type": "multiple",
-    "text": "(gaseste afirmatiile FALSE) Care dintre următoarele declarații referitoare la cuvântul cheie `final` NU sunt corecte? (Variație)",
-    "options": {
-      "a": "Un câmp instanță declarat `final` poate fi reinițializat din interiorul oricărei metode a clasei, o singură dată.",
-      "b": "O clasă marcată `final` previne complet derivarea ei (nu poate fi moștenită).",
-      "c": "O metodă marcată cu `final` nu poate fi suprascrisă (overridden) de subclase.",
-      "d": "O listă declarată `final List list = new ArrayList<>();` devine imutabilă, fiind imposibilă adăugarea de elemente."
-    },
-    "answer": [
-      "a",
-      "d"
-    ],
-    "topic": "importat din pagini",
-    "source": "simulator_tfp_hard_pro_v4.html",
-    "explanation": "Raspuns corect: a, d. Verifica definitia din curs pentru topicul: importat din pagini. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
-    "id": "PAG4-031",
-    "type": "multiple",
-    "text": "(Raspunsuri multiple) Care sunt caracteristicile esențiale ale șablonului de proiectare Observer? (Variație)",
-    "options": {
-      "a": "Stabilește o dependență unu-la-mai-mulți între obiecte.",
-      "b": "Îmbunătățește decuplarea; 'Subiectul' nu cunoaște implementările concrete ale 'Observatorilor'.",
-      "c": "Orice schimbare a stării 'Subiectului' declanșează notificarea tuturor observatorilor abonați.",
-      "d": "Garantați executarea observatorilor pe fire de execuție complet separate."
-    },
-    "answer": [
-      "a",
-      "b",
-      "c"
-    ],
-    "topic": "design patterns",
-    "source": "simulator_tfp_hard_pro_v4.html",
-    "explanation": "Raspuns corect: a, b, c. Verifica definitia din curs pentru topicul: design patterns. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
-    "id": "PAG4-032",
-    "type": "single",
-    "text": "(Raspuns unic) Care principiu SOLID stipulează: \"Clienții nu ar trebui să fie forțați să depindă de interfețe pe care nu le utilizează\"? (Variație)",
-    "options": {
-      "a": "Single Responsibility Principle (SRP)",
-      "b": "Dependency Inversion Principle (DIP)",
-      "c": "Interface Segregation Principle (ISP)",
-      "d": "Liskov Substitution Principle (LSP)"
-    },
-    "answer": [
-      "c"
-    ],
-    "topic": "SOLID",
-    "source": "simulator_tfp_hard_pro_v4.html",
-    "explanation": "Raspuns corect: c. Verifica definitia din curs pentru topicul: SOLID. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
-    "id": "PAG4-033",
-    "type": "multiple",
-    "text": "(gaseste afirmatiile FALSE) Care afirmații despre Garbage Collection și lucrul cu memoria în Java NU sunt adevărate? (Variație)",
-    "options": {
-      "a": "Apelarea System.gc() garantează declanșarea imediată a Garbage Collector-ului.",
-      "b": "Programatorul trebuie să șteargă manual referințele prin keyword-ul `delete` din Java pentru a elibera memoria pe heap.",
-      "c": "Garbage Collector-ul rulează automat și elimină obiectele pentru care nu mai există nicio referință activă.",
-      "d": "Obiectele crea ca variabile locale în interiorul unei metode sunt păstrate pe stivă (Stack)."
-    },
-    "answer": [
-      "a",
-      "b",
-      "d"
-    ],
-    "topic": "streams",
-    "source": "simulator_tfp_hard_pro_v4.html",
-    "explanation": "Raspuns corect: a, b, d. Verifica definitia din curs pentru topicul: streams. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
-    "id": "PAG4-034",
-    "type": "multiple",
-    "text": "(Raspunsuri multiple) Având un design architectural bazat pe MVC, ce afirmații descriu corect modelul Model-View-Controller? (Variație)",
-    "options": {
-      "a": "Modelul încapsulează starea aplicației, logica de afaceri (business logic) și persistarea datelor.",
-      "b": "Controller-ul ascultă interacțiunile utilizatorului și traduce comenzile modificând Modelul sau View-ul.",
-      "c": "View-ul cunoaște Controller-ul și preia direct inputul pentru a-l modifica pe cont propriu.",
-      "d": "Promovează o cuplare strânsă pentru a crește performanța desenării interfeței."
-    },
-    "answer": [
-      "a",
-      "b"
-    ],
-    "topic": "UML",
-    "source": "simulator_tfp_hard_pro_v4.html",
-    "explanation": "Raspuns corect: a, b. Verifica definitia din curs pentru topicul: UML. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
-    "id": "PAG4-036",
-    "type": "multiple",
-    "text": "(Raspunsuri multiple) Ce consecințe are mecanismul de Type Erasure (ștergerea tipurilor) aplicat la compilare în Java pentru Generics? (Variație)",
-    "options": {
-      "a": "La execuție (runtime), obiectele din List și List aparțin exact aceleiași clase (List).",
-      "b": "Apare o eroare de compilare dacă încerci să faci `new T()` pentru un parametru generic T.",
-      "c": "Nu se pot instanția array-uri generice (ex: `T[] array = new T[10]`).",
-      "d": "Variabilele statice nu pot utiliza parametrii de tip ai clasei (ex: `static T item;`)."
-    },
-    "answer": [
-      "a",
-      "b",
-      "c",
-      "d"
-    ],
-    "topic": "generics / PECS",
-    "source": "simulator_tfp_hard_pro_v4.html",
-    "explanation": "Raspuns corect: a, b, c, d. Verifica definitia din curs pentru topicul: generics / PECS. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
-    "id": "PAG4-037",
-    "type": "multiple",
-    "text": "(gaseste afirmatiile FALSE) În contextul tipurilor Bounds și Wildcards (PECS), care cod este INCORECT? (Variație)",
-    "options": {
-      "a": "List list = new ArrayList(); list.add(10);",
-      "b": "List list = new ArrayList(); list.add(10);",
-      "c": "List list = new ArrayList(); list.add(\"test\");",
-      "d": "public void copy(List src, List dest)"
-    },
-    "answer": [
-      "a",
-      "c"
-    ],
-    "topic": "generics / PECS",
-    "source": "simulator_tfp_hard_pro_v4.html",
-    "explanation": "Raspuns corect: a, c. Verifica definitia din curs pentru topicul: generics / PECS. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
-    "id": "PAG4-038",
-    "type": "multiple",
-    "text": "(Raspunsuri multiple) Care sunt aspectele prin care Singleton Pattern poate introduce vulnerabilități sau probleme în design-ul aplicațiilor complexe? (Variație)",
-    "options": {
-      "a": "Îngreunează mult testarea unitară (Unit Testing) deoarece păstrează o stare globală ascunsă (Global State).",
-      "b": "Încalcă Single Responsibility Principle (controlează propriul lifecycle, dar face și business logic).",
-      "c": "Într-un mediu multi-threading, implementările naive de Singleton pot duce la crearea mai multor instanțe.",
-      "d": "Consumă prea multă memorie din cauză că fiecare instanțiere adaugă un nou obiect pe heap."
-    },
-    "answer": [
-      "a",
-      "b",
-      "c"
-    ],
-    "topic": "design patterns",
-    "source": "simulator_tfp_hard_pro_v4.html",
-    "explanation": "Raspuns corect: a, b, c. Verifica definitia din curs pentru topicul: design patterns. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
-    "id": "PAG4-040",
-    "type": "multiple",
-    "text": "(Raspunsuri multiple) Despre variabilele de tip `AtomicInteger` vs `volatile int`, ce se poate afirma cu certitudine? (Variație)",
-    "options": {
-      "a": "Ambele previn salvarea valorii în cache-ul specific unui anumit Thread (garantează vizibilitatea).",
-      "b": "`volatile` oferă mecanisme pentru operații Compare-And-Swap (CAS), pe când AtomicInteger nu.",
-      "c": "`AtomicInteger.incrementAndGet()` este perfect thread-safe fără a utiliza `synchronized`.",
-      "d": "`volatile int x; x++;` este o operațiune lipsită de race conditions."
-    },
-    "answer": [
-      "a",
-      "c"
-    ],
-    "topic": "thread-uri",
-    "source": "simulator_tfp_hard_pro_v4.html",
-    "explanation": "Raspuns corect: a, c. Verifica definitia din curs pentru topicul: thread-uri. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
-    "id": "PAG4-041",
-    "type": "multiple",
-    "text": "(Raspunsuri multiple) Care dintre următoarele afirmații descriu avantaje incontestabile ale principiului 'Dependency Injection' (DI)? (Variație)",
-    "options": {
-      "a": "Extrage responsabilitatea de construire a obiectelor din interiorul claselor, externalizând-o către un container/configurație.",
-      "b": "Crește masiv testabilitatea, deoarece dependențele pot fi ușor înlocuite cu obiecte 'Mock' în testele unitare.",
-      "c": "Promovează decuplarea claselor, deoarece acestea nu depind direct de implementări concrete instanțiate prin 'new'.",
-      "d": "Susține direct Principiul Inversiunii Dependențelor (DIP) și aplicarea Inversion of Control (IoC)."
-    },
-    "answer": [
-      "a",
-      "b",
-      "c",
-      "d"
-    ],
-    "topic": "importat din pagini",
-    "source": "simulator_tfp_hard_pro_v4.html",
-    "explanation": "Raspuns corect: a, b, c, d. Verifica definitia din curs pentru topicul: importat din pagini. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
-    "id": "PAG4-042",
-    "type": "multiple",
-    "text": "(Raspunsuri multiple) Un alt concept fundamental: Care sunt caracteristicile esențiale care definesc 'Imutabilitatea' unui obiect în Java? (Variație)",
-    "options": {
-      "a": "Starea sa internă (câmpurile sale) nu poate fi modificată după ce obiectul a fost creat/instanțiat.",
-      "b": "Obiectul este în mod intrinsec și automat Thread-Safe.",
-      "c": "Nu expune metode de tip setter (mutators).",
-      "d": "Returnează clone sau copii defensive ale referințelor sale mutabile către apelant."
-    },
-    "answer": [
-      "a",
-      "b",
-      "c",
-      "d"
-    ],
-    "topic": "immutability",
-    "source": "simulator_tfp_hard_pro_v4.html",
-    "explanation": "Raspuns corect: a, b, c, d. Verifica definitia din curs pentru topicul: immutability. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
-    "id": "PAG4-043",
-    "type": "single",
-    "text": "(Raspuns unic) Conform standardelor cerințelor de software, ce descrie o 'Cerință Funcțională' (Functional Requirement)? (Variație)",
-    "options": {
-      "a": "Faptul că aplicația trebuie să fie responsivă în mai puțin de 50 de milisecunde la accesul din rețea.",
-      "b": "Capacitatea utilizatorului de a exporta lista de tranzacții într-un format CSV sau PDF.",
-      "c": "Nivelul înalt de disponibilitate al serverului, exprimat în SLA-uri (ex: 99.99% Uptime).",
-      "d": "Mecanismele avansate de securitate, criptarea bazei de date cu algoritm AES-256."
-    },
-    "answer": [
-      "b"
-    ],
-    "topic": "requirements",
-    "source": "simulator_tfp_hard_pro_v4.html",
-    "explanation": "Raspuns corect: b. Verifica definitia din curs pentru topicul: requirements. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
-    "id": "PAG4-044",
-    "type": "multiple",
-    "text": "(gaseste afirmatiile FALSE) Referitor la diagrama de clase UML, ce afirmații sunt INCORECTE? (Variație)",
-    "options": {
-      "a": "Relația de 'Realization' reprezintă legătura dintre o clasă și interfața pe care o implementează.",
-      "b": "O săgeată cu romb negru indică 'Agregare', ceea ce înseamnă că partea poate exista fără întreg.",
-      "c": "Simbolul '#' pus înaintea unui atribut în UML semnifică nivelul de acces 'protected'.",
-      "d": "O asociație bidirecțională presupune ca doar una dintre clase să o cunoască pe cealaltă."
-    },
-    "answer": [
-      "b",
-      "d"
-    ],
-    "topic": "UML",
-    "source": "simulator_tfp_hard_pro_v4.html",
-    "explanation": "Raspuns corect: b, d. Verifica definitia din curs pentru topicul: UML. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
-  },
-  {
-    "id": "PAG4-045",
-    "type": "multiple",
-    "text": "(Raspunsuri multiple) Având un cod funcțional de forma `list.stream().filter(s -> s.startsWith(\"a\")).findFirst();`. Ce se întâmplă dacă lista are 1 milion de elemente, dar primul element începe cu 'a'? (Variație)",
-    "options": {
-      "a": "Sistemul va procesa și filtra toate cele 1 milion de elemente din listă, apoi îl va returna pe primul.",
-      "b": "Datorită evaluării leneșe (lazy evaluation) și a operației 'short-circuiting' findFirst(), procesarea se va opri instant după găsirea primului element util.",
-      "c": "Este un exemplu de iterare internă optimizată oferită de API-ul de stream-uri din Java.",
-      "d": "Generarea unui stream implică mereu paralelizarea codului dacă colecția depășește 10.000 elemente."
-    },
-    "answer": [
-      "b",
-      "c"
-    ],
-    "topic": "streams",
-    "source": "simulator_tfp_hard_pro_v4.html",
-    "explanation": "Raspuns corect: b, c. Verifica definitia din curs pentru topicul: streams. Variantele gresite contin de obicei o inversare, o exagerare sau o confuzie intre concepte apropiate."
   }
 ];
 const CONFIG = { count: 25, minutes: 35, pointPerQuestion: 0.36, officePoint: 1 };
 const LS_KEY = 'tpJavaQuizHistoryV1';
 const SEEN_KEY = 'tpJavaQuizSeenQuestionIdsV1';
-const SEEN_SIG_KEY = 'tpJavaQuizSeenQuestionSignaturesV2';
-const SEEN_TEXT_KEY = 'tpJavaQuizSeenQuestionTextSignaturesV2';
+const SEEN_STRICT_KEY = 'tpJavaQuizSeenStrictV2';
 let state = null;
 let timerHandle = null;
 
@@ -7488,262 +6549,203 @@ function sameSet(a,b) {
   return A===B;
 }
 function escapeHtml(s) { return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
+
 function decodeHtmlEntities(s) {
-  const textarea = document.createElement('textarea');
-  textarea.innerHTML = String(s || '');
-  return textarea.value;
+  const txt = document.createElement('textarea');
+  txt.innerHTML = String(s || '');
+  return txt.value;
 }
-function normalizeRichSource(s) {
-  return decodeHtmlEntities(s)
-    .replace(/<br\s*\/?\s*>/gi, '\n')
-    .replace(/<\/code>/gi, '```')
-    .replace(/<code>/gi, '```')
-    .replace(/<\/?(strong|em|b|i)>/gi, '')
-    .replace(/\r\n/g, '\n')
-    .replace(/\r/g, '\n');
-}
-function formatInlineText(raw) {
-  const parts = String(raw || '').split(/(`[^`]*`)/g);
-  return parts.map(part => {
-    if (part.length >= 2 && part.startsWith('`') && part.endsWith('`')) {
-      return `<code class="inline-code">${escapeHtml(part.slice(1, -1))}</code>`;
-    }
-    return escapeHtml(part);
-  }).join('');
-}
-function isLikelyCodeLine(line) {
+function looksLikeCodeLine(line) {
   const t = String(line || '').trim();
   if (!t) return false;
-  if (/^(public|private|protected|class|interface|enum|static|final|volatile|transient|synchronized|return|throw|new|if|for|while|switch|try|catch)\b/.test(t)) return true;
-  if (/^(B|A|Car|Class|Method|Predicate|Serializable|Operation|Thread|AtomicInteger)\b/.test(t)) return true;
-  if (/^List<[^>]+>\s+\w+\s*=/.test(t)) return true;
-  if (/\w+\s*=\s*new\s+\w+/.test(t)) return true;
-  if (/[{};]/.test(t)) return true;
-  if (/->|::|\+\+|--/.test(t)) return true;
-  if (/\.\w+\([^)]*\)/.test(t) && !/^Care\b|^Ce\b|^De ce\b|^In\b|^În\b|^Metoda\b|^Funcția\b|^Afirmația\b/.test(t)) return true;
-  return false;
+  return /(;|\{|\}|->|::|<\?|\?>|<\w+>|<\w+\s*,|new\s+\w|public\s+|private\s+|class\s+|interface\s+|List<|ArrayList<|Predicate<|Serializable|AtomicInteger|volatile\s+int|\.stream\(|\.filter\(|\.map\(|\.collect\(|\.toList\(|System\.out|method\.invoke|Class\.forName|counter\+\+|getAndIncrement)/.test(t);
 }
-function flushParagraph(lines) {
-  const text = lines.join('\n').trim();
-  if (!text) return '';
-  return `<p>${formatInlineText(text).replace(/\n/g, '<br>')}</p>`;
+function renderInlineCode(s) {
+  return escapeHtml(s).replace(/`([^`]+)`/g, '<code>$1</code>');
 }
-function flushCode(lines) {
-  const text = lines.join('\n').replace(/^\n+|\n+$/g, '');
-  if (!text) return '';
-  return `<pre class="code-block"><code>${escapeHtml(text)}</code></pre>`;
-}
-function formatRichText(text, autoCodeBlocks = true) {
-  const normalized = normalizeRichSource(text);
-  const fenced = normalized.split('```');
-  let html = '';
-  for (let partIndex = 0; partIndex < fenced.length; partIndex++) {
-    const segment = fenced[partIndex];
-    if (partIndex % 2 === 1) {
-      html += flushCode(segment.split('\n'));
-      continue;
+function renderRichText(raw) {
+  const text = decodeHtmlEntities(String(raw || '')).replace(/\r\n/g, '\n').replace(/<br\s*\/?\s*>/gi, '\n');
+  const lines = text.split('\n');
+  const out = [];
+  let buf = [];
+  function flushCode() {
+    if (buf.length) {
+      out.push('<pre><code>' + escapeHtml(buf.join('\n').replace(/`/g,'')) + '</code></pre>');
+      buf = [];
     }
-    if (!autoCodeBlocks) {
-      html += formatInlineText(segment).replace(/\n/g, '<br>');
-      continue;
-    }
-    const lines = segment.split('\n');
-    let paragraph = [];
-    let code = [];
-    const flushParaNow = () => { html += flushParagraph(paragraph); paragraph = []; };
-    const flushCodeNow = () => { html += flushCode(code); code = []; };
-    for (const line of lines) {
-      if (isLikelyCodeLine(line)) {
-        flushParaNow();
-        code.push(line);
-      } else {
-        flushCodeNow();
-        if (line.trim() === '') {
-          flushParaNow();
-        } else {
-          paragraph.push(line);
-        }
-      }
-    }
-    flushCodeNow();
-    flushParaNow();
   }
-  return html || '';
+  for (const line of lines) {
+    const trimmed = line.trim();
+    const backtickOnly = /^`.*`$/.test(trimmed);
+    const codeCandidate = backtickOnly || looksLikeCodeLine(trimmed);
+    if (codeCandidate) {
+      buf.push(backtickOnly ? trimmed.slice(1, -1) : line);
+    } else {
+      flushCode();
+      if (trimmed) out.push('<div>' + renderInlineCode(line) + '</div>');
+      else out.push('<br>');
+    }
+  }
+  flushCode();
+  return out.join('');
 }
+
 function showPage(name) {
   document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
   document.getElementById('page-' + name).classList.remove('hidden');
   if (name === 'bank') renderBank(false);
   if (name === 'history') renderHistory();
+  if (name === 'chapters') renderChapters();
 }
 function history() {
   try { return JSON.parse(localStorage.getItem(LS_KEY) || '[]'); } catch(e) { return []; }
 }
 function saveHistory(h) { localStorage.setItem(LS_KEY, JSON.stringify(h)); }
-function getStoredArray(key) {
-  try {
-    const raw = JSON.parse(localStorage.getItem(key) || '[]');
-    return Array.isArray(raw) ? raw : [];
-  } catch(e) {
-    return [];
-  }
-}
-function getStoredSeenQuestionIds() {
-  return getStoredArray(SEEN_KEY);
-}
-function normalizeForRepeat(value) {
-  return decodeHtmlEntities(String(value || ''))
+function normalizeForSignature(s) {
+  return decodeHtmlEntities(String(s || ''))
     .replace(/<br\s*\/?\s*>/gi, ' ')
-    .replace(/<\/code>/gi, ' ')
-    .replace(/<code>/gi, ' ')
-    .replace(/<\/?.*?>/g, ' ')
-    .replace(/```/g, ' ')
-    .replace(/`/g, ' ')
-    .replace(/[“”„]/g, '"')
-    .replace(/[’']/g, "'")
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .replace(/\(\s*variatie\s*\)/g, ' ')
-    .replace(/^\s*\(\s*(raspuns unic|raspunsuri multiple|raspuns multiplu|single answer|multiple answers|truefalse)\s*\)\s*/g, '')
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/`+/g, '')
+    .replace(/\(Variație\)|\(Variatie\)/gi, '')
     .replace(/\s+/g, ' ')
-    .trim();
+    .trim()
+    .toLowerCase();
 }
-function questionTextSignature(q) {
-  return normalizeForRepeat(q && q.text ? q.text : '');
+function questionTextKey(q) {
+  return normalizeForSignature(q && q.text ? q.text : q);
 }
-function canUseTextSignature(sig) {
-  return String(sig || '').length >= 60;
+function questionFullKey(q) {
+  const opts = q && q.options ? Object.keys(q.options).sort().map(k => `${k}:${normalizeForSignature(q.options[k])}`).join('|') : '';
+  return questionTextKey(q) + '||' + opts;
 }
-function questionFullSignature(q) {
-  if (!q) return '';
-  const opts = Object.entries(q.options || {})
-    .sort((a,b) => a[0].localeCompare(b[0]))
-    .map(([letter, text]) => `${letter}:${normalizeForRepeat(text)}`)
-    .join('|');
-  return `${questionTextSignature(q)}||${opts}`;
-}
-function findQuestionById(id) {
-  return QUESTIONS.find(q => q.id === id) || null;
-}
-function addQuestionToSeenMemory(q, ids, signatures) {
-  if (!q) return;
-  ids.add(q.id);
-  const full = questionFullSignature(q);
-  const text = questionTextSignature(q);
-  if (full) signatures.full.add(full);
-  if (canUseTextSignature(text)) signatures.text.add(text);
-}
-function getSeenQuestionIds() {
-  const seen = new Set(getStoredSeenQuestionIds());
-  for (const test of history()) {
-    for (const a of test.answers || []) {
-      if (a.questionId) seen.add(a.questionId);
-    }
-    for (const q of test.unansweredQuestions || []) {
-      if (q.id) seen.add(q.id);
-    }
-  }
-  return seen;
-}
-function getSeenQuestionSignatures() {
-  const signatures = {
-    full: new Set(getStoredArray(SEEN_SIG_KEY)),
-    text: new Set(getStoredArray(SEEN_TEXT_KEY))
+function emptySeenTracking() { return { ids: [], texts: [], full: [] }; }
+function normalizeSeenTracking(obj) {
+  return {
+    ids: Array.isArray(obj && obj.ids) ? obj.ids : [],
+    texts: Array.isArray(obj && obj.texts) ? obj.texts : [],
+    full: Array.isArray(obj && obj.full) ? obj.full : []
   };
-
-  // Migrare automata din istoricul vechi: daca ai raspuns deja la o intrebare,
-  // o recunoastem si dupa text/optiuni, nu doar dupa id.
+}
+function buildSeenTrackingFromOldData() {
+  const tracking = emptySeenTracking();
+  const addQuestion = q => {
+    if (!q) return;
+    tracking.ids.push(q.id);
+    tracking.texts.push(questionTextKey(q));
+    tracking.full.push(questionFullKey(q));
+  };
+  try {
+    const oldIds = JSON.parse(localStorage.getItem(SEEN_KEY) || '[]');
+    if (Array.isArray(oldIds)) oldIds.forEach(id => addQuestion(QUESTIONS.find(q => q.id === id) || {id, text:id, options:{}}));
+  } catch(e) {}
   for (const test of history()) {
     for (const a of test.answers || []) {
-      const q = findQuestionById(a.questionId);
-      if (q) {
-        addQuestionToSeenMemory(q, new Set(), signatures);
-      } else if (a.text) {
-        const sig = normalizeForRepeat(a.text);
-        if (canUseTextSignature(sig)) signatures.text.add(sig);
+      const q = QUESTIONS.find(x => x.id === a.questionId);
+      if (q) addQuestion(q);
+      else if (a.text) {
+        tracking.ids.push(a.questionId);
+        tracking.texts.push(questionTextKey(a.text));
       }
     }
     for (const u of test.unansweredQuestions || []) {
-      const q = findQuestionById(u.id);
-      if (q) {
-        addQuestionToSeenMemory(q, new Set(), signatures);
-      } else if (u.text) {
-        const sig = normalizeForRepeat(u.text);
-        if (canUseTextSignature(sig)) signatures.text.add(sig);
+      const q = QUESTIONS.find(x => x.id === u.id);
+      if (q) addQuestion(q);
+      else if (u.text) {
+        tracking.ids.push(u.id);
+        tracking.texts.push(questionTextKey(u.text));
       }
     }
   }
-  return signatures;
+  tracking.ids = [...new Set(tracking.ids.filter(Boolean))];
+  tracking.texts = [...new Set(tracking.texts.filter(Boolean))];
+  tracking.full = [...new Set(tracking.full.filter(Boolean))];
+  localStorage.setItem(SEEN_STRICT_KEY, JSON.stringify(tracking));
+  return tracking;
 }
-function saveSeenQuestionMemory(ids, signatures) {
-  localStorage.setItem(SEEN_KEY, JSON.stringify([...ids]));
-  localStorage.setItem(SEEN_SIG_KEY, JSON.stringify([...signatures.full]));
-  localStorage.setItem(SEEN_TEXT_KEY, JSON.stringify([...signatures.text]));
+function getSeenTracking() {
+  try {
+    const stored = localStorage.getItem(SEEN_STRICT_KEY);
+    if (stored) return normalizeSeenTracking(JSON.parse(stored));
+  } catch(e) {}
+  return buildSeenTrackingFromOldData();
+}
+function saveSeenTracking(tracking) {
+  const clean = normalizeSeenTracking(tracking);
+  clean.ids = [...new Set(clean.ids.filter(Boolean))];
+  clean.texts = [...new Set(clean.texts.filter(Boolean))];
+  clean.full = [...new Set(clean.full.filter(Boolean))];
+  localStorage.setItem(SEEN_STRICT_KEY, JSON.stringify(clean));
+  localStorage.setItem(SEEN_KEY, JSON.stringify(clean.ids));
   updateSeenStats();
 }
-function isQuestionSeenOrDuplicate(q, ids, signatures, batchFull, batchText) {
-  const full = questionFullSignature(q);
-  const text = questionTextSignature(q);
-  if (ids.has(q.id)) return true;
-  if (full && (signatures.full.has(full) || batchFull.has(full))) return true;
-  if (canUseTextSignature(text) && (signatures.text.has(text) || batchText.has(text))) return true;
-  return false;
+function getSeenQuestionIds() {
+  return new Set(getSeenTracking().ids);
 }
-function buildAvailableQuestions(ids, signatures) {
-  const available = [];
-  const batchFull = new Set();
-  const batchText = new Set();
-
-  for (const q of shuffle(QUESTIONS)) {
-    if (isQuestionSeenOrDuplicate(q, ids, signatures, batchFull, batchText)) continue;
-    available.push(q);
-    const full = questionFullSignature(q);
-    const text = questionTextSignature(q);
-    if (full) batchFull.add(full);
-    if (canUseTextSignature(text)) batchText.add(text);
+function questionAlreadySeen(q, tracking) {
+  const ids = new Set(tracking.ids);
+  const texts = new Set(tracking.texts);
+  const full = new Set(tracking.full);
+  return ids.has(q.id) || texts.has(questionTextKey(q)) || full.has(questionFullKey(q));
+}
+function markQuestionsSeen(questions) {
+  const tracking = getSeenTracking();
+  for (const q of questions) {
+    tracking.ids.push(q.id);
+    tracking.texts.push(questionTextKey(q));
+    tracking.full.push(questionFullKey(q));
   }
-  return available;
+  saveSeenTracking(tracking);
 }
 function pickQuestionsWithoutRepeats() {
-  let seenIds = getSeenQuestionIds();
-  let seenSignatures = getSeenQuestionSignatures();
-  let available = buildAvailableQuestions(seenIds, seenSignatures);
+  let tracking = getSeenTracking();
+  let available = QUESTIONS.filter(q => !questionAlreadySeen(q, tracking));
 
   if (available.length < CONFIG.count) {
     const message = available.length === 0
-      ? 'Ai parcurs toate intrebarile unice din banca. Resetez lista de intrebari puse ca sa poti incepe un test nou complet.'
-      : `Mai sunt doar ${available.length} intrebari unice nepuse, dar testul are ${CONFIG.count}. Resetez lista de intrebari puse ca sa primesti un test complet.`;
+      ? 'Ai parcurs toate intrebarile distincte din banca. Resetez lista de intrebari puse ca sa poti incepe un test nou complet.'
+      : `Mai sunt doar ${available.length} intrebari noi distincte, dar testul are ${CONFIG.count}. Resetez lista de intrebari puse ca sa primesti un test complet.`;
     alert(message);
-    seenIds = new Set();
-    seenSignatures = { full: new Set(), text: new Set() };
-    localStorage.removeItem(SEEN_KEY);
-    localStorage.removeItem(SEEN_SIG_KEY);
-    localStorage.removeItem(SEEN_TEXT_KEY);
-    available = buildAvailableQuestions(seenIds, seenSignatures);
+    tracking = emptySeenTracking();
+    available = QUESTIONS.slice();
   }
 
-  const picked = available.slice(0, CONFIG.count);
-  for (const q of picked) addQuestionToSeenMemory(q, seenIds, seenSignatures);
-  saveSeenQuestionMemory(seenIds, seenSignatures);
+  const picked = [];
+  const usedText = new Set();
+  const usedFull = new Set();
+  for (const q of shuffle(available)) {
+    const tk = questionTextKey(q);
+    const fk = questionFullKey(q);
+    if (usedText.has(tk) || usedFull.has(fk)) continue;
+    picked.push(q);
+    usedText.add(tk);
+    usedFull.add(fk);
+    if (picked.length === CONFIG.count) break;
+  }
+  if (picked.length < CONFIG.count) {
+    for (const q of shuffle(available)) {
+      if (!picked.some(x => x.id === q.id)) picked.push(q);
+      if (picked.length === CONFIG.count) break;
+    }
+  }
+  markQuestionsSeen(picked);
   return picked;
 }
 function updateSeenStats() {
   const bankEl = document.getElementById('bankCount');
   const unseenEl = document.getElementById('unseenCount');
+  const chapterEl = document.getElementById('chapterCount');
   if (bankEl) bankEl.textContent = QUESTIONS.length;
+  if (chapterEl) chapterEl.textContent = getAllTopics().length;
   if (unseenEl) {
-    const seenIds = getSeenQuestionIds();
-    const seenSignatures = getSeenQuestionSignatures();
-    const unseen = buildAvailableQuestions(seenIds, seenSignatures).length;
+    const tracking = getSeenTracking();
+    const unseen = QUESTIONS.filter(q => !questionAlreadySeen(q, tracking)).length;
     unseenEl.textContent = unseen;
   }
 }
 function resetSeenQuestions() {
   if (!confirm('Resetezi lista de intrebari deja puse? Istoricul notelor ramane salvat, dar intrebarile pot aparea din nou.')) return;
   localStorage.removeItem(SEEN_KEY);
-  localStorage.removeItem(SEEN_SIG_KEY);
-  localStorage.removeItem(SEEN_TEXT_KEY);
+  localStorage.setItem(SEEN_STRICT_KEY, JSON.stringify(emptySeenTracking()));
   updateSeenStats();
   alert('Lista de intrebari puse a fost resetata.');
 }
@@ -7795,7 +6797,7 @@ function renderQuestion() {
   document.getElementById('qTypeBadge').textContent = q.type === 'multiple' ? 'Raspuns multiplu' : 'Raspuns unic';
   document.getElementById('topicBadge').textContent = q.topic;
   document.getElementById('sourceBadge').textContent = q.source;
-  document.getElementById('questionText').innerHTML = formatRichText(q.text, true);
+  document.getElementById('questionText').innerHTML = renderRichText(q.text);
   document.getElementById('progressText').textContent = `Intrebarea ${state.index + 1}/${state.questions.length}`;
   document.getElementById('progressBar').style.width = `${(state.index) / state.questions.length * 100}%`;
   document.getElementById('liveGrade').textContent = computeGrade().toFixed(2);
@@ -7811,7 +6813,7 @@ function renderQuestion() {
       if (q.answer.includes(letter)) label.classList.add('correct');
       if (selected.includes(letter) && !q.answer.includes(letter)) label.classList.add('wrong');
     }
-    label.innerHTML = `<input type="${inputType}" name="answer" value="${letter}" ${selected.includes(letter)?'checked':''} ${previous?'disabled':''}> <div class="option-body"><b>${letter}.</b> ${formatRichText(text, false)}</div>`;
+    label.innerHTML = `<input type="${inputType}" name="answer" value="${letter}" ${selected.includes(letter)?'checked':''} ${previous?'disabled':''}> <div><b>${letter}.</b> ${renderRichText(text)}</div>`;
     optionsBox.appendChild(label);
   }
   const fb = document.getElementById('feedback');
@@ -7829,7 +6831,7 @@ function submitAnswer() {
   const selected = getSelected();
   if (selected.length === 0) { alert('Alege cel putin un raspuns.'); return; }
   const isCorrect = sameSet(selected, q.answer);
-  const record = { questionId:q.id, selected, correct:[...q.answer].sort(), isCorrect, topic:q.topic, source:q.source, text:q.text };
+  const record = { questionId:q.id, questionTextKey:questionTextKey(q), questionFullKey:questionFullKey(q), selected, correct:[...q.answer].sort(), isCorrect, topic:q.topic, source:q.source, text:q.text };
   state.answers.push(record);
   showFeedback(record);
   renderQuestion();
@@ -7842,7 +6844,7 @@ function showFeedback(record) {
   fb.innerHTML = `<b>${record.isCorrect ? 'Corect!' : 'Gresit.'}</b><br>
     Raspuns corect: <b>${lettersText(record.correct)}</b><br>
     Raspunsul tau: <b>${record.selected.length ? lettersText(record.selected) : '-'}</b>
-    ${q.explanation ? '<hr><div class="small rendered-text">' + formatRichText(q.explanation, false) + '</div>' : ''}`;
+    ${q.explanation ? '<hr><span class="small">' + renderRichText(q.explanation) + '</span>' : ''}`;
 }
 function nextQuestion() {
   if (!state) return;
@@ -7896,7 +6898,7 @@ function renderResult(r) {
       <div class="stat"><div class="big">${r.unanswered}</div><div>necompletate</div></div>
     </div>
     <h3>Greseli</h3>
-    ${incorrect.length ? incorrect.map(a => `<div class="card"><b>${escapeHtml(a.topic)} · ${escapeHtml(a.source)}</b><br><div class="rendered-text">${formatRichText(a.text, true)}</div><span class="muted">Tau: ${lettersText(a.selected)} | Corect: ${lettersText(a.correct)}</span></div>`).join('') : '<p>Nu ai gresit nicio intrebare raspunsa.</p>'}
+    ${incorrect.length ? incorrect.map(a => `<div class="card"><b>${escapeHtml(a.topic)} · ${escapeHtml(a.source)}</b><br>${renderRichText(a.text)}<br><span class="muted">Tau: ${lettersText(a.selected)} | Corect: ${lettersText(a.correct)}</span></div>`).join('') : '<p>Nu ai gresit nicio intrebare raspunsa.</p>'}
     <div class="footer-actions"><button class="primary" onclick="startQuiz()">Incepe alt test</button><button onclick="showPage('history')">Vezi analiza</button></div>
   `;
 }
@@ -7905,11 +6907,95 @@ function renderBank(showAnswers=false) {
   el.innerHTML = QUESTIONS.map((q,i) => `
     <div class="card">
       <div><span class="badge">#${i+1}</span><span class="badge">${q.type==='multiple'?'multiplu':'unic'}</span><span class="badge">${escapeHtml(q.topic)}</span><span class="badge">${escapeHtml(q.source)}</span></div>
-      <div class="question-title rendered-text">${formatRichText(q.text, true)}</div>
-      <ul class="bank-options">${Object.entries(q.options).map(([k,v]) => `<li><b>${k}.</b> ${formatRichText(v, false)}</li>`).join('')}</ul>
-      ${showAnswers ? `<p><b>Raspuns corect:</b> ${lettersText(q.answer)}</p><div class="muted small rendered-text">${formatRichText(q.explanation||'', false)}</div>` : ''}
+      <div class="question-title">${renderRichText(q.text)}</div>
+      <ul>${Object.entries(q.options).map(([k,v]) => `<li><b>${k}.</b> ${renderRichText(v)}</li>`).join('')}</ul>
+      ${showAnswers ? `<p><b>Raspuns corect:</b> ${lettersText(q.answer)}<br><span class="muted small">${renderRichText(q.explanation||'')}</span></p>` : ''}
     </div>`).join('');
 }
+
+function getAllTopics() {
+  return [...new Set(QUESTIONS.map(q => q.topic || 'fara topic'))].sort((a,b)=>a.localeCompare(b, 'ro'));
+}
+function buildChapterStats() {
+  const stats = {};
+  for (const q of QUESTIONS) {
+    const topic = q.topic || 'fara topic';
+    if (!stats[topic]) stats[topic] = { topic, bank:0, asked:0, correct:0, wrong:0, unanswered:0, sources:new Set() };
+    stats[topic].bank++;
+    if (q.source) stats[topic].sources.add(q.source);
+  }
+  for (const test of history()) {
+    for (const a of test.answers || []) {
+      const topic = a.topic || 'fara topic';
+      if (!stats[topic]) stats[topic] = { topic, bank:0, asked:0, correct:0, wrong:0, unanswered:0, sources:new Set() };
+      stats[topic].asked++;
+      if (a.isCorrect) stats[topic].correct++; else stats[topic].wrong++;
+    }
+    for (const u of test.unansweredQuestions || []) {
+      const topic = u.topic || 'fara topic';
+      if (!stats[topic]) stats[topic] = { topic, bank:0, asked:0, correct:0, wrong:0, unanswered:0, sources:new Set() };
+      stats[topic].asked++;
+      stats[topic].unanswered++;
+    }
+  }
+  return Object.values(stats).map(s => {
+    const score = s.asked ? Math.round((s.correct / s.asked) * 100) : null;
+    let level = 'Neexersat', levelClass = 'mid', advice = 'Fa cateva teste ca sa apara o estimare.';
+    if (score !== null) {
+      if (score >= 80) { level = 'Foarte bine'; levelClass = 'good'; advice = 'Il stii bine. Mai revino doar pentru mentinere.'; }
+      else if (score >= 60) { level = 'Bine'; levelClass = 'good'; advice = 'Esti aproape sigur aici. Mai repeta capcanele.'; }
+      else if (score >= 40) { level = 'Mediu'; levelClass = 'mid'; advice = 'Mai trebuie recapitulare pe exemple.'; }
+      else { level = 'Slab'; levelClass = 'bad'; advice = 'Prioritate mare la recapitulare.'; }
+    }
+    return {...s, sources:[...s.sources], score, level, levelClass, advice};
+  });
+}
+function renderChapters() {
+  const overview = document.getElementById('chapterOverview');
+  const content = document.getElementById('chapterContent');
+  if (!overview || !content) return;
+  const stats = buildChapterStats();
+  const practiced = stats.filter(s => s.asked > 0);
+  const totalAsked = practiced.reduce((sum,s)=>sum+s.asked,0);
+  const totalCorrect = practiced.reduce((sum,s)=>sum+s.correct,0);
+  const globalScore = totalAsked ? Math.round(totalCorrect / totalAsked * 100) : 0;
+  const weak = practiced.filter(s => s.score !== null).sort((a,b)=>a.score-b.score || b.asked-a.asked).slice(0,3);
+  overview.innerHTML = `
+    <div class="stat"><div class="big">${stats.length}</div><div>capitole in banca</div></div>
+    <div class="stat"><div class="big">${practiced.length}</div><div>capitole exersate</div></div>
+    <div class="stat"><div class="big">${totalAsked}</div><div>intrebari rezolvate/primite</div></div>
+    <div class="stat"><div class="big">${totalAsked ? globalScore + '%' : '-'}</div><div>stapanire generala</div></div>
+  `;
+  const sortEl = document.getElementById('chapterSort');
+  const sort = sortEl ? sortEl.value : 'weak';
+  let rows = [...stats];
+  if (sort === 'weak') rows.sort((a,b)=> (a.score ?? -1) - (b.score ?? -1) || b.asked-a.asked || b.bank-a.bank);
+  if (sort === 'asked') rows.sort((a,b)=> b.asked-a.asked || (a.score ?? -1)-(b.score ?? -1));
+  if (sort === 'bank') rows.sort((a,b)=> b.bank-a.bank || a.topic.localeCompare(b.topic,'ro'));
+  if (sort === 'name') rows.sort((a,b)=> a.topic.localeCompare(b.topic,'ro'));
+  const weakHtml = weak.length ? `<div class="card"><h3>Capitole de repetat prima data</h3><p>${weak.map(w => `<span class="badge">${escapeHtml(w.topic)}: ${w.score}%</span>`).join(' ')}</p></div>` : `<div class="card"><h3>Capitole de repetat prima data</h3><p class="muted">Inca nu ai destule teste salvate pentru o recomandare.</p></div>`;
+  const table = `<table><thead><tr><th>Capitol</th><th>Stapanire</th><th>Primite</th><th>Corecte</th><th>Gresite</th><th>Necompletate</th><th>In banca</th></tr></thead><tbody>${rows.map(s => `
+    <tr>
+      <td><b>${escapeHtml(s.topic)}</b><br><span class="muted small">${escapeHtml(s.advice)}</span></td>
+      <td>${s.score === null ? '<span class="muted">neexersat</span>' : `<b>${s.score}%</b><div class="chapter-meter"><div class="chapter-meter-fill" style="width:${s.score}%"></div></div><span class="chapter-level ${s.levelClass}">${s.level}</span>`}</td>
+      <td>${s.asked}</td><td>${s.correct}</td><td>${s.wrong}</td><td>${s.unanswered}</td><td>${s.bank}</td>
+    </tr>`).join('')}</tbody></table>`;
+  content.innerHTML = weakHtml + table;
+}
+function makeChapterAnalysisText() {
+  const stats = buildChapterStats().sort((a,b)=> (a.score ?? -1) - (b.score ?? -1) || b.asked-a.asked);
+  return JSON.stringify({
+    mesaj: 'Analizeaza progresul meu pe capitole la TP Java si spune-mi ce sa repet ca sa trec examenul.',
+    generatedAt: new Date().toISOString(),
+    chapters: stats.map(s => ({topic:s.topic, score:s.score, asked:s.asked, correct:s.correct, wrong:s.wrong, unanswered:s.unanswered, bank:s.bank, level:s.level}))
+  }, null, 2);
+}
+async function copyChapterAnalysis() {
+  const text = makeChapterAnalysisText();
+  try { await navigator.clipboard.writeText(text); alert('Analiza pe capitole a fost copiata.'); }
+  catch(e) { prompt('Copiaza manual:', text); }
+}
+
 function aggregateMistakes(h) {
   const topics = {};
   const ids = {};
@@ -7934,7 +7020,7 @@ function renderHistory() {
   const ag = aggregateMistakes(h);
   const topicRows = Object.entries(ag.topics).sort((a,b)=>b[1]-a[1]).map(([t,n])=>`<tr><td>${escapeHtml(t)}</td><td>${n}</td></tr>`).join('');
   const histRows = h.map(r => `<tr><td>${new Date(r.date).toLocaleString('ro-RO')}</td><td><b>${r.grade.toFixed(2)}</b></td><td>${r.correct}/${r.totalQuestions}</td><td>${r.wrong}</td><td>${r.unanswered}</td></tr>`).join('');
-  el.innerHTML = `<h3>Zone cu cele mai multe greseli</h3><table><thead><tr><th>Topic</th><th>Greseli + necompletate</th></tr></thead><tbody>${topicRows}</tbody></table>
+  el.innerHTML = `<h3>Zone cu cele mai multe greseli</h3><p><button onclick="showPage('chapters')">Vezi analiza completa pe capitole</button></p><table><thead><tr><th>Topic</th><th>Greseli + necompletate</th></tr></thead><tbody>${topicRows}</tbody></table>
   <h3>Teste salvate</h3><table><thead><tr><th>Data</th><th>Nota</th><th>Corecte</th><th>Gresite</th><th>Necompletate</th></tr></thead><tbody>${histRows}</tbody></table>
   <h3>Export pentru ChatGPT</h3><textarea readonly>${escapeHtml(makeAnalysisText())}</textarea>`;
 }
@@ -7965,15 +7051,16 @@ function clearHistory() {
   if (confirm('Stergi toate testele salvate?')) {
     localStorage.removeItem(LS_KEY);
     localStorage.removeItem(SEEN_KEY);
-    localStorage.removeItem(SEEN_SIG_KEY);
-    localStorage.removeItem(SEEN_TEXT_KEY);
+    localStorage.removeItem(SEEN_STRICT_KEY);
     updateSeenStats();
     renderHistory();
+    renderChapters();
   }
 }
 
 updateSeenStats();
 renderBank(false);
+renderChapters();
 showPage('home');
 </script>
 </body>
