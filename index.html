@@ -2002,6 +2002,1657 @@ const QUESTIONS = [
     "topic": "side effects",
     "source": "Test final mixt chat",
     "explanation": "Printarea, modificarea unei colectii externe si salvarea in baza de date sunt efecte secundare. return x*x este calcul pur."
+  },
+  {
+    "id": "RAW-RO2025-02",
+    "type": "multiple",
+    "text": "In contextul unui sistem software, care dintre urmatoarele afirmatii NU sunt corecte?",
+    "options": {
+      "a": "Testarea de sistem verifica intregul sistem software, ca un tot.",
+      "b": "Testarea de integrare valideaza componentele izolat, inainte de integrare.",
+      "c": "Testarea de acceptanta este utilizata pentru a verifica daca cerintele utilizatorului final sunt satisfacute de catre sistem.",
+      "d": "Testarea unitara este folosita pentru a valida interactiunile dintre subsisteme."
+    },
+    "answer": [
+      "b",
+      "d"
+    ],
+    "topic": "testare",
+    "source": "Subiect Romana 2025 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RO2025-03",
+    "type": "multiple",
+    "text": "Intr-o aplicatie bancara:\n(i) Clasa Client detine un atribut de tipul List<Cont>;\n(ii) Clasa Cont are un atribut de tipul CardBancar;\n(iii) clasa Client apeleaza metoda trimiteSMS() din clasa NotificatorSMS, fara a avea un atribut de tipul NotificatorSMS.\nCare dintre urmatoarele relatii UML sunt potrivite pentru a modela aceste relatii dintre clase?",
+    "options": {
+      "a": "Intre Client si Cont este o relatie de compozitie.",
+      "b": "Intre Cont si CardBancar este o relatie de utilizare.",
+      "c": "Intre Client si NotificatorSMS este o relatie de dependenta.",
+      "d": "Relatia dintre Cont si CardBancar este de agregare slaba."
+    },
+    "answer": [
+      "a",
+      "c",
+      "d"
+    ],
+    "topic": "UML",
+    "source": "Subiect Romana 2025 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RO2025-04",
+    "type": "single",
+    "text": "Pentru o aplicatie de rezervari, avem definite urmatoarele use-case-uri: Rezerva bilet, Autentificare si Plateste cu\ncardul. Utilizatorul trebuie sa se autentifice de fiecare data cand face o rezervare, iar plata cu cardul este optionala. Care dintre\nurmatoarele afirmatii descrie corect relatiile UML dintre aceste use-case-uri?",
+    "options": {
+      "a": "Rezerva bilet extinde atat Autentificare, cat si Plateste cu cardul.",
+      "b": "Rezerva bilet include Autentificare, iar Plateste cu cardul extinde Rezerva bilet.",
+      "c": "Rezerva bilet mosteneste Autentificare si include Plateste cu cardul.",
+      "d": "Nu exista nicio relatie intre aceste use-case-uri; sunt complet independente."
+    },
+    "answer": [
+      "b"
+    ],
+    "topic": "UML",
+    "source": "Subiect Romana 2025 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RO2025-05",
+    "type": "single",
+    "text": "Care dintre urmatoarele afirmatii descrie corect legarea dinamica (dynamic binding) in Java?",
+    "options": {
+      "a": "Metodele statice sunt apelate in functie de tipul obiectului, la compilare.",
+      "b": "Apelul metodei este rezolvat la runtime, in functie de tipul obiectului asupra caruia se apeleaza metoda.",
+      "c": "Java foloseste doar legare statica; metodele sunt alese la compilare.",
+      "d": "Legarea dinamica se aplica doar variabilelor, nu si metodelor."
+    },
+    "answer": [
+      "b"
+    ],
+    "topic": "polimorfism",
+    "source": "Subiect Romana 2025 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RO2025-06",
+    "type": "multiple",
+    "text": "Care dintre urmatoarele afirmatii despre downcasting in Java sunt adevarate?",
+    "options": {
+      "a": "Downcasting necesita un cast explicit si poate duce la exceptii in timpul executiei.",
+      "b": "Daca programul compileaza fara erori, downcasting este intotdeauna sigur la runtime.",
+      "c": "Codul de mai jos este valid doar daca B este un subtip al lui A.\nB obj1 = new B();\nA obj2 = obj1;\nB obj3 = (B) obj2;",
+      "d": "ClassCastException poate fi prevenita folosind o abordare cu try-catch sau prin verificari instanceof."
+    },
+    "answer": [
+      "a",
+      "c",
+      "d"
+    ],
+    "topic": "mostenire / casting",
+    "source": "Subiect Romana 2025 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RO2025-07",
+    "type": "single",
+    "text": "Ce se intampla daca o clasa implementeaza doua interfete care definesc cate o metoda tip default cu semnatura\nidentica, dar implementari diferite?",
+    "options": {
+      "a": "Compilatorul semnaleaza eroare si cere ca ambiguitatea sa fie rezolvata explicit prin suprascriere.",
+      "b": "Java aplica automat implementarea metodei default din prima interfata mentionata in declaratia implements.",
+      "c": "Clasa nu poate implementa doua interfete care declara aceeasi metoda default cu aceeasi semnatura.",
+      "d": "Clasa poate apela direct implementarea dorita folosind InterfaceName.super.method() fara sa o suprascrie."
+    },
+    "answer": [
+      "a"
+    ],
+    "topic": "interfete",
+    "source": "Subiect Romana 2025 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RO2025-08",
+    "type": "multiple",
+    "text": "Avand in vedere urmatoarea interfata de adnotare (annotation type interface), care dintre urmatoarele\nafirmatii sunt corecte?\npublic @interface Info {\nString author();\nint version();\n}",
+    "options": {
+      "a": "Utilizarea adnotarii @Info(author = \"Alex\", version = 1) la nivelul unui atribut este corecta.",
+      "b": "Daca o clasa implementeaza interfata Info, aceasta trebuie sa implementeze metodele author() si version().",
+      "c": "Utilizarea adnotarii @Info(\"George\", 2) la nivelul unei metode este corecta.",
+      "d": "Interfata Info nu poate contine metode cu implementare."
+    },
+    "answer": [
+      "a",
+      "d"
+    ],
+    "topic": "adnotari",
+    "source": "Subiect Romana 2025 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RO2025-09",
+    "type": "single",
+    "text": "Care dintre urmatoarele afirmatii despre metoda wait() in contextul thread-urilor este adevarata?",
+    "options": {
+      "a": "Suspenda executia thread-ului pentru un timp determinat.",
+      "b": "Suspenda executia thread-ului si elibereaza lock-ul obiectului.",
+      "c": "Este folosita pentru coordonarea thread-urilor si poate fi apelata atat in context sincronizat cat si nesincronizat.",
+      "d": "Suspenda executia thread-ului curent, dar nu permite altor thread-uri sa preia executia."
+    },
+    "answer": [
+      "b"
+    ],
+    "topic": "thread-uri",
+    "source": "Subiect Romana 2025 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RO2025-10",
+    "type": "single",
+    "text": "Avand codul de mai jos, care dintre urmatoarele afirmatii NU este adevarata?\nvolatile int counter1 = 0;\nAtomicInteger counter2 = new AtomicInteger(0);",
+    "options": {
+      "a": "counter1++ este thread-safe.",
+      "b": "counter2.getAndIncrement() este thread-safe.",
+      "c": "volatile asigura vizibilitate, dar nu atomicitate.",
+      "d": "counter1 nu este copiat in memoria cache a unui thread."
+    },
+    "answer": [
+      "a"
+    ],
+    "topic": "volatile / atomic",
+    "source": "Subiect Romana 2025 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RO2025-11",
+    "type": "multiple",
+    "text": "Care dintre urmatoarele afirmatii despre metodele equals si hashCode din Java sunt adevarate?",
+    "options": {
+      "a": "Valoarea returnata de metoda hashCode() pentru un obiect dat este folosita in toate colectiile pentru a determina indexul unde va\nfi pozitionat obiectul in lista.",
+      "b": "Coliziunea se refera la situatia in care doua obiecte egale din punct de vedere al metodei equals au valori diferite ale hashCode.",
+      "c": "Se recomanda utilizarea metodei equals pentru a verifica egalitatea obiectelor de tip String.",
+      "d": "Suprascrierea metodei equals in cadrul unei ierarhii de mostenire poate duce la incalcarea contractului acestei metode."
+    },
+    "answer": [
+      "c",
+      "d"
+    ],
+    "topic": "equals / hashCode",
+    "source": "Subiect Romana 2025 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RO2025-12",
+    "type": "multiple",
+    "text": "Care dintre urmatoarele afirmatii NU sunt adevarate despre clasele sealed in Java?",
+    "options": {
+      "a": "Clasele sealed sunt definite folosind keyword-ul record.",
+      "b": "Clasele sealed sunt echivalente cu clasele final.",
+      "c": "Subclasele unei clase sealed pot fi doar sealed.",
+      "d": "O clasa sealed trebuie sa declare in mod explicit toate clasele care o pot extinde."
+    },
+    "answer": [
+      "a",
+      "b",
+      "c"
+    ],
+    "topic": "sealed classes",
+    "source": "Subiect Romana 2025 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RO2025-13",
+    "type": "single",
+    "text": "__________ este o functie transmisa ca si argument unei alte functii fiind executata atunci cand se produce un\nanumit eveniment.",
+    "options": {
+      "a": "Functia callback.",
+      "b": "Functia pura.",
+      "c": "Functia abstracta.",
+      "d": "Functia recursiva."
+    },
+    "answer": [
+      "a"
+    ],
+    "topic": "functional",
+    "source": "Subiect Romana 2025 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RO2025-14",
+    "type": "single",
+    "text": "Care dintre urmatoarele afirmatii despre fragmentul de cod de mai jos este adevarata?\nCar car = new Car(\"Toyota\");\nClass classObject = car.getClass();\nMethod method = classObject.getMethod(\"startEngine\");\nmethod.invoke(car);",
+    "options": {
+      "a": "classObject contine atributele obiectului de tipul Car (ex. anul fabricatiei, modelul masinii, etc.).",
+      "b": "Class classObject = car.forName(\"Car\"); reprezinta o alta modalitate prin care se poate obtine o referinta de tipul Class in\ncontextul exemplului dat.",
+      "c": "Exemplul foloseste tehnica de reflection pentru a invoca dinamic metoda startEngine definita in clasa Class.",
+      "d": "method.invoke(car) executa metoda startEngine pe obiectul car fara a fi nevoie sa cunoastem metoda la compilare."
+    },
+    "answer": [
+      "d"
+    ],
+    "topic": "reflection",
+    "source": "Subiect Romana 2025 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RO2025-15",
+    "type": "multiple",
+    "text": "Care dintre urmatoarele afirmatii despre codul de mai jos NU sunt adevarate?\npublic final class A {\nprivate final List<String> list;\npublic A(List<String> list) {\nthis.list = list;\n}\npublic List<String> getList() {\nreturn this.list;\n}\n}",
+    "options": {
+      "a": "Clasa A este este imutabila.",
+      "b": "Eliminarea metodei set si declararea atributului list ca final sunt suficiente pentru a garanta ca instantele clasei A sunt complet\nimutabile.",
+      "c": "Clasa A nu poate fi extinsa.",
+      "d": "Clasa A este thread-safe."
+    },
+    "answer": [
+      "a",
+      "b",
+      "d"
+    ],
+    "topic": "imutabilitate",
+    "source": "Subiect Romana 2025 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RO2025-16",
+    "type": "multiple",
+    "text": "Care dintre urmatoarele afirmatii incalca principiile de proiectare a claselor si interfetelor?",
+    "options": {
+      "a": "Este recomandata utilizarea unei interfete generale in locul mai multor interfete specifice clientilor.",
+      "b": "O clasa ar trebui sa depinda de clase concrete si nu de abstractii, pentru a simplifica instantierea.",
+      "c": "Clasele cu coeziune ridicata au prea multe functionalitati implementate in ele.",
+      "d": "Claritatea in proiectarea claselor si interfetelor reduce riscul erorilor dar nu usureaza mentenanta codului."
+    },
+    "answer": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "topic": "interfete",
+    "source": "Subiect Romana 2025 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RO2025-17",
+    "type": "multiple",
+    "text": "Considerati un program cu trei functionalitati de livrare: prin curier, la locker si in magazin, fiecare\nimplementata intr-o clasa separata. In clasa Comanda, tipul de livrare este selectat folosind instructiuni conditionale (if/switch)\npentru a instantia direct una dintre clasele corespunzatoare. Care dintre urmatoarele afirmatii NU sunt corecte?",
+    "options": {
+      "a": "Programul respecta principiul Open Closed.",
+      "b": "Exista o cuplare stransa intre clasele programului.",
+      "c": "Programul este proiectat conform principiului Liskov Substitution.",
+      "d": "Programul respecta principiul Dependency Inversion."
+    },
+    "answer": [
+      "a",
+      "c",
+      "d"
+    ],
+    "topic": "SOLID",
+    "source": "Subiect Romana 2025 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RO2025-18",
+    "type": "multiple",
+    "text": "Care dintre urmatoarele afirmatii despre gestionarea dependentelor in cod sunt corecte?",
+    "options": {
+      "a": "Dependency Injection promoveaza inversarea controlului permitand furnizarea explicita a dependentelor de catre o componenta\nexterna.",
+      "b": "Service Locator ascunde modul de obtinere a dependentelor.",
+      "c": "Dependency Injection impune ca toate dependentele sa fie injectate prin constructor.",
+      "d": "O clasa bine proiectata ar trebui sa isi creeze singura toate dependentele pentru a avea control complet asupra acestora."
+    },
+    "answer": [
+      "a",
+      "b"
+    ],
+    "topic": "dependency management",
+    "source": "Subiect Romana 2025 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RO2025-19",
+    "type": "multiple",
+    "text": "Care dintre urmatoarele afirmatii despre tipurile generice in Java NU sunt corecte?",
+    "options": {
+      "a": "La utilizarea tipului generic, parametrii de tip pot fi inlocuiti fie cu un tip referinta, fie cu un tip primitiv.",
+      "b": "Tipurile generice permit scrierea de cod polimorfic.",
+      "c": "Considerand un parametru de tip generic, crearea unei instante a acestuia folosind new T() este permisa.",
+      "d": "Tipurile generice sunt pastrate la rulare si pot fi inspectate prin reflectie."
+    },
+    "answer": [
+      "a",
+      "c",
+      "d"
+    ],
+    "topic": "reflection",
+    "source": "Subiect Romana 2025 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RO2025-20",
+    "type": "single",
+    "text": "Care dintre urmatoarele afirmatii despre wildcard-uri in Java generics este adevarata?",
+    "options": {
+      "a": "Wildcard-ul ? poate fi folosit pentru a reprezenta orice tip referinta sau primitiv necunoscut.",
+      "b": "Intr-o lista de tipul List<?> se poate adauga orice obiect.",
+      "c": "Intr-o lista de tipul List<? extends Number> se pot adauga obiecte de orice tip care este un subtip al lui Number.",
+      "d": "Considerand o clasa A, tipul A<?> este un subtip al lui Object."
+    },
+    "answer": [
+      "d"
+    ],
+    "topic": "generics",
+    "source": "Subiect Romana 2025 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RO2025-21",
+    "type": "single",
+    "text": "Considerati o variabila predicat de tipul Predicate<Integer>. Care dintre urmatoarele afirmatii este corecta?",
+    "options": {
+      "a": "Variabilei predicat i se poate atribui doar o expresie lambda explicita cu un singur parametru de tipul Integer, care testeaza o\nconditie asupra parametrului dat.",
+      "b": "Predicate este o interfata care poate contine oricate metode abstracte, default si statice.",
+      "c": "Atribuirea de mai jos nu se va compila deoarece nu s-a mentionat parametrul metodei isPositive.\nPredicate<Integer> predicat = Utils::isPositive;",
+      "d": "Atribuirea Predicate<Integer> predicat = Utils::isPositive este valida daca isPositive(Integer) este o metoda statica ce returneaza\nun boolean."
+    },
+    "answer": [
+      "d"
+    ],
+    "topic": "lambda / method reference",
+    "source": "Subiect Romana 2025 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RO2025-22",
+    "type": "single",
+    "text": "Considerand atribuirea de mai jos, care dintre urmatoarele afirmatii este corecta?\nSerializable serializableVariable = (Serializable & Adder) (x, y) -> x + y;",
+    "options": {
+      "a": "Expresia lambda (x,y) -> x + y este o expresie polimorfica.",
+      "b": "Adder este o clasa cu o singura metoda abstracta.",
+      "c": "Serializable & Adder definesc un tip reuniune.",
+      "d": "Expresia lambda (x,y) -> x+y nu poate fi serializata, deoarece doar obiectele pot fi serializate."
+    },
+    "answer": [
+      "a"
+    ],
+    "topic": "lambda / intersection type",
+    "source": "Subiect Romana 2025 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RO2025-23",
+    "type": "single",
+    "text": "In cadrul procesarii concurente a stream-urilor este recomandat sa:",
+    "options": {
+      "a": "Modificam sursa de date a stream-urilor.",
+      "b": "Utilizam operatii pe stream-uri fara efecte secundare.",
+      "c": "Folosim operatia sorted() pentru a ne asigura ca elementele stream-ului sunt ordonate.",
+      "d": "Efectuam operatii pe variabile globale."
+    },
+    "answer": [
+      "b"
+    ],
+    "topic": "streams",
+    "source": "Subiect Romana 2025 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RO2025-24",
+    "type": "single",
+    "text": "Iterarea interna este specifica:",
+    "options": {
+      "a": "Iteratorilor.",
+      "b": "Instructiunilor for-each.",
+      "c": "Operatiilor pe stream-uri.",
+      "d": "Instructiunilor while."
+    },
+    "answer": [
+      "c"
+    ],
+    "topic": "streams",
+    "source": "Subiect Romana 2025 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RO2025-25",
+    "type": "single",
+    "text": "Care dintre urmatoarele afirmatii despre clonarea obiectelor in Java este adevarata?",
+    "options": {
+      "a": "Clasa obiectelor care vor fi clonate trebuie sa implementeze interfata functionala Cloneable.",
+      "b": "Metoda clone() din clasa Object realizeaza implicit o clonare de tipul deep copy.",
+      "c": "Daca o clasa nu suprascrie metoda clone(), apelul metodei clone() pe un obiect al acelei clase va returna un nou obiect identic.",
+      "d": "Copierea atribut cu atribut se numeste shallow copy."
+    },
+    "answer": [
+      "d"
+    ],
+    "topic": "cloning",
+    "source": "Subiect Romana 2025 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EN2025_1-01",
+    "type": "multiple",
+    "text": "Care dintre urmatoarele afirmatii despre Inversion of Control sunt corecte?",
+    "options": {
+      "a": "Inversion of Control permite programatorului sa controleze fluxul aplicatiei.",
+      "b": "Containerele IoC sunt folosite pentru a gestiona dependentele automat.",
+      "c": "In dependency injection, o dependenta este injectata intr-o clasa A din exteriorul lui A folosind constructorul lui A sau o metoda\n„set”.",
+      "d": "In tehnica callback, functiile callback sunt folosite ca functii transmise ca argument unei alte functii."
+    },
+    "answer": [
+      "b",
+      "c",
+      "d"
+    ],
+    "topic": "functional",
+    "source": "Subiect Engleza 2025 (1) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EN2025_1-02",
+    "type": "multiple",
+    "text": "Imagineaza-ti o aplicatie de e-commerce in care modulul OrderProcessing depinde direct de o clasa\nspecifica PaymentGateway. Daca trebuie sa treci la un alt furnizor de plata sau sa adaugi suport pentru mai multi furnizori, va trebui\nsa modifici codul OrderProcessing. Avand in vedere acest exemplu, care dintre urmatoarele afirmatii sunt corecte?",
+    "options": {
+      "a": "Aplicatia incalca principiul Open Closed.",
+      "b": "Designul aplicatiei ar putea duce la flexibilitate redusa si cuplare crescuta in sistem.",
+      "c": "Aplicatia incalca principiul Dependency Inversion.",
+      "d": "Designul aplicatiei ar putea duce la dificultati in adaugarea sau schimbarea furnizorilor de plata."
+    },
+    "answer": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "topic": "dependency management",
+    "source": "Subiect Engleza 2025 (1) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EN2025_1-03",
+    "type": "multiple",
+    "text": "O echipa de dezvoltare software trebuie sa proiecteze o aplicatie de mobile banking pornind de la un set de\ncerinte. Care dintre urmatoarele afirmatii reprezinta cerinte non-functionale?",
+    "options": {
+      "a": "Datele utilizatorilor ar trebui sa fie trimise criptat prin retea.",
+      "b": "Utilizatorii ar trebui sa poata sa isi personalizeze layout-ul dashboard-ului.",
+      "c": "Aplicatia ar trebui sa incarce un dashboard in maximum 2 secunde.",
+      "d": "Aplicatia ar trebui sa permita utilizatorilor sa vada soldurile conturilor."
+    },
+    "answer": [
+      "a",
+      "c"
+    ],
+    "topic": "cerinte",
+    "source": "Subiect Engleza 2025 (1) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EN2025_1-04",
+    "type": "single",
+    "text": "Care dintre urmatoarele afirmatii defineste o buna practica in proiectarea aplicatiilor?",
+    "options": {
+      "a": "Minimizarea relatiilor dintre clase si mentinerea unei coeziuni scazute.",
+      "b": "Definirea unor clase care au responsabilitati multiple.",
+      "c": "Definirea unei interfete generale in locul multor interfete specifice clientilor.",
+      "d": "Utilizarea obiectelor care au starea setata in timpul initializarii si care nu se schimba ulterior."
+    },
+    "answer": [
+      "d"
+    ],
+    "topic": "interfete",
+    "source": "Subiect Engleza 2025 (1) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EN2025_1-05",
+    "type": "single",
+    "text": "Care dintre urmatoarele afirmatii despre codul de mai jos sunt corecte?\nList<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);\nList<Integer> evenNumbers = numbers.stream().filter(n -> n % 2 == 0).collect(Collectors.toList());\nfor (Integer num : evenNumbers) { System.out.println(\"Even number: \" + num); }",
+    "options": {
+      "a": "Intregul cod foloseste doar programare declarativa.",
+      "b": "Metoda filter() modifica lista numbers.",
+      "c": "Codul combina iterarea interna si externa a colectiilor.",
+      "d": "Operatia collect este lazy."
+    },
+    "answer": [
+      "c"
+    ],
+    "topic": "streams",
+    "source": "Subiect Engleza 2025 (1) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EN2025_1-06",
+    "type": "multiple",
+    "text": "Care afirmatie nu este corecta despre urmatoarea atribuire Java?\nOperation operation = (int a, int b)->Integer.sum(a,b);",
+    "options": {
+      "a": "Operation este o interfata care contine exact o metoda abstracta cu doi parametri de tip int si int ca tip returnat.",
+      "b": "Cand executia programului ajunge la atribuire, metoda sum va fi apelata.",
+      "c": "Atribuirea poate fi inlocuita cu:\nOperation operation = Integer::sum(a,b);",
+      "d": "Operation este o interfata care poate contine metode default si statice."
+    },
+    "answer": [
+      "b",
+      "c"
+    ],
+    "topic": "lambda",
+    "source": "Subiect Engleza 2025 (1) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EN2025_1-07",
+    "type": "single",
+    "text": "In contextul clonarii obiectelor, copierea camp cu camp se numeste:",
+    "options": {
+      "a": "Deep copy.",
+      "b": "Shallow copy."
+    },
+    "answer": [
+      "b"
+    ],
+    "topic": "cloning",
+    "source": "Subiect Engleza 2025 (1) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EN2025_1-08",
+    "type": "multiple",
+    "text": "Care dintre urmatoarele afirmatii despre Reflection nu sunt corecte?",
+    "options": {
+      "a": "Informatia despre tip este reprezentata la runtime ca un obiect de tip Object care contine informatii despre clasa.",
+      "b": "Reflection poate fi folosita pentru a accesa membri privati fara metode publice de acces.",
+      "c": "Un obiect Class poate fi obtinut folosind metoda statica getClass() a clasei Object.",
+      "d": "Reflection poate fi folosita doar cu clase care sunt incarcate la compile time."
+    },
+    "answer": [
+      "a",
+      "c",
+      "d"
+    ],
+    "topic": "reflection",
+    "source": "Subiect Engleza 2025 (1) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EN2025_1-09",
+    "type": "multiple",
+    "text": "Considerati 3 clase (C, C1 si C2) si o interfata I. Care dintre urmatoarele afirmatii sunt corecte?",
+    "options": {
+      "a": "Daca C2 extinde C1 si C1 extinde C, atunci C2 este un subtip al lui C.",
+      "b": "Daca C2 este un subtip al lui C1, atunci List<C1> este un subtip al lui List<C2>.",
+      "c": "Daca C implementeaza I si C1 extinde C, atunci C1 este un subtip al lui I.",
+      "d": "Daca C2 extinde C1, atunci urmatoarea atribuire este corecta:\nC2 c2 = new C1();"
+    },
+    "answer": [
+      "a",
+      "c"
+    ],
+    "topic": "generics / subtipuri",
+    "source": "Subiect Engleza 2025 (1) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EN2025_1-10",
+    "type": "single",
+    "text": "Care dintre urmatoarele afirmatii este corecta despre o referinta la metoda?",
+    "options": {
+      "a": "Este un tip nou in Java.",
+      "b": "Este un pointer catre o functie.",
+      "c": "Apeleaza metoda asociata atunci cand este declarata.",
+      "d": "Poate fi folosita doar acolo unde poate fi folosita o expresie lambda."
+    },
+    "answer": [
+      "d"
+    ],
+    "topic": "method reference",
+    "source": "Subiect Engleza 2025 (1) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EN2025_1-11",
+    "type": "single",
+    "text": "De ce este recomandat ca obiectele-cheie folosite intr-un Java Map, cum ar fi HashMap, sa fie imutabile?",
+    "options": {
+      "a": "Deoarece cheile imutabile imbunatatesc performanta operatiilor Map prin reducerea utilizarii memoriei.",
+      "b": "Deoarece daca o cheie este mutabila si este modificata dupa inserare, poate incalca consistenta Map-ului si poate cauza esecuri\nla cautare.",
+      "c": "Deoarece Java cere ca toate cheile sa fie imutabile pentru siguranta tipurilor.",
+      "d": "Deoarece cheile imutabile sincronizeaza automat accesul la Map."
+    },
+    "answer": [
+      "b"
+    ],
+    "topic": "imutabilitate",
+    "source": "Subiect Engleza 2025 (1) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EN2025_1-12",
+    "type": "single",
+    "text": "Care dintre urmatoarele afirmatii in contextul principiului PECS nu este corecta?",
+    "options": {
+      "a": "Principiul PECS ajuta la deciderea momentului in care trebuie folosite wildcard-uri marginite in generics.",
+      "b": "Foloseste ? extends T daca ai nevoie doar sa citesti obiecte de tip T dintr-o colectie generica.",
+      "c": "Urmatorul fragment de cod este permis:\nList<? super Integer> ints = new ArrayList<Number>();\nInteger n = ints.get(0);",
+      "d": "Urmatorul fragment de cod nu este permis:\nList<? extends Number> numbers = Arrays.asList(1, 2.5, 3L);\nnumbers.add(10);"
+    },
+    "answer": [
+      "c"
+    ],
+    "topic": "generics",
+    "source": "Subiect Engleza 2025 (1) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EN2025_1-13",
+    "type": "single",
+    "text": "O interfata care nu contine nicio metoda se numeste:",
+    "options": {
+      "a": "Interfata abstracta.",
+      "b": "Interfata marker.",
+      "c": "Interfata inconsistenta.",
+      "d": "Interfata coeziva."
+    },
+    "answer": [
+      "b"
+    ],
+    "topic": "interfete",
+    "source": "Subiect Engleza 2025 (1) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EN2025_2-03",
+    "type": "multiple",
+    "text": "Intr-o aplicatie bancara:\n(i) Clasa Client are un atribut de tip List<Account>;\n(ii) Clasa Account are un atribut de tip BankCard;\n(iii) Clasa Client apeleaza metoda sendSMS() din clasa SMSNotifier, fara sa aiba un atribut de tip SMSNotifier.\nCare dintre urmatoarele relatii UML sunt potrivite pentru a modela aceste relatii dintre clase?",
+    "options": {
+      "a": "Intre Client si Account exista o relatie de compozitie.",
+      "b": "Intre Account si BankCard exista o relatie de utilizare.",
+      "c": "Intre Client si SMSNotifier exista o relatie de dependenta.",
+      "d": "Relatia dintre Account si BankCard este o agregare slaba."
+    },
+    "answer": [
+      "a",
+      "c",
+      "d"
+    ],
+    "topic": "UML",
+    "source": "Subiect Engleza 2025 (2) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EN2025_2-04",
+    "type": "single",
+    "text": "Pentru o aplicatie de rezervari, urmatoarele use-case-uri sunt definite: Book Ticket, Login si Pay By Card.\nUtilizatorul trebuie sa se autentifice de fiecare data cand face o rezervare, iar plata cu cardul este optionala. Care dintre\nurmatoarele afirmatii descrie corect relatiile UML dintre aceste use-case-uri?",
+    "options": {
+      "a": "Book Ticket extinde atat Login, cat si Pay By Card.",
+      "b": "Book Ticket include Login, iar Pay By Card extinde Book Ticket.",
+      "c": "Book Ticket mosteneste Login si include Pay By Card.",
+      "d": "Nu exista nicio relatie intre aceste use-case-uri; sunt complet independente."
+    },
+    "answer": [
+      "b"
+    ],
+    "topic": "UML",
+    "source": "Subiect Engleza 2025 (2) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EN2025_2-05",
+    "type": "single",
+    "text": "Care dintre urmatoarele afirmatii descrie corect legarea dinamica in Java?",
+    "options": {
+      "a": "Metodele statice sunt apelate in functie de tipul obiectului, la compilare.",
+      "b": "Apelul metodei este rezolvat la runtime, in functie de tipul obiectului asupra caruia este apelata metoda.",
+      "c": "Java foloseste doar legare statica; metodele sunt alese la compilare.",
+      "d": "Legarea dinamica se aplica doar variabilelor, nu si metodelor."
+    },
+    "answer": [
+      "b"
+    ],
+    "topic": "polimorfism",
+    "source": "Subiect Engleza 2025 (2) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EN2025_2-06",
+    "type": "multiple",
+    "text": "Care dintre urmatoarele afirmatii despre downcasting in Java sunt corecte?",
+    "options": {
+      "a": "Downcasting necesita un cast explicit si poate duce la exceptii in timpul executiei.",
+      "b": "Daca programul compileaza fara erori, downcasting este intotdeauna sigur la runtime.",
+      "c": "Codul de mai jos este valid doar daca B este un subtip al lui A:\nB obj1 = new B();\nA obj2 = obj1;\nB obj3 = (B) obj2;",
+      "d": "ClassCastException poate fi prevenita folosind o abordare try-catch sau prin folosirea verificarilor instanceof."
+    },
+    "answer": [
+      "a",
+      "c",
+      "d"
+    ],
+    "topic": "mostenire / casting",
+    "source": "Subiect Engleza 2025 (2) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EN2025_2-07",
+    "type": "single",
+    "text": "Ce se intampla daca o clasa implementeaza doua interfete, iar fiecare interfata defineste o metoda default cu\naceeasi semnatura, dar implementari diferite?",
+    "options": {
+      "a": "Compilatorul semnaleaza o eroare si cere ca ambiguitatea sa fie rezolvata explicit prin suprascriere.",
+      "b": "Java aplica automat implementarea metodei default din prima interfata mentionata in declaratia implements.",
+      "c": "Clasa nu poate implementa doua interfete care declara aceeasi metoda default cu aceeasi semnatura.",
+      "d": "Clasa poate apela direct implementarea dorita folosind InterfaceName.super.method() fara sa o suprascrie."
+    },
+    "answer": [
+      "a"
+    ],
+    "topic": "interfete",
+    "source": "Subiect Engleza 2025 (2) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EN2025_2-08",
+    "type": "multiple",
+    "text": "Avand in vedere urmatoarea interfata de tip adnotare, care dintre urmatoarele afirmatii sunt corecte?\npublic @interface Info {\nString author();\nint version();\n}",
+    "options": {
+      "a": "Utilizarea adnotarii @Info(author = \"Alex\", version = 1) pe un camp este corecta.",
+      "b": "Daca o clasa implementeaza interfata Info, aceasta trebuie sa implementeze metodele author() si version().",
+      "c": "Utilizarea adnotarii @Info(\"George\", 2) pe o metoda este corecta.",
+      "d": "Interfata Info nu poate contine metode cu implementari."
+    },
+    "answer": [
+      "a",
+      "d"
+    ],
+    "topic": "adnotari",
+    "source": "Subiect Engleza 2025 (2) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EN2025_2-09",
+    "type": "single",
+    "text": "Care dintre urmatoarele afirmatii despre metoda wait(), in contextul thread-urilor, este adevarata?",
+    "options": {
+      "a": "Suspenda executia thread-ului pentru o perioada fixa de timp.",
+      "b": "Suspenda executia thread-ului si elibereaza lock-ul obiectului.",
+      "c": "Este folosita pentru coordonarea thread-urilor si poate fi apelata atat in contexte sincronizate, cat si nesincronizate.",
+      "d": "Suspenda executia thread-ului curent, dar nu permite altor thread-uri sa preia executia."
+    },
+    "answer": [
+      "b"
+    ],
+    "topic": "thread-uri",
+    "source": "Subiect Engleza 2025 (2) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EN2025_2-11",
+    "type": "multiple",
+    "text": "Care dintre urmatoarele afirmatii despre metodele equals si hashCode din Java sunt adevarate?",
+    "options": {
+      "a": "Valoarea returnata de metoda hashCode() pentru un anumit obiect este folosita in toate colectiile pentru a determina indexul\nunde va fi plasat obiectul in lista.",
+      "b": "O coliziune se refera la situatia in care doua obiecte care sunt egale conform metodei equals au valori hashCode diferite.",
+      "c": "Este recomandat sa se foloseasca metoda equals pentru a verifica egalitatea obiectelor de tip String.",
+      "d": "Suprascrierea metodei equals intr-o ierarhie de mostenire poate duce la incalcarea contractului acesteia."
+    },
+    "answer": [
+      "c",
+      "d"
+    ],
+    "topic": "equals / hashCode",
+    "source": "Subiect Engleza 2025 (2) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EN2025_2-12",
+    "type": "multiple",
+    "text": "Care dintre urmatoarele afirmatii NU sunt adevarate despre clasele sealed in Java?",
+    "options": {
+      "a": "Clasele sealed sunt definite folosind cuvantul-cheie record.",
+      "b": "Clasele sealed sunt echivalente cu clasele final.",
+      "c": "Subclasele unei clase sealed pot fi doar sealed.",
+      "d": "O clasa sealed trebuie sa declare explicit toate clasele care au voie sa o extinda."
+    },
+    "answer": [
+      "a",
+      "b",
+      "c"
+    ],
+    "topic": "sealed classes",
+    "source": "Subiect Engleza 2025 (2) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EN2025_2-13",
+    "type": "single",
+    "text": "__________ este o functie transmisa ca argument unei alte functii, fiind executata atunci cand se produce un\nanumit eveniment.",
+    "options": {
+      "a": "Functie callback.",
+      "b": "Functie pura.",
+      "c": "Functie abstracta.",
+      "d": "Functie recursiva."
+    },
+    "answer": [
+      "a"
+    ],
+    "topic": "functional",
+    "source": "Subiect Engleza 2025 (2) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EN2025_2-14",
+    "type": "single",
+    "text": "Care dintre urmatoarele afirmatii despre fragmentul de cod de mai jos este corecta?\nCar car = new Car(\"Toyota\");\nClass classObject = car.getClass();\nMethod method = classObject.getMethod(\"startEngine\");\nmethod.invoke(car);",
+    "options": {
+      "a": "classObject contine atributele obiectului de tip Car, de exemplu anul masinii, modelul masinii etc.",
+      "b": "Class classObject = car.forName(\"Car\"); reprezinta o modalitate prin care se poate obtine o referinta de tip Class in contextul\nexemplului dat.",
+      "c": "Exemplul foloseste tehnica reflection pentru a invoca dinamic metoda startEngine definita in clasa Class.",
+      "d": "method.invoke(car) executa metoda startEngine pe obiectul car fara a fi nevoie sa cunoastem metoda la compilare."
+    },
+    "answer": [
+      "d"
+    ],
+    "topic": "reflection",
+    "source": "Subiect Engleza 2025 (2) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EN2025_2-15",
+    "type": "multiple",
+    "text": "Care dintre urmatoarele afirmatii despre codul de mai jos sunt incorecte?\npublic final class A {\nprivate final List<String> list;\npublic A(List<String> list) {\nthis.list = list;\n}\npublic List<String> getList() {\nreturn this.list;\n}\n}",
+    "options": {
+      "a": "Clasa A este imutabila.",
+      "b": "Eliminarea metodei setter si declararea atributului list ca final sunt suficiente pentru a garanta ca instantele clasei A sunt\ncomplet imutabile.",
+      "c": "Clasa A nu poate fi extinsa.",
+      "d": "Clasa A este thread-safe."
+    },
+    "answer": [
+      "a",
+      "b",
+      "d"
+    ],
+    "topic": "imutabilitate",
+    "source": "Subiect Engleza 2025 (2) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EN2025_2-16",
+    "type": "multiple",
+    "text": "Care dintre urmatoarele afirmatii incalca principiile de proiectare a claselor si interfetelor?",
+    "options": {
+      "a": "Este recomandata folosirea unei interfete generale in locul mai multor interfete specifice clientului.",
+      "b": "O clasa ar trebui sa depinda de clase concrete si nu de abstractii, pentru a simplifica instantierea.",
+      "c": "Clasele cu coeziune ridicata au prea multe functionalitati implementate in ele.",
+      "d": "Claritatea in proiectarea claselor si interfetelor reduce riscul erorilor, dar nu usureaza mentenanta codului."
+    },
+    "answer": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "topic": "interfete",
+    "source": "Subiect Engleza 2025 (2) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EN2025_2-17",
+    "type": "multiple",
+    "text": "Considerati un program cu trei functionalitati de livrare: livrare prin curier, livrare la locker si ridicare din\nmagazin, fiecare implementata intr-o clasa separata. In clasa Order, tipul de livrare este selectat folosind instructiuni conditionale\n(if/switch) pentru a instantia direct una dintre clasele corespunzatoare. Care dintre urmatoarele afirmatii NU sunt corecte?",
+    "options": {
+      "a": "Programul respecta principiul Open Closed.",
+      "b": "Exista cuplare stransa intre clasele din program.",
+      "c": "Programul este proiectat conform principiului Liskov Substitution.",
+      "d": "Programul respecta principiul Dependency Inversion."
+    },
+    "answer": [
+      "a",
+      "c",
+      "d"
+    ],
+    "topic": "SOLID",
+    "source": "Subiect Engleza 2025 (2) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EN2025_2-18",
+    "type": "multiple",
+    "text": "Care dintre urmatoarele afirmatii despre managementul dependentelor in cod sunt corecte?",
+    "options": {
+      "a": "Dependency Injection promoveaza inversarea controlului, permitand ca dependentele sa fie furnizate explicit de o componenta\nexterna.",
+      "b": "Service Locator ascunde modul in care sunt obtinute dependentele.",
+      "c": "Dependency Injection cere ca toate dependentele sa fie injectate prin constructor.",
+      "d": "O clasa bine proiectata ar trebui sa isi creeze singura toate dependentele pentru a avea control complet asupra lor."
+    },
+    "answer": [
+      "a",
+      "b"
+    ],
+    "topic": "dependency management",
+    "source": "Subiect Engleza 2025 (2) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EN2025_2-19",
+    "type": "multiple",
+    "text": "Care dintre urmatoarele afirmatii despre tipurile generice in Java NU sunt corecte?",
+    "options": {
+      "a": "Cand se foloseste un tip generic, parametrii de tip pot fi inlocuiti fie cu un tip referinta, fie cu un tip primitiv.",
+      "b": "Tipurile generice permit scrierea de cod polimorfic.",
+      "c": "Considerand un parametru de tip generic, crearea unei instante folosind new T() este permisa.",
+      "d": "Tipurile generice sunt pastrate la runtime si pot fi inspectate prin reflection."
+    },
+    "answer": [
+      "a",
+      "c",
+      "d"
+    ],
+    "topic": "reflection",
+    "source": "Subiect Engleza 2025 (2) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EN2025_2-20",
+    "type": "single",
+    "text": "Care dintre urmatoarele afirmatii despre wildcard-uri in Java generics este adevarata?",
+    "options": {
+      "a": "Wildcard-ul ? poate fi folosit pentru a reprezenta orice tip necunoscut, referinta sau primitiv.",
+      "b": "Intr-o lista de tip List<?>, orice obiect poate fi adaugat.",
+      "c": "Intr-o lista de tip List<? extends Number>, pot fi adaugate obiecte ale oricarui subtip al lui Number.",
+      "d": "Considerand o clasa A, tipul A<?> este un subtip al lui Object."
+    },
+    "answer": [
+      "d"
+    ],
+    "topic": "generics",
+    "source": "Subiect Engleza 2025 (2) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EN2025_2-21",
+    "type": "single",
+    "text": "Considerati o variabila predicate de tip Predicate<Integer>. Care dintre urmatoarele afirmatii este corecta?",
+    "options": {
+      "a": "Variabilei predicate i se poate atribui doar o expresie lambda explicita cu un singur parametru de tip Integer, care testeaza o\nconditie asupra parametrului dat.",
+      "b": "Predicate este o interfata care poate contine orice numar de metode abstracte, default si statice.",
+      "c": "Atribuirea de mai jos nu se va compila deoarece parametrul metodei isPositive nu a fost specificat:\nPredicate<Integer> predicate = Utils::isPositive;",
+      "d": "Atribuirea Predicate<Integer> predicate = Utils::isPositive este valida daca isPositive(Integer) este o metoda statica ce returneaza\nun boolean."
+    },
+    "answer": [
+      "d"
+    ],
+    "topic": "lambda / method reference",
+    "source": "Subiect Engleza 2025 (2) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EN2025_2-22",
+    "type": "single",
+    "text": "Considerand atribuirea de mai jos, care dintre urmatoarele afirmatii este corecta?\nSerializable serializableVariable = (Serializable & Adder) (x, y) -> x + y;",
+    "options": {
+      "a": "Expresia lambda (x, y) -> x + y este o expresie polimorfica.",
+      "b": "Adder este o clasa cu o singura metoda abstracta.",
+      "c": "Serializable & Adder defineste un tip reuniune.",
+      "d": "Expresia lambda (x, y) -> x + y nu poate fi serializata deoarece doar obiectele pot fi serializate."
+    },
+    "answer": [
+      "a"
+    ],
+    "topic": "lambda / intersection type",
+    "source": "Subiect Engleza 2025 (2) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EN2025_2-23",
+    "type": "single",
+    "text": "In contextul procesarii concurente a stream-urilor, este recomandat sa:",
+    "options": {
+      "a": "Modificam sursa de date a stream-urilor.",
+      "b": "Folosim operatii pe stream-uri fara efecte secundare.",
+      "c": "Folosim operatia sorted() pentru a ne asigura ca elementele stream-ului sunt ordonate.",
+      "d": "Efectuam operatii pe variabile globale."
+    },
+    "answer": [
+      "b"
+    ],
+    "topic": "streams",
+    "source": "Subiect Engleza 2025 (2) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EN2025_2-25",
+    "type": "single",
+    "text": "Care dintre urmatoarele afirmatii despre clonarea obiectelor in Java este adevarata?",
+    "options": {
+      "a": "Clasa obiectelor care trebuie clonate trebuie sa implementeze interfata functionala Cloneable.",
+      "b": "Metoda clone() din clasa Object realizeaza implicit o copiere deep copy.",
+      "c": "Daca o clasa nu suprascrie metoda clone(), apelarea clone() pe un obiect al acelei clase va returna un obiect nou identic.",
+      "d": "Copierea atribut cu atribut se numeste shallow copy."
+    },
+    "answer": [
+      "d"
+    ],
+    "topic": "cloning",
+    "source": "Subiect Engleza 2025 (2) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EX2024-02",
+    "type": "single",
+    "text": "Care dintre urmatoarele afirmatii despre polimorfismul in Java este adevarata?",
+    "options": {
+      "a": "Polimorfismul permite unei metode sa efectueze actiuni diferite in functie de obiectul asupra caruia actioneaza.",
+      "b": "Java suporta doar polimorfism static.",
+      "c": "Este limitat la supraincarcarea metodelor.",
+      "d": "In cazul polimorfismului dinamic decizia despre ce metoda sa fie invocata se ia in timpul compilarii."
+    },
+    "answer": [
+      "a"
+    ],
+    "topic": "polimorfism",
+    "source": "Examen 2024 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EX2024-03",
+    "type": "multiple",
+    "text": "Care dintre urmatoarele afirmatii despre mostenirea in Java sunt adevarate?",
+    "options": {
+      "a": "Mostenirea permite suprascrierea metodelor, unde o subclasa furnizeaza o implementare specifica a unei metode care este deja\ndefinita in superclasa sa.",
+      "b": "Mostenirea permite reutilizarea codului.",
+      "c": "O clasa poate mosteni mai multe clase, dar o interfata poate mosteni o singura interfata.",
+      "d": "O subclasa mosteneste toti membrii (campuri si metode) care nu sunt private ai superclasei sale."
+    },
+    "answer": [
+      "a",
+      "b",
+      "d"
+    ],
+    "topic": "mostenire",
+    "source": "Examen 2024 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EX2024-05",
+    "type": "multiple",
+    "text": "Care dintre urmatoarele afirmatii despre serializarea in Java sunt adevarate?",
+    "options": {
+      "a": "Serializarea obiectelor poate fi folosita pentru a implementa un mecanism simplu de persistenta.",
+      "b": "Un obiect a carui clasa implementeaza interfetele Cloneable si Serializable poate fi serializat.",
+      "c": "Atributele „transient” sunt serializate.",
+      "d": "Programele scrise in orice limbaj de programare pot deserializa obiectele serializate in Java."
+    },
+    "answer": [
+      "a",
+      "b"
+    ],
+    "topic": "interfete",
+    "source": "Examen 2024 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EX2024-06",
+    "type": "multiple",
+    "text": "Care dintre urmatoarele afirmatii sunt adevarate despre variabilele volatile in Java?",
+    "options": {
+      "a": "O variabila volatila este intotdeauna scrisa in memoria principala.",
+      "b": "Daca doua fire de executie citesc si scriu simultan o variabila volatila partajata nu este necesar un mecanism de sincronizare\nsuplimentar.",
+      "c": "Daca doar un fir de executie modifica o variabila partajata, iar celelalte fire de executie o citesc, declararea variabilei ca volatila\neste thread-safe.",
+      "d": "O variabila volatila este intotdeauna citita din memoria principala."
+    },
+    "answer": [
+      "a",
+      "c",
+      "d"
+    ],
+    "topic": "volatile / atomic",
+    "source": "Examen 2024 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EX2024-07",
+    "type": "single",
+    "text": "Care dintre urmatoarele solutii este folosita pentru a obtine lacatul asociat cu obiectul in Java?",
+    "options": {
+      "a": "Object.wait()",
+      "b": "Thread.sleep()",
+      "c": "Object.notify()",
+      "d": "Utilizarea cuvantului cheie synchronized in definitia unei metode."
+    },
+    "answer": [
+      "d"
+    ],
+    "topic": "thread-uri",
+    "source": "Examen 2024 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EX2024-08",
+    "type": "multiple",
+    "text": "Tehnica de Reflection in Java ofera:",
+    "options": {
+      "a": "Un mecanism prin care o noua instanta a unei clase poate fi creata in timpul executiei.",
+      "b": "Un mecanism pentru invocarea dinamica a metodelor in timpul executiei.",
+      "c": "Un mecanism pentru accesarea metadatelor clasei in timpul executiei.",
+      "d": "Un mecanism prin care atributele private ale unui obiect pot fi accesate in timpul executiei."
+    },
+    "answer": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "topic": "reflection",
+    "source": "Examen 2024 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EX2024-09",
+    "type": "multiple",
+    "text": "In contextul Legii lui Demeter si a efectelor secundare ale metodelor alegeti recomandarile corecte:",
+    "options": {
+      "a": "O metoda ar trebui sa utilizeze doar variabilele instanta ale clasei sale, parametri transmisi ca argument, obiecte construite de\nmetoda, metode ale clasei sale si atribute statice globale.",
+      "b": "O metoda ar trebui sa efectueze operatii pe obiectele care sunt parte ale altor obiecte.",
+      "c": "O metoda nu ar trebui sa efectueze operatii pe obiectele care sunt parte ale altor obiecte.",
+      "d": "Este recomandabil apelul unei metode de „get” al unui obiect pentru a avea acces si a modifica un atribut de tip referinta."
+    },
+    "answer": [
+      "a",
+      "c"
+    ],
+    "topic": "Law of Demeter",
+    "source": "Examen 2024 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EX2024-10",
+    "type": "single",
+    "text": "Cum poti asigura imutabilitatea intr-o clasa care are un atribut private si final de tipul Date?",
+    "options": {
+      "a": "Nu este necesara nicio modificare fiindca Date este un tip imutabil.",
+      "b": "Se elimina atributele mutabile.",
+      "c": "Metodele de get vor returna o clona a acestor atribute.",
+      "d": "Metodele de get vor returna atributele sincronizate."
+    },
+    "answer": [
+      "c"
+    ],
+    "topic": "imutabilitate",
+    "source": "Examen 2024 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EX2024-11",
+    "type": "single",
+    "text": "Care dintre urmatoarele afirmatii despre tipurile parametrilor expresiilor lambda implicite este adevarata?",
+    "options": {
+      "a": "Sunt determinate pe baza semnaturii metodei default din interfata functionala asociata.",
+      "b": "Nu sunt determinate pe baza niciunei metode din interfata functionala asociata.",
+      "c": "Sunt determinate pe baza semnaturii metodei abstracte din interfata functionala asociata.",
+      "d": "Sunt determinate pe baza semnaturii metodei statice din interfata functionala asociata."
+    },
+    "answer": [
+      "c"
+    ],
+    "topic": "lambda",
+    "source": "Examen 2024 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EX2024-12",
+    "type": "multiple",
+    "text": "Care dintre afirmatiile de mai jos sunt corecte?",
+    "options": {
+      "a": "List<Person> este un subtip al lui List<Object>.",
+      "b": "List<Person> nu este un subtip al lui List<Object>.",
+      "c": "List<Person> este un subtip al lui List<?>.",
+      "d": "List<Person> nu este un subtip al lui List<?>."
+    },
+    "answer": [
+      "b",
+      "c"
+    ],
+    "topic": "generics / subtipuri",
+    "source": "Examen 2024 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RAND1-01",
+    "type": "multiple",
+    "text": "Care dintre urmatoarele afirmatii despre Inversion of Control sunt corecte?",
+    "options": {
+      "a": "IoC permite programatorului sa controleze fluxul aplicatiei.",
+      "b": "Containerele IoC sunt folosite pentru a gestiona dependentele.",
+      "c": "In dependency injection, o dependenta este injectata intr-o clasa A din exteriorul lui A folosind constructorul lui A sau o metoda\n„get”.",
+      "d": "In tehnica callback, functiile callback sunt folosite, reprezentand functii transmise ca argument unei alte functii."
+    },
+    "answer": [
+      "b",
+      "d"
+    ],
+    "topic": "functional",
+    "source": "Examen Random (1) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RAND1-02",
+    "type": "multiple",
+    "text": "Imagineaza-ti o aplicatie de e-commerce in care modulul OrderProcessing depinde direct de o clasa\nspecifica PaymentGateway. Daca trebuie sa treci la un alt furnizor de plata sau sa adaugi suport pentru mai multi furnizori, va trebui\nsa modifici codul OrderProcessing. Avand in vedere acest exemplu, care dintre urmatoarele afirmatii sunt corecte?",
+    "options": {
+      "a": "Aplicatia incalca principiul Open Closed.",
+      "b": "Designul aplicatiei poate duce la flexibilitate redusa si cuplare crescuta in sistem.",
+      "c": "Aplicatia incalca principiul Dependency Inversion.",
+      "d": "Designul aplicatiei poate duce la dificultati in adaugarea sau schimbarea furnizorilor de plata."
+    },
+    "answer": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "topic": "dependency management",
+    "source": "Examen Random (1) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RAND1-03",
+    "type": "multiple",
+    "text": "O echipa de dezvoltare software trebuie sa proiecteze o aplicatie de mobile banking pornind de la un set de\ncerinte. Care dintre urmatoarele afirmatii reprezinta cerinte non-functionale?",
+    "options": {
+      "a": "Datele utilizatorilor ar trebui trimise criptat prin retea.",
+      "b": "Utilizatorul ar trebui sa poata personaliza aspectul dashboard-ului.",
+      "c": "Aplicatia ar trebui sa incarce un dashboard in maximum 2 secunde.",
+      "d": "Aplicatia ar trebui sa permita utilizatorilor sa vada soldurile conturilor."
+    },
+    "answer": [
+      "a",
+      "c"
+    ],
+    "topic": "cerinte",
+    "source": "Examen Random (1) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RAND1-04",
+    "type": "single",
+    "text": "Care dintre urmatoarele afirmatii defineste o buna practica in proiectarea aplicatiilor?",
+    "options": {
+      "a": "Minimizarea relatiilor dintre clase si mentinerea unei coeziuni scazute.",
+      "b": "Definirea claselor care au responsabilitati multiple.",
+      "c": "Definirea unei interfete generale in locul multor interfete specifice clientilor.",
+      "d": "Folosirea obiectelor care au starea setata in timpul initializarii si care nu se schimba ulterior."
+    },
+    "answer": [
+      "d"
+    ],
+    "topic": "interfete",
+    "source": "Examen Random (1) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RAND1-05",
+    "type": "single",
+    "text": "Care dintre urmatoarele afirmatii despre codul de mai jos este corecta?\nList<Integer> numbers = Arrays.asList(1,2,3,4,5,6,7,8,9,10);\nList<Integer> evenNumbers = numbers.stream().filter(n -> n%2 ==0).collect(Collectors.toList());\nfor(Integer num : evenNumbers) {System.out.println(\"Even number: \"+ num);}",
+    "options": {
+      "a": "Intregul cod foloseste doar programare declarativa.",
+      "b": "Metoda filter() modifica lista numbers.",
+      "c": "Codul combina iterarea interna si iterarea externa a colectiilor.",
+      "d": "Operatia collect este lazy."
+    },
+    "answer": [
+      "c"
+    ],
+    "topic": "streams",
+    "source": "Examen Random (1) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RAND1-06",
+    "type": "multiple",
+    "text": "Care afirmatie nu este corecta despre urmatoarea atribuire Java?\nOperation operation = (int a, int b) -> Integer.sum(a,b);",
+    "options": {
+      "a": "Operation este o interfata care contine exact o metoda abstracta cu 2 parametri int si int ca tip de returnare.",
+      "b": "Cand executia programului ajunge la atribuire, metoda sum va fi apelata.",
+      "c": "Atribuirea poate fi inlocuita cu Operation operation = Integer::sum(a,b);",
+      "d": "Operation este o interfata care poate contine metode default si statice."
+    },
+    "answer": [
+      "b",
+      "c"
+    ],
+    "topic": "lambda",
+    "source": "Examen Random (1) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RAND1-07",
+    "type": "single",
+    "text": "In contextul clonarii obiectelor, copierea camp cu camp este:",
+    "options": {
+      "a": "Deep copy.",
+      "b": "Shallow copy."
+    },
+    "answer": [
+      "b"
+    ],
+    "topic": "cloning",
+    "source": "Examen Random (1) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RAND1-09",
+    "type": "multiple",
+    "text": "Considerati 3 clase (C, C1, C2) si o interfata I. Care afirmatie este corecta?",
+    "options": {
+      "a": "Daca C2 extinde C1 si C1 extinde C, atunci C2 este un subtip al lui C.",
+      "b": "Daca C2 este un subtip al lui C1, atunci List<C1> este un subtip al lui List<C2>.",
+      "c": "Daca C implementeaza I si C1 extinde C, atunci C1 este un subtip al lui I.",
+      "d": "Daca C2 extinde C1, atunci urmatoarea atribuire este corecta: C2 c2 = new C1();"
+    },
+    "answer": [
+      "a",
+      "c"
+    ],
+    "topic": "generics / subtipuri",
+    "source": "Examen Random (1) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RAND1-11",
+    "type": "single",
+    "text": "De ce este recomandat ca obiectele-cheie folosite intr-un Java Map, cum ar fi HashMap, sa fie imutabile?",
+    "options": {
+      "a": "Deoarece cheile imutabile imbunatatesc performanta operatiilor Map prin reducerea utilizarii memoriei.",
+      "b": "Deoarece daca o cheie este mutabila si modificata dupa inserare, poate incalca consistenta Map-ului si poate cauza esecuri la\ncautare.",
+      "c": "Deoarece Java cere ca toate cheile sa fie imutabile pentru siguranta tipurilor.",
+      "d": "Deoarece cheile imutabile sincronizeaza automat accesul la Map."
+    },
+    "answer": [
+      "b"
+    ],
+    "topic": "imutabilitate",
+    "source": "Examen Random (1) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RAND1-12",
+    "type": "single",
+    "text": "Care dintre urmatoarele afirmatii in contextul principiului PECS nu este corecta?",
+    "options": {
+      "a": "PECS ajuta la deciderea momentului in care trebuie folosite wildcard-uri marginite in generics.",
+      "b": "Foloseste ? extends T daca ai nevoie doar sa citesti obiecte de tip T dintr-o colectie generica.",
+      "c": "Urmatorul fragment de cod este permis:\nList<? super Integer> ints = new ArrayList<Number>();\nInteger n = ints.get(0);",
+      "d": "Urmatorul fragment de cod nu este permis:\nList<? extends Number> numbers = Arrays.asList(1,2.5,3);\nnumbers.add(10);"
+    },
+    "answer": [
+      "c"
+    ],
+    "topic": "generics",
+    "source": "Examen Random (1) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RAND2-01",
+    "type": "multiple",
+    "text": "Care dintre urmatoarele afirmatii despre proiectarea unei aplicatii software sunt adevarate?",
+    "options": {
+      "a": "Se urmareste maximizarea dependentelor intre clase.",
+      "b": "Ar trebui sa se minimizeze dependentele intre clase si sa se maximizeze coeziunea.",
+      "c": "Clasele trebuie sa fie slab cuplate si necoezive.",
+      "d": "Clasele trebuie sa fie deschise pentru extindere si inchise pentru modificare."
+    },
+    "answer": [
+      "b",
+      "d"
+    ],
+    "topic": "dependency management",
+    "source": "Examen Random (2) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RAND2-02",
+    "type": "single",
+    "text": "Care dintre urmatoarele afirmatii despre polimorfismul in Java este adevarata?",
+    "options": {
+      "a": "Polimorfismul permite unei metode sa efectueze actiuni diferite in functie de obiectul asupra caruia actioneaza.",
+      "b": "Java suporta doar polimorfism static.",
+      "c": "Este limitat la supraincarcarea metodelor.",
+      "d": "In cazul polimorfismului dinamic, decizia despre ce metoda sa fie invocata se ia in timpul compilarii."
+    },
+    "answer": [
+      "a"
+    ],
+    "topic": "polimorfism",
+    "source": "Examen Random (2) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RAND2-03",
+    "type": "multiple",
+    "text": "Care dintre urmatoarele afirmatii despre mostenirea in Java sunt adevarate?",
+    "options": {
+      "a": "Mostenirea permite supraincarcarea metodelor, unde o subclasa furnizeaza o implementare specifica a unei metode care este\ndeja definita in superclasa sa.",
+      "b": "Mostenirea permite reutilizarea codului.",
+      "c": "O clasa poate mosteni mai multe clase, dar o interfata poate mosteni o singura interfata.",
+      "d": "O subclasa mosteneste toti membrii (campuri si metode) care nu sunt private ai superclasei sale."
+    },
+    "answer": [
+      "b",
+      "d"
+    ],
+    "topic": "mostenire",
+    "source": "Examen Random (2) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RAND2-04",
+    "type": "single",
+    "text": "O clasa abstracta este folosita pentru a descrie abilitatile suplimentare ale unei clase?",
+    "options": {
+      "a": "Adevarat.",
+      "b": "Fals."
+    },
+    "answer": [
+      "b"
+    ],
+    "topic": "clase abstracte",
+    "source": "Examen Random (2) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RAND2-06",
+    "type": "multiple",
+    "text": "Care dintre urmatoarele afirmatii sunt adevarate despre variabilele volatile in Java?",
+    "options": {
+      "a": "O variabila volatila este intotdeauna scrisa in memoria principala.",
+      "b": "Daca doua fire de executie citesc si scriu simultan o variabila volatila partajata, nu este necesar un mecanism de sincronizare\nsuplimentar.",
+      "c": "Daca doar un fir de executie modifica o variabila partajata, iar celelalte fire de executie o citesc, declararea variabilei ca volatila\neste thread-safe.",
+      "d": "O variabila volatila este intotdeauna citita din memoria principala."
+    },
+    "answer": [
+      "a",
+      "c",
+      "d"
+    ],
+    "topic": "volatile / atomic",
+    "source": "Examen Random (2) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RAND2-07",
+    "type": "single",
+    "text": "Care dintre urmatoarele solutii este folosita pentru a obtine lacatul asociat cu obiectul in Java?",
+    "options": {
+      "a": "Object.wait()",
+      "b": "Thread.sleep()",
+      "c": "Object.notify()",
+      "d": "Utilizarea cuvantului cheie synchronized in definirea unei metode."
+    },
+    "answer": [
+      "d"
+    ],
+    "topic": "thread-uri",
+    "source": "Examen Random (2) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RAND2-09",
+    "type": "multiple",
+    "text": "In contextul Legii lui Demeter si al efectelor secundare ale metodelor, alegeti recomandarile corecte:",
+    "options": {
+      "a": "O metoda ar trebui sa utilizeze doar variabile instanta ale clasei sale, parametrii transmisi ca argument, obiecte construite de\nmetoda, metode ale clasei sale si atribute statice globale.",
+      "b": "O metoda ar trebui sa efectueze operatii pe obiectele care sunt parte ale altor obiecte.",
+      "c": "O metoda nu ar trebui sa efectueze operatii pe obiecte care sunt parte din alte obiecte.",
+      "d": "Este recomandabil apelul unei metode de „get” al unui obiect pentru a avea acces si a modifica un atribut de tip referinta."
+    },
+    "answer": [
+      "a",
+      "c"
+    ],
+    "topic": "Law of Demeter",
+    "source": "Examen Random (2) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-RAND2-10",
+    "type": "single",
+    "text": "Cum poti asigura imutabilitatea intr-o clasa care are un atribut privat si final de tipul Date?",
+    "options": {
+      "a": "Nu este necesar sa modifici nimic, pentru ca Date este un tip imutabil.",
+      "b": "Se elimina atributele mutabile.",
+      "c": "Metodele de get vor returna o clona a acestor atribute.",
+      "d": "Metodele de get vor returna atributele sincronizate."
+    },
+    "answer": [
+      "c"
+    ],
+    "topic": "imutabilitate",
+    "source": "Examen Random (2) - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EX2023-01",
+    "type": "single",
+    "text": "„Should have” in schema MoSCoW se refera la cerinte:",
+    "options": {
+      "a": "Care ar trebui introduse in solutia finala daca este posibil.",
+      "b": "Care ar trebui obligatoriu introduse in solutia finala.",
+      "c": "Care nu ar trebui introduse in solutia finala.",
+      "d": "Care ar fi de dorit, dar care nu sunt neaparat obligatorii."
+    },
+    "answer": [
+      "a"
+    ],
+    "topic": "cerinte / MoSCoW",
+    "source": "Examen 2023 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EX2023-02",
+    "type": "multiple",
+    "text": "Care din urmatoarele afirmatii despre relatia de asociere in diagramele de clasa UML sunt adevarate?",
+    "options": {
+      "a": "Asocierea este o relatie binara intre doua clase.",
+      "b": "Asocierea poate fi reprezentata prin intermediul unei clase de asociere.",
+      "c": "Asocierea este o relatie in care un obiect dintr-o clasa interactioneaza cu un obiect dintr-o alta clasa.",
+      "d": "Asocierea poate fi reflexiva."
+    },
+    "answer": [
+      "a",
+      "b",
+      "c",
+      "d"
+    ],
+    "topic": "UML",
+    "source": "Examen 2023 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EX2023-03",
+    "type": "single",
+    "text": "Interfata Consumer este o:",
+    "options": {
+      "a": "Interfata functionala.",
+      "b": "Interfata marker.",
+      "c": "Interfata nested.",
+      "d": "Interfata de tip adnotare (eng. Annotation Type Interface)."
+    },
+    "answer": [
+      "a"
+    ],
+    "topic": "adnotari",
+    "source": "Examen 2023 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EX2023-04",
+    "type": "multiple",
+    "text": "In contextul firelor de executie, „race condition” apare atunci cand:",
+    "options": {
+      "a": "Mai multe fire de executie acceseaza date partajate in acelasi timp, rezultand un comportament neasteptat sau rezultate\nincorecte.",
+      "b": "Un fir de executie nu poate accesa memoria, deoarece alte fire o ocupa continuu generand inconsistente.",
+      "c": "Un fir de executie nu poate accesa o resursa, deoarece alte fire o ocupa continuu.",
+      "d": "Exista o dependenta de ordine intre actiunile realizate de mai multe fire de executie, iar aceasta ordine nu este garantata."
+    },
+    "answer": [
+      "a",
+      "d"
+    ],
+    "topic": "dependency management",
+    "source": "Examen 2023 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EX2023-05",
+    "type": "multiple",
+    "text": "Incapsularea poate contribui la crearea de obiecte:",
+    "options": {
+      "a": "Thread-safe.",
+      "b": "Reutilizabile.",
+      "c": "Wrapper.",
+      "d": "Imutabile."
+    },
+    "answer": [
+      "a",
+      "b",
+      "d"
+    ],
+    "topic": "imutabilitate",
+    "source": "Examen 2023 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EX2023-06",
+    "type": "single",
+    "text": "Pentru a utiliza o clasa ca si cheie intr-un HashMap in Java, se recomanda ca:",
+    "options": {
+      "a": "Clasa sa fie serializabila.",
+      "b": "Clasa sa suprascrie metodele hashCode si equals.",
+      "c": "Clasa sa suprascrie doar metoda hashCode.",
+      "d": "Clasa sa suprascrie metoda clone."
+    },
+    "answer": [
+      "b"
+    ],
+    "topic": "equals / hashCode",
+    "source": "Examen 2023 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
+  },
+  {
+    "id": "RAW-EX2023-09",
+    "type": "multiple",
+    "text": "Care dintre urmatoarele afirmatii reprezinta avantaje ale programarii functionale?",
+    "options": {
+      "a": "Foloseste functii cu efecte secundare derivate.",
+      "b": "Se bazeaza pe stilul de programare declarativ.",
+      "c": "Se bazeaza pe stilul de programare imperativ.",
+      "d": "Promoveaza imutabilitatea datelor."
+    },
+    "answer": [
+      "b",
+      "d"
+    ],
+    "topic": "imutabilitate",
+    "source": "Examen 2023 - text complet",
+    "explanation": "Intrebare adaugata din lista completa de subiecte; raspunsul este setat dupa subiectul corespunzator."
   }
 ];
 const CONFIG = { count: 25, minutes: 35, pointPerQuestion: 0.36, officePoint: 1 };
